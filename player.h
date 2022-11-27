@@ -17,6 +17,8 @@ private:
     int m_cards;
     bool m_goalKeeper;
     shared_ptr<Team> m_team;
+    shared_ptr<Player> m_closest_left;
+    shared_ptr<Player> m_closest_right;
 
 
 
