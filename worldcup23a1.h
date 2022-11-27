@@ -18,13 +18,18 @@
 #include "wet1util.h"
 #include <memory>
 using namespace std;
+
+#include "avl_tree.h"
 #include "player.h"
+#include "team.h"
 
 class world_cup_t {
 private:
 	int m_numOfPlayes;
 	shared_ptr<Player> m_topScorer;
-	
+    AVLTree<shared_ptr<Player>> m_players;
+    AVLTree<shared_ptr<Team>> m_teams;
+
 public:
 	// <DO-NOT-MODIFY> {
 	

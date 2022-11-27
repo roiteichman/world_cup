@@ -14,6 +14,30 @@ world_cup_t::~world_cup_t()
 StatusType world_cup_t::add_team(int teamId, int points)
 {
 	// TODO: Your code goes here
+	if(teamId<=0 || points<0){
+		return StatusType::INVALID_INPUT;
+	}
+
+	shared_ptr<Team> team_ptr;
+
+	try{
+		team_ptr = shared_ptr<Team>(new Team(teamId, points));
+	} catch (const bad_alloc& e){
+		return StatusType::ALLOCATION_ERROR;
+		}
+
+	if (m_teams.GetRoot()!=NULL){
+		if (m_teams.Find(m_teams.GetRoot(), team_ptr)!=NULL) {
+			return StatusType::FAILURE;
+		}
+	}
+
+	try{
+		m_teams.Insert(team_ptr);
+	} catch (const bad_alloc& e){
+		return StatusType::ALLOCATION_ERROR;
+	}
+
 	return StatusType::SUCCESS;
 }
 
