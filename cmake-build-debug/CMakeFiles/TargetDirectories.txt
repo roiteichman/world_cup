@@ -1,0 +1,3 @@
+C:/Users/shlom/Desktop/New folder (3)/world_cup/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/shlom/Desktop/New folder (3)/world_cup/cmake-build-debug/CMakeFiles/world_cup.dir
+C:/Users/shlom/Desktop/New folder (3)/world_cup/cmake-build-debug/CMakeFiles/rebuild_cache.dir
