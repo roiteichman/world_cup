@@ -39,13 +39,13 @@ include CMakeFiles/rules.ninja
 #############################################
 # Logical path to working directory; prefix for absolute paths.
 
-cmake_ninja_workdir = C$:/Users/teich/OneDrive$ -$ Technion/Documents/technion/semester_3/data_structure/wet/1/1_git/world_cup/cmake-build-debug/
+cmake_ninja_workdir = C$:/Users/shlom/Desktop/New$ folder$ (3)/world_cup/cmake-build-debug/
 
 #############################################
 # Utility command for edit_cache
 
 build CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D "C:\Users\teich\OneDrive - Technion\Documents\technion\semester_3\data_structure\wet\1\1_git\world_cup\cmake-build-debug" && "C:\Program Files\JetBrains\CLion 2021.3.4\bin\cmake\win\bin\cmake.exe" -E echo "No interactive CMake dialog available.""
+  COMMAND = cmd.exe /C "cd /D "C:\Users\shlom\Desktop\New folder (3)\world_cup\cmake-build-debug" && "C:\Program Files\JetBrains\CLion 2021.3.4\bin\cmake\win\bin\cmake.exe" -E echo "No interactive CMake dialog available.""
   DESC = No interactive CMake dialog available...
   restat = 1
 
@@ -60,37 +60,37 @@ build edit_cache: phony CMakeFiles/edit_cache.util
 
 build cmake_object_order_depends_target_world_cup: phony || CMakeFiles/world_cup.dir
 
-build CMakeFiles/world_cup.dir/__MACOSX/._main23a1.cpp.obj: CXX_COMPILER__world_cup_Debug C$:/Users/teich/OneDrive$ -$ Technion/Documents/technion/semester_3/data_structure/wet/1/1_git/world_cup/__MACOSX/._main23a1.cpp || cmake_object_order_depends_target_world_cup
+build CMakeFiles/world_cup.dir/__MACOSX/._main23a1.cpp.obj: CXX_COMPILER__world_cup_Debug C$:/Users/shlom/Desktop/New$ folder$ (3)/world_cup/__MACOSX/._main23a1.cpp || cmake_object_order_depends_target_world_cup
   DEP_FILE = CMakeFiles\world_cup.dir\__MACOSX\._main23a1.cpp.obj.d
   FLAGS = -g -std=gnu++14
-  INCLUDES = -I"C:/Users/teich/OneDrive - Technion/Documents/technion/semester_3/data_structure/wet/1/1_git/world_cup/." -I"C:/Users/teich/OneDrive - Technion/Documents/technion/semester_3/data_structure/wet/1/1_git/world_cup/__MACOSX"
+  INCLUDES = -I"C:/Users/shlom/Desktop/New folder (3)/world_cup/." -I"C:/Users/shlom/Desktop/New folder (3)/world_cup/__MACOSX"
   OBJECT_DIR = CMakeFiles\world_cup.dir
   OBJECT_FILE_DIR = CMakeFiles\world_cup.dir\__MACOSX
   TARGET_COMPILE_PDB = CMakeFiles\world_cup.dir\
   TARGET_PDB = world_cup.pdb
 
-build CMakeFiles/world_cup.dir/__MACOSX/._worldcup23a1.cpp.obj: CXX_COMPILER__world_cup_Debug C$:/Users/teich/OneDrive$ -$ Technion/Documents/technion/semester_3/data_structure/wet/1/1_git/world_cup/__MACOSX/._worldcup23a1.cpp || cmake_object_order_depends_target_world_cup
+build CMakeFiles/world_cup.dir/__MACOSX/._worldcup23a1.cpp.obj: CXX_COMPILER__world_cup_Debug C$:/Users/shlom/Desktop/New$ folder$ (3)/world_cup/__MACOSX/._worldcup23a1.cpp || cmake_object_order_depends_target_world_cup
   DEP_FILE = CMakeFiles\world_cup.dir\__MACOSX\._worldcup23a1.cpp.obj.d
   FLAGS = -g -std=gnu++14
-  INCLUDES = -I"C:/Users/teich/OneDrive - Technion/Documents/technion/semester_3/data_structure/wet/1/1_git/world_cup/." -I"C:/Users/teich/OneDrive - Technion/Documents/technion/semester_3/data_structure/wet/1/1_git/world_cup/__MACOSX"
+  INCLUDES = -I"C:/Users/shlom/Desktop/New folder (3)/world_cup/." -I"C:/Users/shlom/Desktop/New folder (3)/world_cup/__MACOSX"
   OBJECT_DIR = CMakeFiles\world_cup.dir
   OBJECT_FILE_DIR = CMakeFiles\world_cup.dir\__MACOSX
   TARGET_COMPILE_PDB = CMakeFiles\world_cup.dir\
   TARGET_PDB = world_cup.pdb
 
-build CMakeFiles/world_cup.dir/main23a1.cpp.obj: CXX_COMPILER__world_cup_Debug C$:/Users/teich/OneDrive$ -$ Technion/Documents/technion/semester_3/data_structure/wet/1/1_git/world_cup/main23a1.cpp || cmake_object_order_depends_target_world_cup
+build CMakeFiles/world_cup.dir/main23a1.cpp.obj: CXX_COMPILER__world_cup_Debug C$:/Users/shlom/Desktop/New$ folder$ (3)/world_cup/main23a1.cpp || cmake_object_order_depends_target_world_cup
   DEP_FILE = CMakeFiles\world_cup.dir\main23a1.cpp.obj.d
   FLAGS = -g -std=gnu++14
-  INCLUDES = -I"C:/Users/teich/OneDrive - Technion/Documents/technion/semester_3/data_structure/wet/1/1_git/world_cup/." -I"C:/Users/teich/OneDrive - Technion/Documents/technion/semester_3/data_structure/wet/1/1_git/world_cup/__MACOSX"
+  INCLUDES = -I"C:/Users/shlom/Desktop/New folder (3)/world_cup/." -I"C:/Users/shlom/Desktop/New folder (3)/world_cup/__MACOSX"
   OBJECT_DIR = CMakeFiles\world_cup.dir
   OBJECT_FILE_DIR = CMakeFiles\world_cup.dir
   TARGET_COMPILE_PDB = CMakeFiles\world_cup.dir\
   TARGET_PDB = world_cup.pdb
 
-build CMakeFiles/world_cup.dir/worldcup23a1.cpp.obj: CXX_COMPILER__world_cup_Debug C$:/Users/teich/OneDrive$ -$ Technion/Documents/technion/semester_3/data_structure/wet/1/1_git/world_cup/worldcup23a1.cpp || cmake_object_order_depends_target_world_cup
+build CMakeFiles/world_cup.dir/worldcup23a1.cpp.obj: CXX_COMPILER__world_cup_Debug C$:/Users/shlom/Desktop/New$ folder$ (3)/world_cup/worldcup23a1.cpp || cmake_object_order_depends_target_world_cup
   DEP_FILE = CMakeFiles\world_cup.dir\worldcup23a1.cpp.obj.d
   FLAGS = -g -std=gnu++14
-  INCLUDES = -I"C:/Users/teich/OneDrive - Technion/Documents/technion/semester_3/data_structure/wet/1/1_git/world_cup/." -I"C:/Users/teich/OneDrive - Technion/Documents/technion/semester_3/data_structure/wet/1/1_git/world_cup/__MACOSX"
+  INCLUDES = -I"C:/Users/shlom/Desktop/New folder (3)/world_cup/." -I"C:/Users/shlom/Desktop/New folder (3)/world_cup/__MACOSX"
   OBJECT_DIR = CMakeFiles\world_cup.dir
   OBJECT_FILE_DIR = CMakeFiles\world_cup.dir
   TARGET_COMPILE_PDB = CMakeFiles\world_cup.dir\
@@ -120,7 +120,7 @@ build world_cup.exe: CXX_EXECUTABLE_LINKER__world_cup_Debug CMakeFiles/world_cup
 # Utility command for rebuild_cache
 
 build CMakeFiles/rebuild_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D "C:\Users\teich\OneDrive - Technion\Documents\technion\semester_3\data_structure\wet\1\1_git\world_cup\cmake-build-debug" && "C:\Program Files\JetBrains\CLion 2021.3.4\bin\cmake\win\bin\cmake.exe" --regenerate-during-build -S"C:\Users\teich\OneDrive - Technion\Documents\technion\semester_3\data_structure\wet\1\1_git\world_cup" -B"C:\Users\teich\OneDrive - Technion\Documents\technion\semester_3\data_structure\wet\1\1_git\world_cup\cmake-build-debug""
+  COMMAND = cmd.exe /C "cd /D "C:\Users\shlom\Desktop\New folder (3)\world_cup\cmake-build-debug" && "C:\Program Files\JetBrains\CLion 2021.3.4\bin\cmake\win\bin\cmake.exe" --regenerate-during-build -S"C:\Users\shlom\Desktop\New folder (3)\world_cup" -B"C:\Users\shlom\Desktop\New folder (3)\world_cup\cmake-build-debug""
   DESC = Running CMake to regenerate build system...
   pool = console
   restat = 1
@@ -138,7 +138,7 @@ build world_cup: phony world_cup.exe
 # =============================================================================
 
 #############################################
-# Folder: C:/Users/teich/OneDrive - Technion/Documents/technion/semester_3/data_structure/wet/1/1_git/world_cup/cmake-build-debug
+# Folder: C:/Users/shlom/Desktop/New folder (3)/world_cup/cmake-build-debug
 
 build all: phony world_cup.exe
 

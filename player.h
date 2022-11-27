@@ -17,16 +17,22 @@ private:
     int m_cards;
     bool m_goalKeeper;
     shared_ptr<Team> m_team;
-
-
+    shared_ptr<Player> m_closest_left;
+    shared_ptr<Player> m_closest_right;
+    shared_ptr<Player> m_closest;
 
 public:
     Player(int id, int gamesPlayed, int scoredGoals, int CardsReceived);
     ~Player() = default;
     Player (const Player& player) = delete;
-    Player& opertor= (const Player& player) = delete;
-
-
+    Player& operator = (const Player& player) = delete;
+    bool operator< (const Player& other) const;
+    void setGamePlayed (int gamesPlayed);
+    void setGoals (int goals);
+    void setCards (int cardsReceived);
+    int getGamesPlayed () const;
+    int getGoalsScored () const;
+    int getCardsReceived () const;
 
 };
 
