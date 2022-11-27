@@ -21,7 +21,7 @@ private:
     shared_ptr<Player> m_topScorer;
 
 public:
-    Team();
+    Team(int teamId, int point=0);
     ~Team() = default;
     Team (const Team& team) = delete;
     Team& operator = (const Team& team) = delete;
