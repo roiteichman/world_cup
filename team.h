@@ -7,7 +7,17 @@
 
 class Team{
 
+private:
+
+
+public:
+
+
+
+
 };
+
+
 
 
 
