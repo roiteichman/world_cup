@@ -9,6 +9,7 @@ m_id(id), m_gamePlayed(gamesPlayed), m_goals(scoredGoals), m_cards(CardsReceived
 }
 
 
+
 bool Player::operator<(const Player &other) const {
     if(this->m_goals<other.getGoalsScored())
         return true;
