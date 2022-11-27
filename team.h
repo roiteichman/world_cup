@@ -21,14 +21,14 @@ private:
     shared_ptr<Player> m_topScorer;
 
 public:
-    Team(int teamId, int point=0);
+    explicit Team(int teamId, int point=0);
     ~Team() = default;
     Team (const Team& team) = delete;
     Team& operator = (const Team& team) = delete;
 
     void setPoints (int points);
     void setGoals (int goals);
-    void setCards (int cardsReceived);
+    void setCards (int cards);
 
     int getTeamId () const;
     int getPoints () const;
@@ -37,9 +37,5 @@ public:
     int getNumOfPlayers () const;
 
 };
-
-
-
-
 
 #endif //WORLD_CUP_TEAM_H
