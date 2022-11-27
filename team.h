@@ -26,6 +26,8 @@ public:
     Team (const Team& team) = delete;
     Team& operator = (const Team& team) = delete;
 
+    bool operator< (const Team& other) const;
+
     void setPoints (int points);
     void setGoals (int goals);
     void setCards (int cards);

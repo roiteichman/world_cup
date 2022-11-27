@@ -40,3 +40,7 @@ int Team::getCards() const {
 int Team::getNumOfPlayers() const {
     return m_numOfPlayers;
 }
+
+bool Team::operator<(const Team &other) const {
+    return m_teamId<other.m_teamId;
+}

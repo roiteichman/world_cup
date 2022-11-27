@@ -10,37 +10,37 @@
     template <class T>
     class AVLNode {
     public:
-        AVLNode(const T& value) : data_(value), left_(NULL), right_(NULL), parent_(NULL) {}
+        AVLNode(const T& value) : m_data(value), m_left(NULL), m_right(NULL), m_parent(NULL) {}
         ~AVLNode() {}
 
-        const T&  GetValue() const { return data_; }
-        void      SetLeft(AVLNode* left) { left_ = left; }
-        AVLNode*  GetLeft() const { return left_; }
-        void      GetRight(AVLNode* right) { right_ = right; }
-        AVLNode*  GetRight() const { return right_; }
-        void      SetParent(AVLNode* parent) { parent_ = parent; }
-        AVLNode*  GetParent() const { return parent_; }
+        const T&  GetValue() const { return m_data; }
+        void      SetLeft(AVLNode* left) { m_left = left; }
+        AVLNode*  GetLeft() const { return m_left; }
+        void      GetRight(AVLNode* right) { m_right = right; }
+        AVLNode*  GetRight() const { return m_right; }
+        void      SetParent(AVLNode* parent) { m_parent = parent; }
+        AVLNode*  GetParent() const { return m_parent; }
 
-        void      Print() const { std::cout << data_ << std::endl; }
+        void      Print() const { std::cout << m_data << std::endl; }
 
     private:
         AVLNode();
 
-        T     data_;
-        AVLNode* left_;
-        AVLNode* right_;
-        AVLNode* parent_;
+        T     m_data;
+        AVLNode* m_left;
+        AVLNode* m_right;
+        AVLNode* m_parent;
     };
 
     template <class T>
     class AVLTree {
     public:
-        AVLTree() : root_(NULL) {}
+        AVLTree() : m_root(NULL) {}
         ~AVLTree();
 
         bool Insert(const T& value);
 
-        AVLNode<T>* GetRoot() const { return root_; }
+        AVLNode<T>* GetRoot() const { return m_root; }
 
         AVLNode<T>* Find(AVLNode<T>* root, const T& value) const;
 
@@ -60,13 +60,13 @@
         void InsertAVLNode(AVLNode<T>* root, AVLNode<T>* ins);
         void DeleteAVLNode(AVLNode<T>* node);
 
-        AVLNode<T>* root_;
+        AVLNode<T>* m_root;
     };
 
     template <class T>
     AVLTree<T>::~AVLTree() {
-        if( root_ ) {
-            DeleteAVLNode(root_);
+        if( m_root ) {
+            DeleteAVLNode(m_root);
         }
     }
 
@@ -86,10 +86,10 @@
         if( !new_node )
             return true; // Out of memory
 
-        if( !root_ ) // Special case
-            root_ = new_node;
+        if( !m_root ) // Special case
+            m_root = new_node;
         else
-            InsertAVLNode(root_, new_node);
+            InsertAVLNode(m_root, new_node);
 
         return false;
     }
@@ -97,7 +97,7 @@
     template <class T>
     void AVLTree<T>::InsertAVLNode(AVLNode<T>* root, AVLNode<T>* ins) {
         // Binary Search Tree insertion algorithm
-        if( ins->GetValue() <= root->GetValue() ) {
+        if( ins->GetValue() < root->GetValue() ) {
             if( root->GetLeft() ) // If there is a left child, keep searching
                 InsertAVLNode(root->GetLeft(), ins);
             else { // Found the right spot
@@ -197,7 +197,7 @@
         newroot->SetLeft(root);
 
         if( root->GetParent() == NULL ) {
-            root_ = newroot;
+            m_root = newroot;
             newroot->SetParent(NULL);
         }
         else {
@@ -221,7 +221,7 @@
 
         // Adjust tree
         if( root->GetParent() == NULL ) {
-            root_ = newroot;
+            m_root = newroot;
             newroot->SetParent(NULL);
         }
         else {
@@ -241,7 +241,7 @@
     void AVLTree<T>::PrintBreadthSearchFirst() const {
         List< AVLNode<T>* > node_list;
 
-        node_list.PushFront(root_);
+        node_list.PushFront(m_root);
         while( node_list.Length() > 0 ) {
             AVLNode<T>* n;
             node_list.PopFront(&n);

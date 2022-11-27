@@ -16,12 +16,14 @@
 #define WORLDCUP23A1_H_
 
 #include "wet1util.h"
+#include <memory>
+using namespace std;
+#include "player.h"
 
 class world_cup_t {
 private:
-	//
-	// Here you may add anything you want
-	//
+	int m_numOfPlayes;
+	shared_ptr<Player> m_topScorer;
 	
 public:
 	// <DO-NOT-MODIFY> {
