@@ -1,9 +1,7 @@
 #include "worldcup23a1.h"
 
-world_cup_t::world_cup_t()
-{
-	// TODO: Your code goes here
-}
+world_cup_t::world_cup_t(): m_teams(* new AVLTree<shared_ptr<Team>>()), m_players(* new AVLTree<shared_ptr<Player>>())
+{}
 
 world_cup_t::~world_cup_t()
 {
