@@ -33,9 +33,9 @@ public:
     int getGamesPlayed () const;
     int getGoalsScored () const;
     int getCardsReceived () const;
+    int getID() const;
 
 };
-
 
 
 
