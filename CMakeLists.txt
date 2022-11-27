@@ -9,4 +9,5 @@ include_directories(__MACOSX)
 add_executable(world_cup
         main.cpp
         player.h
+        player.cpp
 )

@@ -67,6 +67,13 @@ build CMakeFiles/world_cup.dir/main.cpp.obj: CXX_COMPILER__world_cup_Debug C$:/U
   OBJECT_DIR = CMakeFiles\world_cup.dir
   OBJECT_FILE_DIR = CMakeFiles\world_cup.dir
 
+build CMakeFiles/world_cup.dir/player.cpp.obj: CXX_COMPILER__world_cup_Debug C$:/Users/shlom/Desktop/New$ folder$ (3)/world_cup/player.cpp || cmake_object_order_depends_target_world_cup
+  DEP_FILE = CMakeFiles\world_cup.dir\player.cpp.obj.d
+  FLAGS = -g -std=gnu++14
+  INCLUDES = -I"C:/Users/shlom/Desktop/New folder (3)/world_cup/." -I"C:/Users/shlom/Desktop/New folder (3)/world_cup/__MACOSX"
+  OBJECT_DIR = CMakeFiles\world_cup.dir
+  OBJECT_FILE_DIR = CMakeFiles\world_cup.dir
+
 
 # =============================================================================
 # Link build statements for EXECUTABLE target world_cup
@@ -75,7 +82,7 @@ build CMakeFiles/world_cup.dir/main.cpp.obj: CXX_COMPILER__world_cup_Debug C$:/U
 #############################################
 # Link the executable world_cup.exe
 
-build world_cup.exe: CXX_EXECUTABLE_LINKER__world_cup_Debug CMakeFiles/world_cup.dir/main.cpp.obj
+build world_cup.exe: CXX_EXECUTABLE_LINKER__world_cup_Debug CMakeFiles/world_cup.dir/main.cpp.obj CMakeFiles/world_cup.dir/player.cpp.obj
   FLAGS = -g
   LINK_LIBRARIES = -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
   OBJECT_DIR = CMakeFiles\world_cup.dir
