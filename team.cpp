@@ -49,3 +49,4 @@ bool Team::operator<(const Team &other) const {
 void Team::removePlayer(const shared_ptr<Player> &player) {
     m_teamPlayers.
 }
+

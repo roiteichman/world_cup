@@ -83,3 +83,4 @@ shared_ptr<Player> Player::getClosestRight() const {
 shared_ptr<Player> Player::getClosest() const {
     return m_closest;
 }
+

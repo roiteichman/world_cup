@@ -35,6 +35,7 @@ public:
     void setClosestRight (const shared_ptr<Player>& right);
     void setClosest (const shared_ptr<Player>& closest);
 
+
     int getID() const;
     shared_ptr<Team> getTeam() const;
     int getGamesPlayed () const;

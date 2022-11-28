@@ -54,6 +54,7 @@ StatusType world_cup_t::add_player(int playerId, int teamId, int gamesPlayed,
  // send to the Player class as a pointer to Team
 }
 
+
 StatusType world_cup_t::remove_player(int playerId)
 {
 	// TODO: Your code goes here
