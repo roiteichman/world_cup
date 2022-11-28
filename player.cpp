@@ -4,8 +4,9 @@
 
 #include "player.h"
 
-Player::Player(int id, int gamesPlayed, int scoredGoals, int CardsReceived):
-m_id(id), m_gamePlayed(gamesPlayed), m_goals(scoredGoals), m_cards(CardsReceived)
+Player::Player(int playerId, shared_ptr<Team> team, int gamesPlayed, int scoredGoals, int CardsReceived, bool goalKeeper):
+m_id(playerId), m_team(team) ,m_gamePlayed(gamesPlayed), m_goals(scoredGoals), m_cards(CardsReceived), m_goalKeeper(goalKeeper),
+m_closest_left(nullptr), m_closest_right(nullptr), m_closest(nullptr)
 {}
 
 bool Player::operator<(const Player &other) const {
@@ -47,4 +48,38 @@ int Player::getCardsReceived() const {
 
 int Player::getID() const {
     return m_id;
+}
+
+void Player::setTeam(const shared_ptr<Team>& newTeam) {
+    m_team->removePlayer(this);
+    newTeam->addPlayer(this);
+    m_team=newTeam;
+}
+
+void Player::setClosestLeft(const shared_ptr<Player>& left) {
+    m_closest_left=left;
+}
+
+void Player::setClosestRight(const shared_ptr<Player> &right) {
+    m_closest_right=right;
+}
+
+void Player::setClosest(const shared_ptr<Player> &closest) {
+    m_closest=closest;
+}
+
+shared_ptr<Team> Player::getTeam() const {
+    return m_team;
+}
+
+shared_ptr<Player> Player::getClosestLeft() const {
+    return m_closest_left;
+}
+
+shared_ptr<Player> Player::getClosestRight() const {
+    return m_closest_right;
+}
+
+shared_ptr<Player> Player::getClosest() const {
+    return m_closest;
 }

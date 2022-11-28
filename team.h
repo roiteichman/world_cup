@@ -17,7 +17,7 @@ private:
     int m_sumOfCards;
     int m_numOfPlayers;
     bool m_hasGoalKeeper;
-    AVLTree <shared_ptr <Player>> m_teamPlayers;
+    AVLTree<shared_ptr<Player>> m_teamPlayers;
     shared_ptr<Player> m_topScorer;
 
 public:
@@ -31,6 +31,8 @@ public:
     void setPoints (int points);
     void setGoals (int goals);
     void setCards (int cards);
+    void removePlayer (const shared_ptr<Player>& player);
+    void addPlayer (const shared_ptr<Player>& player);
 
     int getTeamId () const;
     int getPoints () const;

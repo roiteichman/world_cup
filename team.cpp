@@ -5,7 +5,8 @@
 #include "team.h"
 
 Team::Team(int teamId, int point):
-    m_teamId(teamId), m_points(point)
+    m_teamId(teamId), m_points(point), m_sumOfGoals(0), m_sumOfCards(0), m_numOfPlayers(0), m_hasGoalKeeper(false),
+    m_teamPlayers(* new AVLTree<shared_ptr<Player>>), m_topScorer(nullptr)
 {}
 
 
@@ -43,4 +44,8 @@ int Team::getNumOfPlayers() const {
 
 bool Team::operator<(const Team &other) const {
     return m_teamId<other.m_teamId;
+}
+
+void Team::removePlayer(const shared_ptr<Player> &player) {
+    m_teamPlayers.
 }

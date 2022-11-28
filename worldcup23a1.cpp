@@ -1,6 +1,6 @@
 #include "worldcup23a1.h"
 
-world_cup_t::world_cup_t(): m_teams(* new AVLTree<shared_ptr<Team>>()), m_players(* new AVLTree<shared_ptr<Player>>())
+world_cup_t::world_cup_t(): m_numOfPlayes(0), m_topScorer(nullptr) ,m_teams(* new AVLTree<shared_ptr<Team>>()), m_players(* new AVLTree<shared_ptr<Player>>())
 {}
 
 world_cup_t::~world_cup_t()
@@ -24,21 +24,21 @@ StatusType world_cup_t::add_team(int teamId, int points)
 		return StatusType::ALLOCATION_ERROR;
 		}
 
-	if (m_teams.GetRoot()!=NULL){
-		if (m_teams.Find(m_teams.GetRoot(), team_ptr)!=NULL) {
+	if (m_teams.getRoot() != NULL){
+		if (m_teams.find(m_teams.getRoot(), team_ptr) != NULL) {
 			return StatusType::FAILURE;
 		}
 	}
 
 	try{
-		m_teams.Insert(team_ptr);
+        m_teams.insert(team_ptr);
 	} catch (const bad_alloc& e){
 		return StatusType::ALLOCATION_ERROR;
 	}
 
 	return StatusType::SUCCESS;
 }
-
+/*
 StatusType world_cup_t::remove_team(int teamId)
 {
 	// TODO: Your code goes here
@@ -50,6 +50,8 @@ StatusType world_cup_t::add_player(int playerId, int teamId, int gamesPlayed,
 {
 	// TODO: Your code goes here
 	return StatusType::SUCCESS;
+
+ // send to the Player class as a pointer to Team
 }
 
 StatusType world_cup_t::remove_player(int playerId)
@@ -121,4 +123,4 @@ output_t<int> world_cup_t::knockout_winner(int minTeamId, int maxTeamId)
 	// TODO: Your code goes here
 	return 2;
 }
-
+*/
