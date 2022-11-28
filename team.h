@@ -1,12 +1,15 @@
 //
-// Created by teich on 27/11/2022.
+// Created by shlom on 28/11/2022.
 //
 
-#ifndef WORLD_CUP_TEAM_H
-#define WORLD_CUP_TEAM_H
-
-#include "avl_tree.h"
+#ifndef MAIN_CPP_TEAM_H
+#define MAIN_CPP_TEAM_H
+#include <memory>
 #include "player.h"
+#include "avl_tree.h"
+
+
+using namespace std;
 
 class Team{
 
@@ -41,6 +44,4 @@ public:
     int getNumOfPlayers () const;
 
 };
-
-
-#endif //WORLD_CUP_TEAM_H
+#endif //MAIN_CPP_TEAM_H
