@@ -49,6 +49,7 @@
 
         int  height(AVLNode<T>* root) const;
         int  balanceFactor(AVLNode<T>* root) const;
+        void balanceTheTree(AVLNode<T>* root);
 
         void rotateLeft (AVLNode<T>* root);
         void rotateRight(AVLNode<T>* root);
@@ -116,20 +117,24 @@
                 ins->setParent(root);
             }
         }
-
-        // AVL balancing algorithm
-        int balance = balanceFactor(root);
-        if( balance > 1 ) { // left tree unbalanced
-            if(balanceFactor(root->getLeft()) < 0 ) // right child of left tree is the cause
-                rotateLeft(root->getLeft()); // double rotation required
-            rotateRight(root);
-        }
-        else if( balance < -1 ) { // right tree unbalanced
-            if(balanceFactor(root->getRight()) > 0 ) // left child of right tree is the cause
-                rotateRight(root->getRight());
-            rotateLeft(root);
-        }
+        balanceTheTree(root);
     }
+
+template<class T>
+void AVLTree<T>::balanceTheTree(AVLNode<T> *root) {
+    // AVL balancing algorithm
+    int balance = balanceFactor(root);
+    if( balance > 1 ) { // left tree unbalanced
+        if(balanceFactor(root->getLeft()) < 0 ) // right child of left tree is the cause
+            rotateLeft(root->getLeft()); // double rotation required
+        rotateRight(root);
+    }
+    else if( balance < -1 ) { // right tree unbalanced
+        if(balanceFactor(root->getRight()) > 0 ) // left child of right tree is the cause
+            rotateRight(root->getRight());
+        rotateLeft(root);
+    }
+}
 
     template <class T>
     void AVLTree<T>::printPreOrder(AVLNode<T>* root) const {
@@ -176,32 +181,78 @@
     template<class T>
     void AVLTree<T>::remove(AVLNode<T> *root, const T &value) const {
 
-        AVLNode<T> willDeleted = find(this, value);
-        AVLNode<T> parent = willDeleted.getParent();
+        AVLNode<T> *willDeleted = find(this, value);
+        AVLNode<T> *parent = willDeleted->getParent();
 
-        // 1: if is a leaf
-        if(!height(willDeleted)){
-            if(willDeleted.getValue() < parent.getValue()){
-                parent.setLeft(NULL);
+        bool removed = false;
+
+        // 1: if is a leaf - height==0
+        if (!height(willDeleted)) {
+            if (willDeleted->getValue() < parent->getValue()) {
+                parent->setLeft(NULL);
+            } else {
+                parent->setRight(NULL);
             }
-            else{
-                parent.setRight(NULL);
+            removed = true;
+        }
+        else if(willDeleted->getLeft() == NULL || willDeleted->getRight() == NULL){
+            AVLNode<T> *singleSon;
+
+            // 2: if it has a single son
+            if (willDeleted->getLeft() == NULL) {
+                singleSon = willDeleted->getRight();
+            } else if (willDeleted->getRight() == NULL) {
+                singleSon = willDeleted->getLeft();
+            }
+
+            if (willDeleted->getValue() < parent->getValue()) {
+                parent->setLeft(singleSon);
+            } else {
+                parent->setRight(singleSon);
+            }
+            willDeleted->setRight(NULL);
+            willDeleted->setLeft(NULL);
+            removed = true;
+        }
+
+        if (removed) {
+            willDeleted->setParent(NULL);
+            deleteAvlNode(willDeleted);
+            while (parent) {
+                balanceTheTree(parent);
+                parent = parent->getParent();
             }
         }
-        else{
-            // 2: if he has a single son
-            if(willDeleted.getLeft()==NULL){
-                parent.setRight(willDeleted.getRight());
-                willDeleted.setRight(NULL);
+
+        // 3: if it is an internal junction
+        if (!removed) {
+            // searching for the next junction one step right and all the way down to the left
+            AVLNode<T>* nextJunction = willDeleted->getRight();
+            while (nextJunction->setLeft()) {
+                nextJunction = nextJunction->getLeft();
             }
-            else if (willDeleted.getRight()==NULL){
-                parent.setLeft(willDeleted.getLeft());
-                willDeleted.setLeft(NULL);
+
+            // this node could have one son from right or none
+            AVLNode<T>* rightSonOfNextJunction = nextJunction->getRight();
+
+            if (willDeleted->getValue() < parent->getValue()) {
+                // in case willDeleted is left son
+                parent->setLeft(nextJunction);
+            } else {
+                parent->setRight(nextJunction);
             }
+            nextJunction->setRight(willDeleted->getRight());
+            nextJunction->setLeft(willDeleted->getLeft());
+
+            willDeleted->setParent(nextJunction->getParent());
+            nextJunction->setParent(parent);
+
+            willDeleted->setRight(rightSonOfNextJunction);
+            willDeleted->setLeft(NULL);
+
+            // now we can delete it by steps 1 or 2
+            remove(this, value);
         }
-
-
-
     }
 
 
@@ -286,6 +337,8 @@ template <class T>
             if(n->getRight() ) node_list.PushBack(n->getRight());
         }
     }
+
+
 
 
 #endif //MAIN23A1_CPP_AVL_TREE_H
