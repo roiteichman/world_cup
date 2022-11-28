@@ -258,14 +258,14 @@ void AVLTree<T>::balanceTheTree(AVLNode<T> *root) {
 
 template <class T>
     int AVLTree<T>::height(AVLNode<T>* root) const {
-        int height = -1;
+        int nodeHeight = -1;
         if( root ) {
             int left  = height(root->getLeft());
             int right = height(root->getRight());
-            height = 1 + ((left > right) ? left : right) ;
+            nodeHeight = 1 + ((left > right) ? left : right) ;
             // height of leaf is 0
         }
-        return height;
+        return nodeHeight;
     }
 
     template <class T>
