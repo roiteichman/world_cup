@@ -48,7 +48,7 @@ bool Team::operator<(const Team &other) const {
 
 
 void Team::removePlayer(const shared_ptr<Player> &player) {
-    m_teamPlayers.remove(player);
+    m_teamPlayers.remove(m_teamPlayers.getRoot(),player);
 }
 
 void Team::addPlayer(const shared_ptr<Player> &player) {

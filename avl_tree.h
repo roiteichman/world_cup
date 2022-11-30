@@ -44,7 +44,7 @@
         AVLNode<T>* getRoot() const { return m_root; }
 
         AVLNode<T>* find(AVLNode<T>* root, const T& value);
-        void remove(const T& value);
+        void remove(AVLNode<T>* root, const T& value);
 
 
         int  height(const AVLNode<T>* root) const;
@@ -183,16 +183,17 @@ void AVLTree<T>::balanceTheTree(AVLNode<T> *root) {
 
 
     template<class T>
-    void AVLTree<T>::remove(const T &value){
+    void AVLTree<T>::remove(AVLNode<T>* root, const T &value){
 
-        AVLNode<T>* willDeleted = find(this->m_root, value);
+        AVLNode<T>* willDeleted = find(root, value);
         AVLNode<T>* parent = willDeleted->getParent();
 
         bool removed = false;
 
         // 1: if is a leaf - height==0
         if (!height(willDeleted)) {
-            if (willDeleted->getValue() < parent->getValue()) {
+            if (willDeleted == parent->getLeft()) {
+                // after recursion the leaf is smaller than the parent but he is a right son of him
                 parent->setLeft(NULL);
             } else {
                 parent->setRight(NULL);
@@ -232,30 +233,49 @@ void AVLTree<T>::balanceTheTree(AVLNode<T> *root) {
         if (!removed) {
             // searching for the next junction one step right and all the way down to the left
             AVLNode<T>* nextJunction = willDeleted->getRight();
+            bool hasLeftSon = false;
             while (nextJunction->getLeft()) {
                 nextJunction = nextJunction->getLeft();
+                hasLeftSon = true;
             }
 
             // this node could have one son from right or none
             AVLNode<T>* rightSonOfNextJunction = nextJunction->getRight();
 
-            if (willDeleted->getValue() < parent->getValue()) {
-                // in case willDeleted is left son
-                parent->setLeft(nextJunction);
-            } else {
-                parent->setRight(nextJunction);
+            if (parent){
+                // check if willDeleted == root
+                if (willDeleted->getValue() < parent->getValue()) {
+                    // in case willDeleted is left son
+                    parent->setLeft(nextJunction);
+                } else {
+                    parent->setRight(nextJunction);
+                }
             }
-            nextJunction->setRight(willDeleted->getRight());
-            nextJunction->setLeft(willDeleted->getLeft());
 
-            willDeleted->setParent(nextJunction->getParent());
+            if(hasLeftSon){
+                nextJunction->setRight(willDeleted->getRight());
+                willDeleted->setParent(nextJunction->getParent());
+
+            }
+            else{
+                nextJunction->setRight(willDeleted);
+                willDeleted->setParent(nextJunction);
+
+            }
+
+            nextJunction->setLeft(willDeleted->getLeft());
             nextJunction->setParent(parent);
 
             willDeleted->setRight(rightSonOfNextJunction);
             willDeleted->setLeft(NULL);
 
+            if(!parent){
+                this->m_root=nextJunction;
+                // if it was the root update the pointer of the root in the tree
+            }
+
             // now we can delete it by steps 1 or 2
-            remove(value);
+            remove(willDeleted, value);
         }
     }
 
