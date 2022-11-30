@@ -22,6 +22,8 @@ private:
     bool m_hasGoalKeeper;
     AVLTree<shared_ptr<Player>> m_teamPlayers;
     shared_ptr<Player> m_topScorer;
+    shared_ptr<Team> m_closest_left;
+    shared_ptr<Team> m_closest_right;
 
 public:
     explicit Team(int teamId, int point=0);
@@ -36,6 +38,10 @@ public:
     void setCards (int cards);
     void removePlayer (const shared_ptr<Player>& player);
     void addPlayer (const shared_ptr<Player>& player);
+    void setClosestLeft (const shared_ptr<Team>& left);
+    void setClosestRight (const shared_ptr<Team>& right);
+    shared_ptr<Team> getClosestLeft() const;
+    shared_ptr<Team> getClosestRight() const;
 
     int getTeamId () const;
     int getPoints () const;
