@@ -43,8 +43,8 @@
 
         AVLNode<T>* getRoot() const { return m_root; }
 
-        AVLNode<T>* find(AVLNode<T>* root, const T& value) const;
-        void remove(const T& value) const;
+        AVLNode<T>* find(AVLNode<T>* root, const T& value);
+        void remove(const T& value);
 
 
         int  height(const AVLNode<T>* root) const;
@@ -167,7 +167,7 @@ void AVLTree<T>::balanceTheTree(AVLNode<T> *root) {
 
 // Depth-First Search
     template <class T>
-    AVLNode<T>* AVLTree<T>::find(AVLNode<T>* root, const T& value) const {
+    AVLNode<T>* AVLTree<T>::find(AVLNode<T>* root, const T& value) {
         if( root ) {
             //std::cout << root->getValue() << std::endl;
             if(root->getValue() == value )
@@ -183,10 +183,10 @@ void AVLTree<T>::balanceTheTree(AVLNode<T> *root) {
 
 
     template<class T>
-    void AVLTree<T>::remove(const T &value) const {
+    void AVLTree<T>::remove(const T &value){
 
-        AVLNode<T> *willDeleted = find(this->m_root, value);
-        AVLNode<T> *parent = willDeleted->getParent();
+        AVLNode<T>* willDeleted = find(this->m_root, value);
+        AVLNode<T>* parent = willDeleted->getParent();
 
         bool removed = false;
 
@@ -232,7 +232,7 @@ void AVLTree<T>::balanceTheTree(AVLNode<T> *root) {
         if (!removed) {
             // searching for the next junction one step right and all the way down to the left
             AVLNode<T>* nextJunction = willDeleted->getRight();
-            while (nextJunction->setLeft()) {
+            while (nextJunction->getLeft()) {
                 nextJunction = nextJunction->getLeft();
             }
 
@@ -255,7 +255,7 @@ void AVLTree<T>::balanceTheTree(AVLNode<T> *root) {
             willDeleted->setLeft(NULL);
 
             // now we can delete it by steps 1 or 2
-            remove(this, value);
+            remove(value);
         }
     }
 
