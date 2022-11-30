@@ -16,18 +16,22 @@
         AVLNode* m_left;
         AVLNode* m_right;
         AVLNode* m_parent;
+        int m_height;
 
     public:
-        AVLNode(const T& value) : m_data(value), m_left(NULL), m_right(NULL), m_parent(NULL) {}
+        AVLNode(const T& value) : m_data(value), m_left(NULL), m_right(NULL), m_parent(NULL), m_height(0) {}
         ~AVLNode() {}
 
-        const T&  getValue() const { return m_data; }
+        const T&  getValue () const { return m_data; }
         void      setLeft (AVLNode* left) { m_left = left; }
-        AVLNode*  getLeft() const { return m_left; }
+        AVLNode*  getLeft () const { return m_left; }
         void      setRight (AVLNode* right) { m_right = right; }
-        AVLNode*  getRight() const { return m_right; }
+        AVLNode*  getRight () const { return m_right; }
         void      setParent (AVLNode* parent) { m_parent = parent; }
-        AVLNode*  getParent() const { return m_parent; }
+        AVLNode*  getParent () const { return m_parent; }
+        void      removeData () { m_data = nullptr; }
+        void      setHeight (int maxHeight) { m_height = maxHeight;}
+        int       getHeight () const {return m_height;}
 
         void      print() const { std::cout << m_data << std::endl; }
 
@@ -48,11 +52,12 @@
 
 
         int  height(const AVLNode<T>* root) const;
+        int maxHeight (const AVLNode<T>* root) const;
         int  balanceFactor(AVLNode<T>* root) const;
         void balanceTheTree(AVLNode<T>* root);
 
-        void rotateLeft (AVLNode<T>* root);
-        void rotateRight(AVLNode<T>* root);
+        void rotateLeft (AVLNode<T>* B);
+        void rotateRight(AVLNode<T>* C);
 
         void printPreOrder (AVLNode<T>* root) const; // Parent, Left, Right
         void printInOrder  (AVLNode<T>* root) const; // Left, Parent, Right
@@ -79,6 +84,7 @@
         if( node ) {
             deleteAvlNode(node->getLeft());
             deleteAvlNode(node->getRight());
+            node->removeData();
             delete node; // Post Order Deletion
         }
     }
@@ -103,7 +109,9 @@
     template <class T>
     void AVLTree<T>::insertAvlNode(AVLNode<T>* root, AVLNode<T>* newNode) {
         // Binary Search Tree insertion algorithm
-        if(newNode->getValue() < root->getValue() ) {
+
+        // comparing by the value of the pointer
+        if(*(newNode->getValue()) < *(root->getValue()) ) {
             if(root->getLeft() ) // If there is a left child, keep searching
                 insertAvlNode(root->getLeft(), newNode);
             else { // Found the right spot
@@ -120,23 +128,106 @@
             }
         }
         // if the node exist we catch it from outside
+
+        root->setHeight(maxHeight(root));
+
         balanceTheTree(root);
     }
 
 template<class T>
+int AVLTree<T>::maxHeight(const AVLNode<T> *root) const {
+    return (height(root->getLeft()) > height(root->getRight())) ? height(root->getLeft())+1 : height(root->getRight()) +1;
+}
+
+
+template <class T>
+int AVLTree<T>::height(const AVLNode<T>* root) const {
+    if (root){
+        return root->getHeight();
+    }
+    return -1;
+}
+
+template<class T>
 void AVLTree<T>::balanceTheTree(AVLNode<T> *root) {
-    // AVL balancing algorithm
+    // AVL balancing algorithm - Based on slide 14 on tutorial 5 in data structures
     int balance = balanceFactor(root);
     if( balance > 1 ) { // left tree unbalanced
-        if(balanceFactor(root->getLeft()) < 0 ) // right child of left tree is the cause
-            rotateLeft(root->getLeft()); // double rotation required
-        rotateRight(root);
+        if(balanceFactor(root->getLeft()) < 0 ) { // right child of left tree is the cause
+            rotateLeft(root->getLeft()); // double rotation required - means LR rotate
+            root->getLeft()->getLeft()->setHeight(maxHeight(root->getLeft()->getLeft())); // update the height of B after changing pointers
+            root->getLeft()->setHeight(maxHeight(root->getLeft())); // update the height of A
+        }
+        rotateRight(root); // LL rotate
+        root->setHeight(maxHeight(root)); // update height of C
+        root->getParent()->setHeight(maxHeight(root->getParent())); // update height of A
     }
     else if( balance < -1 ) { // right tree unbalanced
-        if(balanceFactor(root->getRight()) > 0 ) // left child of right tree is the cause
-            rotateRight(root->getRight());
-        rotateLeft(root);
+        if(balanceFactor(root->getRight()) > 0 ) { // left child of right tree is the cause
+            rotateRight(root->getRight()); // RL rotate
+            root->getRight()->getRight()->setHeight(maxHeight(root->getRight()->getRight())); // update the height of B after changing pointers
+            root->getRight()->setHeight(maxHeight(root->getRight())); // update the height of A
+        }
+        rotateLeft(root); // RR rotate
+        root->setHeight(maxHeight(root)); // update height of C
+        root->getParent()->setHeight(maxHeight(root->getParent())); // update height of A
     }
+}
+
+template <class T>
+void AVLTree<T>::rotateLeft (AVLNode<T>* B) {
+    AVLNode<T>* A = B->getRight();
+    B->setRight(A->getLeft());
+    A->setLeft(B);
+
+    if(B->getParent() == NULL ) {
+        m_root = A;
+        A->setParent(NULL);
+    }
+    else {
+        if(B->getParent()->getLeft() == B ) {
+            B->getParent()->setLeft(A);
+        }
+        else {
+            B->getParent()->setRight(A);
+        }
+        A->setParent(B->getParent());
+    }
+    B->setParent(A);
+}
+
+template <class T>
+void AVLTree<T>::rotateRight(AVLNode<T>* C) {
+    // Rotate node
+    AVLNode<T>* A = C->getLeft();
+    C->setLeft(A->getRight());
+    A->setRight(C);
+
+    // Adjust tree
+    if(C->getParent() == NULL ) {
+        m_root = A;
+        A->setParent(NULL);
+    }
+    else {
+        if(C->getParent()->getLeft() == C ) {
+            C->getParent()->setLeft(A);
+        }
+        else {
+            C->getParent()->setRight(A);
+        }
+        A->setParent(C->getParent());
+    }
+
+    C->setParent(A);
+}
+
+template <class T>
+int  AVLTree<T>::balanceFactor(AVLNode<T>* root) const {
+    int balance = 0;
+    if( root ) {
+        balance = height(root->getLeft()) - height(root->getRight());
+    }
+    return balance;
 }
 
     template <class T>
@@ -210,7 +301,7 @@ void AVLTree<T>::balanceTheTree(AVLNode<T> *root) {
                 singleSon = willDeleted->getLeft();
             }
 
-            if (willDeleted->getValue() < parent->getValue()) {
+            if (*(willDeleted->getValue()) < *(parent->getValue())) {
                 parent->setLeft(singleSon);
             } else {
                 parent->setRight(singleSon);
@@ -264,7 +355,9 @@ void AVLTree<T>::balanceTheTree(AVLNode<T> *root) {
             }
 
             nextJunction->setLeft(willDeleted->getLeft());
+            nextJunction->getLeft()->setParent(nextJunction);
             nextJunction->setParent(parent);
+
 
             willDeleted->setRight(rightSonOfNextJunction);
             willDeleted->setLeft(NULL);
@@ -274,79 +367,15 @@ void AVLTree<T>::balanceTheTree(AVLNode<T> *root) {
                 // if it was the root update the pointer of the root in the tree
             }
 
+            int tempHeight = willDeleted->getHeight();
+            willDeleted->setHeight(nextJunction->getHeight());
+            nextJunction->setHeight(tempHeight);
+
             // now we can delete it by steps 1 or 2
             remove(willDeleted, value);
         }
     }
 
-
-template <class T>
-    int AVLTree<T>::height(const AVLNode<T>* root) const {
-        int nodeHeight = -1;
-        if( root ) {
-            int left  = height(root->getLeft());
-            int right = height(root->getRight());
-            nodeHeight = 1 + ((left > right) ? left : right) ;
-            // height of leaf is 0
-        }
-        return nodeHeight;
-    }
-
-    template <class T>
-    int  AVLTree<T>::balanceFactor(AVLNode<T>* root) const {
-        int balance = 0;
-        if( root ) {
-            balance = height(root->getLeft()) - height(root->getRight());
-        }
-        return balance;
-    }
-
-    template <class T>
-    void AVLTree<T>::rotateLeft (AVLNode<T>* root) {
-        AVLNode<T>* newroot = root->getRight();
-        root->setRight(newroot->getLeft());
-        newroot->setLeft(root);
-
-        if(root->getParent() == NULL ) {
-            m_root = newroot;
-            newroot->setParent(NULL);
-        }
-        else {
-            if(root->getParent()->getLeft() == root ) {
-                root->getParent()->setLeft(newroot);
-            }
-            else {
-                root->getParent()->setRight(newroot);
-            }
-            newroot->setParent(root->getParent());
-        }
-        root->setParent(newroot);
-    }
-
-    template <class T>
-    void AVLTree<T>::rotateRight(AVLNode<T>* root) {
-        // Rotate node
-        AVLNode<T>* newroot = root->getLeft();
-        root->setLeft(newroot->getRight());
-        newroot->setRight(root);
-
-        // Adjust tree
-        if(root->getParent() == NULL ) {
-            m_root = newroot;
-            newroot->setParent(NULL);
-        }
-        else {
-            if(root->getParent()->getLeft() == root ) {
-                root->getParent()->setLeft(newroot);
-            }
-            else {
-                root->getParent()->setRight(newroot);
-            }
-            newroot->setParent(root->getParent());
-        }
-
-        root->setParent(newroot);
-    }
 
     template <class T>
     void AVLTree<T>::PrintBreadthSearchFirst() const {
