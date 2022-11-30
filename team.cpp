@@ -46,12 +46,12 @@ bool Team::operator<(const Team &other) const {
     return m_teamId<other.m_teamId;
 }
 
-/*
-void Team::removePlayer(const shared_ptr<Player> &player) {
-    m_teamPlayers.
-}
-*/
-void Team::addPlayer(const shared_ptr<Player> &player) {
 
+void Team::removePlayer(const shared_ptr<Player> &player) {
+    m_teamPlayers.remove(player);
+}
+
+void Team::addPlayer(const shared_ptr<Player> &player) {
+    m_teamPlayers.insert(player);
 }
 

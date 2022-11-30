@@ -44,10 +44,10 @@
         AVLNode<T>* getRoot() const { return m_root; }
 
         AVLNode<T>* find(AVLNode<T>* root, const T& value) const;
-        void remove(AVLNode<T>* root, const T& value) const;
+        void remove(const T& value) const;
 
 
-        int  height(AVLNode<T>* root) const;
+        int  height(const AVLNode<T>* root) const;
         int  balanceFactor(AVLNode<T>* root) const;
         void balanceTheTree(AVLNode<T>* root);
 
@@ -61,7 +61,7 @@
         void PrintBreadthSearchFirst() const;
 
     private:
-        void insertAvlNode(AVLNode<T>* root, AVLNode<T>* ins);
+        void insertAvlNode(AVLNode<T>* root, AVLNode<T>* newNode);
         void deleteAvlNode(AVLNode<T>* node);
 
         AVLNode<T>* m_root;
@@ -85,38 +85,41 @@
 
     template <class T>
     bool AVLTree<T>::insert(const T& value) {
-        AVLNode<T>* new_node = new (std::nothrow) AVLNode<T>(value);
-
-        if( !new_node )
+        AVLNode<T>* newNode;
+        try{
+            newNode = new AVLNode<T>(value);
+        }catch (const bad_alloc& e){
             return true; // Out of memory
+        }
 
-        if( !m_root ) // Special case
-            m_root = new_node;
+        if( !m_root ) // Special case the tree is empty
+            m_root = newNode;
         else
-            insertAvlNode(m_root, new_node);
+            insertAvlNode(m_root, newNode);
 
         return false;
     }
 
     template <class T>
-    void AVLTree<T>::insertAvlNode(AVLNode<T>* root, AVLNode<T>* ins) {
+    void AVLTree<T>::insertAvlNode(AVLNode<T>* root, AVLNode<T>* newNode) {
         // Binary Search Tree insertion algorithm
-        if(ins->getValue() < root->getValue() ) {
+        if(newNode->getValue() < root->getValue() ) {
             if(root->getLeft() ) // If there is a left child, keep searching
-                insertAvlNode(root->getLeft(), ins);
+                insertAvlNode(root->getLeft(), newNode);
             else { // Found the right spot
-                root->setLeft(ins);
-                ins->setParent(root);
+                root->setLeft(newNode);
+                newNode->setParent(root);
             }
         }
         else {
             if(root->getRight() ) // If there is a right child, keep searching
-                insertAvlNode(root->getRight(), ins);
+                insertAvlNode(root->getRight(), newNode);
             else {// Found the right spot
-                root->setRight(ins);
-                ins->setParent(root);
+                root->setRight(newNode);
+                newNode->setParent(root);
             }
         }
+        // if the node exist we catch it from outside
         balanceTheTree(root);
     }
 
@@ -179,9 +182,9 @@ void AVLTree<T>::balanceTheTree(AVLNode<T> *root) {
     }
 
     template<class T>
-    void AVLTree<T>::remove(AVLNode<T> *root, const T &value) const {
+    void AVLTree<T>::remove(const T &value) const {
 
-        AVLNode<T> *willDeleted = find(this, value);
+        AVLNode<T> *willDeleted = find(this->m_root, value);
         AVLNode<T> *parent = willDeleted->getParent();
 
         bool removed = false;
@@ -257,7 +260,7 @@ void AVLTree<T>::balanceTheTree(AVLNode<T> *root) {
 
 
 template <class T>
-    int AVLTree<T>::height(AVLNode<T>* root) const {
+    int AVLTree<T>::height(const AVLNode<T>* root) const {
         int nodeHeight = -1;
         if( root ) {
             int left  = height(root->getLeft());
