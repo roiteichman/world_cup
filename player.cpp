@@ -3,6 +3,8 @@
 //
 
 #include "player.h"
+#include <cstdlib>
+
 
 Player::Player(int playerId, int teamId, int gamesPlayed, int scoredGoals, int CardsReceived, bool goalKeeper):
 m_id(playerId), m_team(teamId), m_gamePlayed(gamesPlayed), m_goals(scoredGoals), m_cards(CardsReceived), m_goalKeeper(goalKeeper),
@@ -73,25 +75,23 @@ void Player::setClosestRight(shared_ptr<Player> right) {
 }*/
 
 shared_ptr<Player> Player::getClosestLeft() const {
-    int distanceGoalsLeft = m_goals - m_closest_left->getGoalsScored();
-    int distanceGoalsRight = m_closest_right->getGoalsScored() - m_goals;
-    int distanceCardsLeft = m_cards - ;
-    int distanceCardsRight;
-    int distanceIdsLeft;
-    int distanceIdsRight;
+    int distanceGoalsLeft = abs(m_goals - m_closest_left->getGoalsScored());
+    int distanceGoalsRight = abs(m_closest_right->getGoalsScored() - m_goals);
+    int distanceCardsLeft = abs(m_cards - m_closest_left->getCardsReceived());
+    int distanceCardsRight = abs(m_closest_right->getCardsReceived() - m_cards);
+    int distanceIdsLeft = abs(m_id - m_closest_left->getID());
+    int distanceIdsRight = abs(m_closest_right->getID()-m_id);
 
     if(distanceGoalsLeft < distanceGoalsRight)
         return m_closest_left;
     if(distanceGoalsLeft == distanceGoalsRight) {
-        if (this->m_cards > other.getCardsReceived())
-            return true;
-        if (this->m_cards == other.getCardsReceived())
-            if (this->m_id < other.getID())
-                return true;
+        if (distanceCardsLeft < distanceCardsRight)
+            return m_closest_left;
+        if (distanceCardsLeft == distanceCardsRight)
+            if (distanceIdsLeft < distanceIdsRight)
+                return m_closest_left;
     }
-    return false;
-
-    return m_closest_left;
+    return m_closest_right;
 }
 
 shared_ptr<Player> Player::getClosestRight() const {
