@@ -24,6 +24,12 @@ int main(){
     wc.add_team(1, 4);
     wc.add_team(6,7);
     wc.add_team(3,5);
+    wc.add_player(1,3,4,1, 5,true);
+    wc.add_player(3,3,4,2, 5,true);
+    wc.add_player(4,3,4,3, 5,true);
+    wc.add_player(2,3,4,4, 5,true);
+
+
 
     team.removePlayer(p1);
     team.addPlayer(p1);
