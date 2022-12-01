@@ -42,7 +42,7 @@ StatusType world_cup_t::add_team(int teamId, int points)
 
 	return StatusType::SUCCESS;
 }
-/*
+
 StatusType world_cup_t::remove_team(int teamId)
 {
 	// TODO: Your code goes here
@@ -82,14 +82,21 @@ StatusType world_cup_t::add_player(int playerId, int teamId, int gamesPlayed,
 
  // send to the Player class as a pointer to Team
 }
-/*
+
 
 StatusType world_cup_t::remove_player(int playerId)
 {
-	// TODO: Your code goes here
+    if(playerId<=0)
+        return StatusType::INVALID_INPUT;
+    shared_ptr<Player> player = m_playersByID.findInt(m_playersByID.getRoot(), playerId)->getValue();
+    if (!player)
+        return StatusType::FAILURE;
+	m_playersByID.remove(m_playersByID.getRoot(), player);
+    m_playersByStats.remove(m_playersByID.getRoot(), player);
+    m_teams.getRoot()->getValue()->removePlayer(player);
 	return StatusType::SUCCESS;
 }
-
+/*
 StatusType world_cup_t::update_player_stats(int playerId, int gamesPlayed,
                                         int scoredGoals, int cardsReceived)
 {
@@ -175,4 +182,3 @@ output_t<int> world_cup_t::knockout_winner(int minTeamId, int maxTeamId)
 	// TODO: Your code goes here
 	return 2;
 }
-*/
