@@ -66,24 +66,32 @@ StatusType world_cup_t::add_player(int playerId, int teamId, int gamesPlayed,
 
     // if this player already exist
     if (m_playersByID.getRoot() != nullptr){
-        if (m_playersByID.findInt(m_playersByID.getRoot(), playerId) != nullptr) {
+        // checking if the player exist or the team does not exist
+        if ((m_playersByID.findInt(m_playersByID.getRoot(), playerId) != nullptr) || (m_teams.findInt(m_teams.getRoot(), teamId) == nullptr)) {
             return StatusType::FAILURE;
         }
     }
 
     try{
         m_playersByID.insert(player_ptr);
+    } catch (const bad_alloc& e){
+        return StatusType::ALLOCATION_ERROR;
+    }
+    try{
         m_playersByStats.insert(player_ptr);
+    } catch (const bad_alloc& e){
+        return StatusType::ALLOCATION_ERROR;
+    }
+    try{
+        m_teams.findInt(m_teams.getRoot() ,teamId)->getValue()->addPlayer(player_ptr);
     } catch (const bad_alloc& e){
         return StatusType::ALLOCATION_ERROR;
     }
 
     return StatusType::SUCCESS;
-
- // send to the Player class as a pointer to Team
 }
-/*
 
+/*
 StatusType world_cup_t::remove_player(int playerId)
 {
 	// TODO: Your code goes here
