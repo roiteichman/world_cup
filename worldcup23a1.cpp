@@ -38,7 +38,7 @@ StatusType world_cup_t::add_team(int teamId, int points)
 
 	return StatusType::SUCCESS;
 }
-/*
+
 StatusType world_cup_t::remove_team(int teamId)
 {
 	// TODO: Your code goes here
@@ -116,6 +116,8 @@ StatusType world_cup_t::get_all_players(int teamId, int *const output)
 output_t<int> world_cup_t::get_closest_player(int playerId, int teamId)
 {
 	// TODO: Your code goes here
+
+
 	return 1006;
 }
 
@@ -124,4 +126,4 @@ output_t<int> world_cup_t::knockout_winner(int minTeamId, int maxTeamId)
 	// TODO: Your code goes here
 	return 2;
 }
-*/
+

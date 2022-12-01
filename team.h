@@ -43,7 +43,7 @@ public:
     shared_ptr<Team> getClosestLeft() const;
     shared_ptr<Team> getClosestRight() const;
 
-    int getTeamId () const;
+    int getId () const;
     int getPoints () const;
     int getGoals () const;
     int getCards () const;
