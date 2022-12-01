@@ -103,11 +103,12 @@
 
         if (!m_root) { // Special case the tree is empty
             m_root = newNode;
-            findPrevious(newNode);
-            findNext(newNode);
         }
-        else
+        else {
             insertAvlNode(m_root, newNode);
+        }
+        findPrevious(newNode);
+        findNext(newNode);
 
         return false;
     }
@@ -123,8 +124,6 @@
             else { // Found the right spot
                 root->setLeft(newNode);
                 newNode->setParent(root);
-                findPrevious(newNode);
-                findNext(newNode);
             }
         }
         else {
@@ -133,8 +132,6 @@
             else {// Found the right spot
                 root->setRight(newNode);
                 newNode->setParent(root);
-                findPrevious(newNode);
-                findNext(newNode);
             }
         }
         // if the node exist we catch it from outside

@@ -36,8 +36,6 @@ public:
     void setCards (int cardsReceived);
     void setClosestLeft (shared_ptr<Player> left);
     void setClosestRight (shared_ptr<Player> right);
-    void setClosest (shared_ptr<Player> closest);
-
 
     int getID() const;
     //shared_ptr<Team> getTeam() const;
