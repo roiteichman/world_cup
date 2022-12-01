@@ -72,3 +72,4 @@ shared_ptr<Team> Team::getClosestRight() const {
     return m_closest_right;
 }
 
+
