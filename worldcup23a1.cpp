@@ -3,7 +3,8 @@
 const bool byStats = true;
 const bool byIds = false;
 
-world_cup_t::world_cup_t(): m_numOfPlayes(0), m_topScorer(nullptr) ,m_teams(* new AVLTree<shared_ptr<Team>>(byIds)), m_players(* new AVLTree<shared_ptr<Player>>(byStats))
+world_cup_t::world_cup_t(): m_numOfPlayes(0), m_topScorer(nullptr) , m_teams(* new AVLTree<shared_ptr<Team>>(byIds)), m_playersByID(* new AVLTree<shared_ptr<Player>>(byIds)),
+                            m_playersByStats(* new AVLTree<shared_ptr<Player>>(byStats))
 {}
 
 world_cup_t::~world_cup_t()
@@ -14,8 +15,7 @@ world_cup_t::~world_cup_t()
 
 StatusType world_cup_t::add_team(int teamId, int points)
 {
-	// TODO: Your code goes here
-	if(teamId<=0 || points<0){
+    if(teamId<=0 || points<0){
 		return StatusType::INVALID_INPUT;
 	}
 
@@ -27,8 +27,9 @@ StatusType world_cup_t::add_team(int teamId, int points)
 		return StatusType::ALLOCATION_ERROR;
 		}
 
-	if (m_teams.getRoot() != NULL){
-		if (m_teams.find(m_teams.getRoot(), team_ptr) != NULL) {
+	// if this team already exist
+    if (m_teams.getRoot() != nullptr){
+		if (m_teams.findInt(m_teams.getRoot(), teamId) != nullptr) {
 			return StatusType::FAILURE;
 		}
 	}
@@ -47,16 +48,41 @@ StatusType world_cup_t::remove_team(int teamId)
 	// TODO: Your code goes here
 	return StatusType::FAILURE;
 }
-
+*/
 StatusType world_cup_t::add_player(int playerId, int teamId, int gamesPlayed,
                                    int goals, int cards, bool goalKeeper)
 {
-	// TODO: Your code goes here
-	return StatusType::SUCCESS;
+    if(teamId<=0 || playerId<=0 || gamesPlayed<0 || goals<0 || cards<0){
+        return StatusType::INVALID_INPUT;
+    }
+
+    shared_ptr<Player> player_ptr;
+
+    try{
+        player_ptr = shared_ptr<Player>(new Player(playerId, teamId, gamesPlayed, goals, cards, goalKeeper));
+    } catch (const bad_alloc& e){
+        return StatusType::ALLOCATION_ERROR;
+    }
+
+    // if this player already exist
+    if (m_playersByID.getRoot() != nullptr){
+        if (m_playersByID.findInt(m_playersByID.getRoot(), playerId) != nullptr) {
+            return StatusType::FAILURE;
+        }
+    }
+
+    try{
+        m_playersByID.insert(player_ptr);
+        m_playersByStats.insert(player_ptr);
+    } catch (const bad_alloc& e){
+        return StatusType::ALLOCATION_ERROR;
+    }
+
+    return StatusType::SUCCESS;
 
  // send to the Player class as a pointer to Team
 }
-
+/*
 
 StatusType world_cup_t::remove_player(int playerId)
 {

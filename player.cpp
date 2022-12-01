@@ -8,7 +8,7 @@
 
 Player::Player(int playerId, int teamId, int gamesPlayed, int scoredGoals, int CardsReceived, bool goalKeeper):
 m_id(playerId), m_team(teamId), m_gamePlayed(gamesPlayed), m_goals(scoredGoals), m_cards(CardsReceived), m_goalKeeper(goalKeeper),
-m_closest_left(NULL), m_closest_right(NULL), m_closest(NULL)
+m_closest_left(nullptr), m_closest_right(nullptr), m_closest(nullptr)
 {}
 
 bool Player::operator<(const Player &other) const {

@@ -27,7 +27,8 @@ class world_cup_t {
 private:
 	int m_numOfPlayes;
 	shared_ptr<Player> m_topScorer;
-    AVLTree<shared_ptr<Player>> m_players;
+    AVLTree<shared_ptr<Player>> m_playersByID;
+    AVLTree<shared_ptr<Player>> m_playersByStats;
     AVLTree<shared_ptr<Team>> m_teams;
 
 public:

@@ -10,7 +10,7 @@ const bool byIds = false;
 Team::Team(int teamId, int point):
     m_teamId(teamId), m_points(point), m_sumOfGoals(0), m_sumOfCards(0), m_numOfPlayers(0), m_hasGoalKeeper(false),
     m_teamPlayersByStats(* new AVLTree<shared_ptr<Player>>(byStats)), m_teamPlayersByIds(* new AVLTree<shared_ptr<Player>>(byIds)),
-    m_topScorer(NULL), m_closest_left(NULL), m_closest_right(NULL)
+    m_topScorer(nullptr), m_closest_left(nullptr), m_closest_right(nullptr)
 {}
 
 void Team::setPoints(int points) {

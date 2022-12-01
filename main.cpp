@@ -21,7 +21,7 @@ int main(){
 
     world_cup_t wc(*new world_cup_t());
     wc.add_team(2, 6);
-    wc.add_team(1, 2);
+    wc.add_team(1, 4);
     wc.add_team(6,7);
     wc.add_team(3,5);
 

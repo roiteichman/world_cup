@@ -19,7 +19,7 @@
         int m_height;
 
     public:
-        AVLNode(const T& value) : m_data(value), m_left(NULL), m_right(NULL), m_parent(NULL), m_height(0) {}
+        AVLNode(const T& value) : m_data(value), m_left(nullptr), m_right(nullptr), m_parent(nullptr), m_height(0) {}
         ~AVLNode() {}
 
         const T&  getValue () const { return m_data; }
@@ -39,7 +39,7 @@
     template <class T>
     class AVLTree {
     public:
-        AVLTree(bool orderBy) : m_root(NULL), m_orderBy(orderBy){}
+        AVLTree(bool orderBy) : m_root(nullptr), m_orderBy(orderBy){}
         ~AVLTree();
 
         bool insert(const T& value);
@@ -226,9 +226,9 @@ void AVLTree<T>::rotateLeft (AVLNode<T>* B) {
     B->setRight(A->getLeft());
     A->setLeft(B);
 
-    if(B->getParent() == NULL ) {
+    if(B->getParent() == nullptr ) {
         m_root = A;
-        A->setParent(NULL);
+        A->setParent(nullptr);
     }
     else {
         if(B->getParent()->getLeft() == B ) {
@@ -250,9 +250,9 @@ void AVLTree<T>::rotateLeft (AVLNode<T>* B) {
         A->setRight(C);
 
         // Adjust tree
-        if(C->getParent() == NULL ) {
+        if(C->getParent() == nullptr ) {
             m_root = A;
-            A->setParent(NULL);
+            A->setParent(nullptr);
         }
         else {
             if(C->getParent()->getLeft() == C ) {
@@ -355,7 +355,7 @@ void AVLTree<T>::rotateLeft (AVLNode<T>* B) {
                 return find(root->getRight(), value);
         }
 
-        return NULL;
+        return nullptr;
     }
     template <class T>
     AVLNode<T>* AVLTree<T>::findInt(AVLNode<T>* root, int value) {
@@ -363,13 +363,13 @@ void AVLTree<T>::rotateLeft (AVLNode<T>* B) {
         //std::cout << root->getValue() << std::endl;
         if(root->getValue()->getID() == value )
             return root; // Found
-        else if( value < root->getValue()->getID )
+        else if( value < root->getValue()->getID() )
             return findInt(root->getLeft(), value);
         else
             return findInt(root->getRight(), value);
     }
 
-    return NULL;
+    return nullptr;
 }
 
 
@@ -385,19 +385,19 @@ void AVLTree<T>::rotateLeft (AVLNode<T>* B) {
         if (!height(willDeleted)) {
             if (willDeleted == parent->getLeft()) {
                 // after recursion the leaf is smaller than the parent but he is a right son of him
-                parent->setLeft(NULL);
+                parent->setLeft(nullptr);
             } else {
-                parent->setRight(NULL);
+                parent->setRight(nullptr);
             }
             removed = true;
         }
-        else if(willDeleted->getLeft() == NULL || willDeleted->getRight() == NULL){
+        else if(willDeleted->getLeft() == nullptr || willDeleted->getRight() == nullptr){
             AVLNode<T> *singleSon;
 
             // 2: if it has a single son
-            if (willDeleted->getLeft() == NULL) {
+            if (willDeleted->getLeft() == nullptr) {
                 singleSon = willDeleted->getRight();
-            } else if (willDeleted->getRight() == NULL) {
+            } else if (willDeleted->getRight() == nullptr) {
                 singleSon = willDeleted->getLeft();
             }
 
@@ -408,13 +408,13 @@ void AVLTree<T>::rotateLeft (AVLNode<T>* B) {
             else {
                 parent->setRight(singleSon);
             }
-            willDeleted->setRight(NULL);
-            willDeleted->setLeft(NULL);
+            willDeleted->setRight(nullptr);
+            willDeleted->setLeft(nullptr);
             removed = true;
         }
 
         if (removed) {
-            willDeleted->setParent(NULL);
+            willDeleted->setParent(nullptr);
             deleteAvlNode(willDeleted);
             while (parent) {
                 balanceTheTree(parent);
@@ -462,7 +462,7 @@ void AVLTree<T>::rotateLeft (AVLNode<T>* B) {
 
 
             willDeleted->setRight(rightSonOfNextJunction);
-            willDeleted->setLeft(NULL);
+            willDeleted->setLeft(nullptr);
 
             if(!parent){
                 this->m_root=nextJunction;
