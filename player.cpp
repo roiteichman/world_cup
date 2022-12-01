@@ -78,8 +78,8 @@ shared_ptr<Player> Player::getClosestRight() const {
     return m_closest_right;
 }
 
-shared_ptr<Player> Player::getClosest() const {
-    return m_closest;
+shared_ptr<Player> Player::getClosestLeft() const {
+    return m_closest_left;
 }
 
 
@@ -87,7 +87,7 @@ shared_ptr<Player> Player::getClosest() const {
     return m_team;
 }*/
 
-shared_ptr<Player> Player::getClosestLeft() const {
+shared_ptr<Player> Player::getClosest() const {
     int distanceGoalsLeft = abs(m_goals - m_closest_left->getGoalsScored());
     int distanceGoalsRight = abs(m_closest_right->getGoalsScored() - m_goals);
     int distanceCardsLeft = abs(m_cards - m_closest_left->getCardsReceived());
