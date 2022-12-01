@@ -61,14 +61,27 @@ int Player::getID() const {
 void Player::setClosestLeft(shared_ptr<Player> left) {
     m_closest_left=left;
     shared_ptr<Player> me(this);
-    left->setClosestRight(me);
+    if(!(left->getClosestRight()==me)){
+        left->setClosestRight(me);
+    }
 }
 
 void Player::setClosestRight(shared_ptr<Player> right) {
     m_closest_right=right;
     shared_ptr<Player> me(this);
-    right->setClosestLeft(me);
+    if(!(right->getClosestLeft()==me)) {
+        right->setClosestLeft(me);
+    }
 }
+
+shared_ptr<Player> Player::getClosestRight() const {
+    return m_closest_right;
+}
+
+shared_ptr<Player> Player::getClosest() const {
+    return m_closest;
+}
+
 
 /*shared_ptr<Team> Player::getTeam() const {
     return m_team;
@@ -94,11 +107,4 @@ shared_ptr<Player> Player::getClosestLeft() const {
     return m_closest_right;
 }
 
-shared_ptr<Player> Player::getClosestRight() const {
-    return m_closest_right;
-}
-
-shared_ptr<Player> Player::getClosest() const {
-    return m_closest;
-}
 

@@ -58,12 +58,24 @@ void Team::addPlayer(const shared_ptr<Player> &player) {
 void Team::setClosestLeft(shared_ptr<Team> left) {
     m_closest_left=left;
     shared_ptr<Team> me(this);
-    left->setClosestRight(me);
+    if(!(left->getClosestRight()==me)) {
+        left->setClosestRight(me);
+    }
 }
 
 void Team::setClosestRight(shared_ptr<Team> right) {
     m_closest_right=right;
     shared_ptr<Team> me(this);
-    right->setClosestLeft(me);
+    if(!(right->getClosestLeft()==me)) {
+        right->setClosestLeft(me);
+    }
+}
+
+shared_ptr<Team> Team::getClosestLeft() const {
+    return m_closest_left;
+}
+
+shared_ptr<Team> Team::getClosestRight() const {
+    return m_closest_right;
 }
 
