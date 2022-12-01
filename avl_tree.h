@@ -103,8 +103,8 @@
 
         if (!m_root) { // Special case the tree is empty
             m_root = newNode;
-            //findPrevious(newNode);
-            //findNext(newNode);
+            findPrevious(newNode);
+            findNext(newNode);
         }
         else
             insertAvlNode(m_root, newNode);
@@ -254,7 +254,8 @@ void AVLTree<T>::rotateLeft (AVLNode<T>* B) {
                 break;
             }
         }
-        leaf->getValue()->setClosestRight(next->getParent()->getValue());
+        if(next->getParent())
+            leaf->getValue()->setClosestRight(next->getParent()->getValue());
     }
 
     template<class T>
@@ -270,7 +271,8 @@ void AVLTree<T>::rotateLeft (AVLNode<T>* B) {
                 break;
             }
         }
-        leaf->getValue()->setClosestLeft(next->getParent()->getValue());
+        if(next->getParent())
+            leaf->getValue()->setClosestLeft(next->getParent()->getValue());
     }
 
     template <class T>
