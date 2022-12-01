@@ -48,6 +48,7 @@ StatusType world_cup_t::remove_team(int teamId)
 	// TODO: Your code goes here
 	return StatusType::FAILURE;
 }
+
 */
 StatusType world_cup_t::add_player(int playerId, int teamId, int gamesPlayed,
                                    int goals, int cards, bool goalKeeper)
