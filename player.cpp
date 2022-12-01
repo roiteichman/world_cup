@@ -60,25 +60,17 @@ int Player::getID() const {
 
 void Player::setClosestLeft(shared_ptr<Player> left) {
     m_closest_left=left;
-    shared_ptr<Player> me(this);
-    if(!(left->getClosestRight()==me)){
-        left->setClosestRight(me);
-    }
 }
 
 void Player::setClosestRight(shared_ptr<Player> right) {
     m_closest_right=right;
-    shared_ptr<Player> me(this);
-    if(!(right->getClosestLeft()==me)) {
-        right->setClosestLeft(me);
-    }
 }
 
 shared_ptr<Player> Player::getClosestRight() const {
     return m_closest_right;
 }
 
-shared_ptr<Player> Player::getClosest() const {
+shared_ptr<Player> Player::getClosestLeft() const {
     return m_closest;
 }
 
@@ -87,7 +79,7 @@ shared_ptr<Player> Player::getClosest() const {
     return m_team;
 }*/
 
-shared_ptr<Player> Player::getClosestLeft() const {
+shared_ptr<Player> Player::getClosest() const {
     int distanceGoalsLeft = abs(m_goals - m_closest_left->getGoalsScored());
     int distanceGoalsRight = abs(m_closest_right->getGoalsScored() - m_goals);
     int distanceCardsLeft = abs(m_cards - m_closest_left->getCardsReceived());
