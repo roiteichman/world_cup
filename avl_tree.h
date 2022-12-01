@@ -364,9 +364,9 @@ void AVLTree<T>::rotateLeft (AVLNode<T>* B) {
         if(root->getValue()->getID() == value )
             return root; // Found
         else if( value < root->getValue()->getID )
-            return find(root->getLeft(), value);
+            return findInt(root->getLeft(), value);
         else
-            return find(root->getRight(), value);
+            return findInt(root->getRight(), value);
     }
 
     return NULL;

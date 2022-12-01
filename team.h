@@ -48,7 +48,7 @@ public:
     AVLTree<shared_ptr<Player>> getTeamPlayerByStats ();
     AVLTree<shared_ptr<Player>> getTeamPlayerByIds ();
 
-    int getId () const;
+    int getID () const;
     int getPoints () const;
     int getGoals () const;
     int getCards () const;

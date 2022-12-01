@@ -25,7 +25,7 @@ void Team::setCards(int cards) {
     m_sumOfCards+=cards;
 }
 
-int Team::getId() const {
+int Team::getID() const {
     return m_teamId;
 }
 

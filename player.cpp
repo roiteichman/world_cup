@@ -86,6 +86,16 @@ shared_ptr<Player> Player::getClosestLeft() const {
 }*/
 
 shared_ptr<Player> Player::getClosest() const {
+    if (!m_closest_left && !m_closest_right){
+        return nullptr;
+    }
+    if (!m_closest_left){
+        return m_closest_right;
+    }
+    if (!m_closest_right){
+        return m_closest_left;
+    }
+
     int distanceGoalsLeft = abs(m_goals - m_closest_left->getGoalsScored());
     int distanceGoalsRight = abs(m_closest_right->getGoalsScored() - m_goals);
     int distanceCardsLeft = abs(m_cards - m_closest_left->getCardsReceived());
