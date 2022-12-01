@@ -42,12 +42,13 @@ StatusType world_cup_t::add_team(int teamId, int points)
 
 	return StatusType::SUCCESS;
 }
-
+/*
 StatusType world_cup_t::remove_team(int teamId)
 {
 	// TODO: Your code goes here
 	return StatusType::FAILURE;
 }
+
 */
 StatusType world_cup_t::add_player(int playerId, int teamId, int gamesPlayed,
                                    int goals, int cards, bool goalKeeper)
@@ -66,36 +67,45 @@ StatusType world_cup_t::add_player(int playerId, int teamId, int gamesPlayed,
 
     // if this player already exist
     if (m_playersByID.getRoot() != nullptr){
-        if (m_playersByID.findInt(m_playersByID.getRoot(), playerId) != nullptr) {
+        // checking if the player exist or the team does not exist
+        if ((m_playersByID.findInt(m_playersByID.getRoot(), playerId) != nullptr) || (m_teams.findInt(m_teams.getRoot(), teamId) == nullptr)) {
             return StatusType::FAILURE;
         }
     }
 
     try{
         m_playersByID.insert(player_ptr);
+    } catch (const bad_alloc& e){
+        return StatusType::ALLOCATION_ERROR;
+    }
+    try{
         m_playersByStats.insert(player_ptr);
+    } catch (const bad_alloc& e){
+        return StatusType::ALLOCATION_ERROR;
+    }
+    try{
+        m_teams.findInt(m_teams.getRoot() ,teamId)->getValue()->addPlayer(player_ptr);
     } catch (const bad_alloc& e){
         return StatusType::ALLOCATION_ERROR;
     }
 
     return StatusType::SUCCESS;
-
- // send to the Player class as a pointer to Team
 }
-
-
 
 StatusType world_cup_t::remove_player(int playerId)
 {
-    if(playerId<=0)
+	if(playerId<=0)
         return StatusType::INVALID_INPUT;
     shared_ptr<Player> player = m_playersByID.findInt(m_playersByID.getRoot(), playerId)->getValue();
     if (!player)
         return StatusType::FAILURE;
 	m_playersByID.remove(m_playersByID.getRoot(), player);
-    m_playersByStats.remove(m_playersByID.getRoot(), player);
-    m_teams.getRoot()->getValue()->removePlayer(player);
+    m_playersByStats.remove(m_playersByStats.getRoot(), player);
+
+    m_teams.findInt(m_teams.getRoot(), player->getTeamID())->getValue()->removePlayer(player);
+
 	return StatusType::SUCCESS;
+
 }
 /*
 StatusType world_cup_t::update_player_stats(int playerId, int gamesPlayed,
@@ -183,3 +193,4 @@ output_t<int> world_cup_t::knockout_winner(int minTeamId, int maxTeamId)
 	// TODO: Your code goes here
 	return 2;
 }
+*/

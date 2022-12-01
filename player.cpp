@@ -115,4 +115,8 @@ shared_ptr<Player> Player::getClosest() const {
     return m_closest_right;
 }
 
+int Player::getTeamID() const {
+    return m_team;
+}
+
 
