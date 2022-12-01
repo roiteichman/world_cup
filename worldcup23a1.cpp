@@ -84,6 +84,7 @@ StatusType world_cup_t::add_player(int playerId, int teamId, int gamesPlayed,
 }
 
 
+
 StatusType world_cup_t::remove_player(int playerId)
 {
     if(playerId<=0)
