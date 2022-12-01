@@ -257,6 +257,7 @@ void AVLTree<T>::rotateLeft (AVLNode<T>* B) {
         }
     }
 
+
     template<class T>
     void AVLTree<T>::findPrevious(AVLNode<T> *leaf) {
         AVLNode<T> *next = leaf;

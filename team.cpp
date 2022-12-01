@@ -63,6 +63,7 @@ void Team::setClosestRight(shared_ptr<Team> right) {
     m_closest_right=right;
 }
 
+
 shared_ptr<Team> Team::getClosestLeft() const {
     return m_closest_left;
 }
