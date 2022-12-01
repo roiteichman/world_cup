@@ -94,15 +94,18 @@
 
     template <class T>
     bool AVLTree<T>::insert(const T& value) {
-        AVLNode<T>* newNode;
-        try{
+        AVLNode<T> *newNode;
+        try {
             newNode = new AVLNode<T>(value);
-        }catch (const bad_alloc& e){
+        } catch (const bad_alloc &e) {
             return true; // Out of memory
         }
 
-        if( !m_root ) // Special case the tree is empty
+        if (!m_root) { // Special case the tree is empty
             m_root = newNode;
+            //findPrevious(newNode);
+            //findNext(newNode);
+        }
         else
             insertAvlNode(m_root, newNode);
 
@@ -120,6 +123,8 @@
             else { // Found the right spot
                 root->setLeft(newNode);
                 newNode->setParent(root);
+                findPrevious(newNode);
+                findNext(newNode);
             }
         }
         else {
@@ -128,6 +133,8 @@
             else {// Found the right spot
                 root->setRight(newNode);
                 newNode->setParent(root);
+                findPrevious(newNode);
+                findNext(newNode);
             }
         }
         // if the node exist we catch it from outside
@@ -237,6 +244,9 @@ void AVLTree<T>::rotateLeft (AVLNode<T>* B) {
     template<class T>
     void AVLTree<T>::findNext(AVLNode<T> *leaf) {
         AVLNode<T> *next = leaf;
+        if (!(next->getParent())){
+            return;
+        }
         while (next->getParent()->getRight() == next) {
             next = next->getParent();
             if (!(next->getParent())){
@@ -244,12 +254,15 @@ void AVLTree<T>::rotateLeft (AVLNode<T>* B) {
                 break;
             }
         }
-        leaf->getValue().setClosestRight() = next->getParent();
+        leaf->getValue()->setClosestRight(next->getParent()->getValue());
     }
 
     template<class T>
     void AVLTree<T>::findPrevious(AVLNode<T> *leaf) {
         AVLNode<T> *next = leaf;
+        if (!(next->getParent())){
+            return;
+        }
         while (next->getParent()->getLeft() == next) {
             next = next->getParent();
             if (!(next->getParent())){
@@ -257,7 +270,7 @@ void AVLTree<T>::rotateLeft (AVLNode<T>* B) {
                 break;
             }
         }
-        leaf->getValue().setClosestLeft() = next->getParent();
+        leaf->getValue()->setClosestLeft(next->getParent()->getValue());
     }
 
     template <class T>

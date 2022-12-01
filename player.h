@@ -34,9 +34,9 @@ public:
     void setGamePlayed (int gamesPlayed);
     void setGoals (int goals);
     void setCards (int cardsReceived);
-    void setClosestLeft (const shared_ptr<Player>& left);
-    void setClosestRight (const shared_ptr<Player>& right);
-    void setClosest (const shared_ptr<Player>& closest);
+    void setClosestLeft (shared_ptr<Player> left);
+    void setClosestRight (shared_ptr<Player> right);
+    void setClosest (shared_ptr<Player> closest);
 
 
     int getID() const;

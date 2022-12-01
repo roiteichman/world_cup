@@ -6,7 +6,7 @@
 
 Team::Team(int teamId, int point):
     m_teamId(teamId), m_points(point), m_sumOfGoals(0), m_sumOfCards(0), m_numOfPlayers(0), m_hasGoalKeeper(false),
-    m_teamPlayers(* new AVLTree<shared_ptr<Player>>), m_topScorer(nullptr), m_closest_left(nullptr), m_closest_right(nullptr)
+    m_teamPlayers(* new AVLTree<shared_ptr<Player>>), m_topScorer(NULL), m_closest_left(NULL), m_closest_right(NULL)
 {}
 
 
@@ -53,5 +53,13 @@ void Team::removePlayer(const shared_ptr<Player> &player) {
 
 void Team::addPlayer(const shared_ptr<Player> &player) {
     m_teamPlayers.insert(player);
+}
+
+void Team::setClosestLeft(shared_ptr<Team> left) {
+    m_closest_left=left;
+}
+
+void Team::setClosestRight(shared_ptr<Team> right) {
+    m_closest_right=right;
 }
 

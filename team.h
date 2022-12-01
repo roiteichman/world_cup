@@ -38,8 +38,8 @@ public:
     void setCards (int cards);
     void removePlayer (const shared_ptr<Player>& player);
     void addPlayer (const shared_ptr<Player>& player);
-    void setClosestLeft (const shared_ptr<Team>& left);
-    void setClosestRight (const shared_ptr<Team>& right);
+    void setClosestLeft (shared_ptr<Team> left);
+    void setClosestRight (shared_ptr<Team> right);
     shared_ptr<Team> getClosestLeft() const;
     shared_ptr<Team> getClosestRight() const;
 
