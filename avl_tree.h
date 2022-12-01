@@ -74,6 +74,8 @@
         bool m_orderBy;
 
         AVLNode<T>* m_root;
+
+        AVLNode<T> *findInt(AVLNode<T> *root, const T &value);
     };
 
     template <class T>
@@ -354,6 +356,20 @@ void AVLTree<T>::rotateLeft (AVLNode<T>* B) {
 
         return NULL;
     }
+    template <class T>
+    AVLNode<T>* AVLTree<T>::findInt(AVLNode<T>* root, const T& value) {
+    if( root ) {
+        //std::cout << root->getValue() << std::endl;
+        if(root->getValue()->getID() == value )
+            return root; // Found
+        else if( value < root->getValue()->getID )
+            return find(root->getLeft(), value);
+        else
+            return find(root->getRight(), value);
+    }
+
+    return NULL;
+}
 
 
     template<class T>
