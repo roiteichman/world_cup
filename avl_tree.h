@@ -111,14 +111,13 @@
         else {
             if (m_orderBy){
                 insertAvlNodeByStats(m_root, newNode);
+                findPrevious(newNode);
+                findNext(newNode);
             }
             else{
                 insertAvlNodeByIds(m_root, newNode);
             }
         }
-        findPrevious(newNode);
-        findNext(newNode);
-
         return false;
     }
 
