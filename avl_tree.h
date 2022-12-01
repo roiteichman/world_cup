@@ -47,6 +47,7 @@
         AVLNode<T>* getRoot() const { return m_root; }
 
         AVLNode<T>* find(AVLNode<T>* root, const T& value);
+        AVLNode<T> *findInt(AVLNode<T> *root, int value);
         void remove(AVLNode<T>* root, const T& value);
 
         void findNext(AVLNode<T>* leaf);
@@ -75,7 +76,7 @@
 
         AVLNode<T>* m_root;
 
-        AVLNode<T> *findInt(AVLNode<T> *root, const T &value);
+
     };
 
     template <class T>
@@ -357,7 +358,7 @@ void AVLTree<T>::rotateLeft (AVLNode<T>* B) {
         return NULL;
     }
     template <class T>
-    AVLNode<T>* AVLTree<T>::findInt(AVLNode<T>* root, const T& value) {
+    AVLNode<T>* AVLTree<T>::findInt(AVLNode<T>* root, int value) {
     if( root ) {
         //std::cout << root->getValue() << std::endl;
         if(root->getValue()->getID() == value )

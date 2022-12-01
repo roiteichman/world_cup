@@ -80,5 +80,13 @@ shared_ptr<Team> Team::getClosestRight() const {
     return m_closest_right;
 }
 
+AVLTree<shared_ptr<Player>> Team::getTeamPlayerByStats() {
+    return m_teamPlayersByStats;
+}
+
+AVLTree<shared_ptr<Player>> Team::getTeamPlayerByIds() {
+    return m_teamPlayersByIds;
+}
+
 
 

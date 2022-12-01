@@ -115,15 +115,18 @@ StatusType world_cup_t::get_all_players(int teamId, int *const output)
     output[1] = 4002;
 	return StatusType::SUCCESS;
 }
-
+*/
 output_t<int> world_cup_t::get_closest_player(int playerId, int teamId)
 {
 	// TODO: Your code goes here
+    shared_ptr<Team> tempTeam = m_teams.findInt(m_teams.getRoot(), teamId)->getValue();
+    AVLTree<shared_ptr<Player>> treeOfTempTeam = tempTeam->getTeamPlayerByIds();
+    shared_ptr<Player> tempPlayer = treeOfTempTeam.findInt(treeOfTempTeam.getRoot() , playerId)->getValue();
 
+    return output_t<int>(tempPlayer->getClosest()->getID());
 
-	return 1006;
 }
-
+/*
 output_t<int> world_cup_t::knockout_winner(int minTeamId, int maxTeamId)
 {
 	// TODO: Your code goes here
