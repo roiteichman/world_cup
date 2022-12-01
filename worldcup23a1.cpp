@@ -101,7 +101,9 @@ StatusType world_cup_t::remove_player(int playerId)
         return StatusType::FAILURE;
 	m_playersByID.remove(m_playersByID.getRoot(), player);
     m_playersByStats.remove(m_playersByStats.getRoot(), player);
-    m_teams.getRoot()->getValue()->removePlayer(player);
+
+    m_teams.findInt(m_teams.getRoot(), player->getTeamID())->getValue()->removePlayer(player);
+
 	return StatusType::SUCCESS;
 
 }

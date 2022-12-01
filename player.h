@@ -39,7 +39,7 @@ public:
     void setClosestRight (shared_ptr<Player> right);
 
     int getID() const;
-    //shared_ptr<Team> getTeam() const;
+    int getTeamID() const;
     int getGamesPlayed () const;
     int getGoalsScored () const;
     int getCardsReceived () const;
