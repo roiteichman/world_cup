@@ -7,10 +7,10 @@ include_directories(.)
 include_directories(__MACOSX)
 
 add_executable(world_cup
+        team.h
         main.cpp
         player.h
         player.cpp
-        team.h
         team.cpp
         worldcup23a1.cpp
         worldcup23a1.h)
