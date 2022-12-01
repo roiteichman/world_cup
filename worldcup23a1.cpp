@@ -1,6 +1,9 @@
 #include "worldcup23a1.h"
 
-world_cup_t::world_cup_t(): m_numOfPlayes(0), m_topScorer(nullptr) ,m_teams(* new AVLTree<shared_ptr<Team>>()), m_players(* new AVLTree<shared_ptr<Player>>())
+const bool byStats = true;
+const bool byIds = false;
+
+world_cup_t::world_cup_t(): m_numOfPlayes(0), m_topScorer(nullptr) ,m_teams(* new AVLTree<shared_ptr<Team>>(byIds)), m_players(* new AVLTree<shared_ptr<Player>>(byStats))
 {}
 
 world_cup_t::~world_cup_t()
@@ -8,7 +11,7 @@ world_cup_t::~world_cup_t()
 	// TODO: Your code goes here
 }
 
-
+/*
 StatusType world_cup_t::add_team(int teamId, int points)
 {
 	// TODO: Your code goes here
@@ -126,4 +129,4 @@ output_t<int> world_cup_t::knockout_winner(int minTeamId, int maxTeamId)
 	// TODO: Your code goes here
 	return 2;
 }
-
+*/

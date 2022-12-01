@@ -24,6 +24,11 @@ bool Player::operator<(const Player &other) const {
     return false;
 }
 
+bool Player::operator>(const Player &other) const {
+    return m_id>other.getID();
+}
+
+
 void Player::setGamePlayed(int gamesPlayed) {
     m_gamePlayed+=gamesPlayed;
 }

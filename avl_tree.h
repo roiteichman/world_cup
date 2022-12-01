@@ -40,7 +40,7 @@
     template <class T>
     class AVLTree {
     public:
-        AVLTree() : m_root(NULL) {}
+        AVLTree(bool orderBy) : m_root(NULL), m_orderBy(orderBy){}
         ~AVLTree();
 
         bool insert(const T& value);
@@ -69,8 +69,10 @@
         void PrintBreadthSearchFirst() const;
 
     private:
-        void insertAvlNode(AVLNode<T>* root, AVLNode<T>* newNode);
+        void insertAvlNodeByStats(AVLNode<T>* root, AVLNode<T>* newNode);
+        void insertAvlNodeByIds(AVLNode<T>* root, AVLNode<T>* newNode);
         void deleteAvlNode(AVLNode<T>* node);
+        bool m_orderBy;
 
         AVLNode<T>* m_root;
     };
@@ -105,7 +107,12 @@
             m_root = newNode;
         }
         else {
-            insertAvlNode(m_root, newNode);
+            if (m_orderBy){
+                insertAvlNodeByStats(m_root, newNode);
+            }
+            else{
+                insertAvlNodeByIds(m_root, newNode);
+            }
         }
         findPrevious(newNode);
         findNext(newNode);
@@ -114,13 +121,13 @@
     }
 
     template <class T>
-    void AVLTree<T>::insertAvlNode(AVLNode<T>* root, AVLNode<T>* newNode) {
+    void AVLTree<T>::insertAvlNodeByStats(AVLNode<T>* root, AVLNode<T>* newNode) {
         // Binary Search Tree insertion algorithm
 
         // comparing by the value of the pointer
         if(*(newNode->getValue()) < *(root->getValue()) ) {
             if(root->getLeft() ) // If there is a left child, keep searching
-                insertAvlNode(root->getLeft(), newNode);
+                insertAvlNodeByStats(root->getLeft(), newNode);
             else { // Found the right spot
                 root->setLeft(newNode);
                 newNode->setParent(root);
@@ -128,7 +135,7 @@
         }
         else {
             if(root->getRight() ) // If there is a right child, keep searching
-                insertAvlNode(root->getRight(), newNode);
+                insertAvlNodeByStats(root->getRight(), newNode);
             else {// Found the right spot
                 root->setRight(newNode);
                 newNode->setParent(root);
@@ -141,6 +148,35 @@
         balanceTheTree(root);
         //root->getLeft()->getValue().setClosest() = findNext(root->getLeft());
     }
+
+template <class T>
+void AVLTree<T>::insertAvlNodeByIds(AVLNode<T> *root, AVLNode<T> *newNode) {
+    // Binary Search Tree insertion algorithm
+
+    // comparing by the value of the pointer
+    if(*(newNode->getValue()) > *(root->getValue()) ) {
+        if(root->getRight() ) // If there is a left child, keep searching
+            insertAvlNodeByStats(root->getRight(), newNode);
+        else { // Found the right spot
+            root->setRight(newNode);
+            newNode->setParent(root);
+        }
+    }
+    else {
+        if(root->getLeft() ) // If there is a right child, keep searching
+            insertAvlNodeByStats(root->getLeft(), newNode);
+        else {// Found the right spot
+            root->setLeft(newNode);
+            newNode->setParent(root);
+        }
+    }
+    // if the node exist we catch it from outside
+
+    root->setHeight(maxHeight(root));
+
+    balanceTheTree(root);
+    //root->getLeft()->getValue().setClosest() = findNext(root->getLeft());
+}
 
 template<class T>
 int AVLTree<T>::maxHeight(const AVLNode<T> *root) const {

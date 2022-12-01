@@ -4,9 +4,13 @@
 
 #include "team.h"
 
+const bool byStats = true;
+const bool byIds = false;
+
 Team::Team(int teamId, int point):
     m_teamId(teamId), m_points(point), m_sumOfGoals(0), m_sumOfCards(0), m_numOfPlayers(0), m_hasGoalKeeper(false),
-    m_teamPlayers(* new AVLTree<shared_ptr<Player>>), m_topScorer(NULL), m_closest_left(NULL), m_closest_right(NULL)
+    m_teamPlayersByStats(* new AVLTree<shared_ptr<Player>>(byStats)), m_teamPlayersByIds(* new AVLTree<shared_ptr<Player>>(byIds)),
+    m_topScorer(NULL), m_closest_left(NULL), m_closest_right(NULL)
 {}
 
 
@@ -42,17 +46,21 @@ int Team::getNumOfPlayers() const {
     return m_numOfPlayers;
 }
 
+bool Team::operator>(const Team &other) const {
+    return m_teamId>other.m_teamId;
+}
+
 bool Team::operator<(const Team &other) const {
     return m_teamId<other.m_teamId;
 }
 
-
 void Team::removePlayer(const shared_ptr<Player> &player) {
-    m_teamPlayers.remove(m_teamPlayers.getRoot(),player);
+    m_teamPlayersByStats.remove(m_teamPlayersByStats.getRoot(), player);
 }
 
 void Team::addPlayer(const shared_ptr<Player> &player) {
-    m_teamPlayers.insert(player);
+    m_teamPlayersByStats.insert(player);
+    m_teamPlayersByIds.insert(player);
 }
 
 void Team::setClosestLeft(shared_ptr<Team> left) {
@@ -71,5 +79,6 @@ shared_ptr<Team> Team::getClosestLeft() const {
 shared_ptr<Team> Team::getClosestRight() const {
     return m_closest_right;
 }
+
 
 

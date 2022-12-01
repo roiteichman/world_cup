@@ -20,7 +20,8 @@ private:
     int m_sumOfCards;
     int m_numOfPlayers;
     bool m_hasGoalKeeper;
-    AVLTree<shared_ptr<Player>> m_teamPlayers;
+    AVLTree<shared_ptr<Player>> m_teamPlayersByStats;
+    AVLTree<shared_ptr<Player>> m_teamPlayersByIds;
     shared_ptr<Player> m_topScorer;
     shared_ptr<Team> m_closest_left;
     shared_ptr<Team> m_closest_right;
@@ -31,7 +32,9 @@ public:
     Team (const Team& team) = delete;
     Team& operator = (const Team& team) = delete;
 
+    bool operator> (const Team& other) const;
     bool operator< (const Team& other) const;
+
 
     void setPoints (int points);
     void setGoals (int goals);
