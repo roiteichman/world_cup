@@ -11,7 +11,7 @@ world_cup_t::~world_cup_t()
 	// TODO: Your code goes here
 }
 
-/*
+
 StatusType world_cup_t::add_team(int teamId, int points)
 {
 	// TODO: Your code goes here
@@ -41,7 +41,7 @@ StatusType world_cup_t::add_team(int teamId, int points)
 
 	return StatusType::SUCCESS;
 }
-
+/*
 StatusType world_cup_t::remove_team(int teamId)
 {
 	// TODO: Your code goes here

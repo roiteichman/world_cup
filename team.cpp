@@ -13,7 +13,6 @@ Team::Team(int teamId, int point):
     m_topScorer(NULL), m_closest_left(NULL), m_closest_right(NULL)
 {}
 
-
 void Team::setPoints(int points) {
     m_points += points;
 }

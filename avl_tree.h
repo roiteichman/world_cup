@@ -34,7 +34,6 @@
         int       getHeight () const {return m_height;}
 
         void      print() const { std::cout << m_data << std::endl; }
-
     };
 
     template <class T>

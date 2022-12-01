@@ -72,7 +72,6 @@ void Player::setClosestRight(shared_ptr<Player> right) {
 }
 
 
-
 shared_ptr<Player> Player::getClosestRight() const {
     return m_closest_right;
 }
