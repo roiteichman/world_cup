@@ -42,14 +42,22 @@ StatusType world_cup_t::add_team(int teamId, int points)
 
 	return StatusType::SUCCESS;
 }
-/*
+
 StatusType world_cup_t::remove_team(int teamId)
 {
-	// TODO: Your code goes here
-	return StatusType::FAILURE;
+	if(teamId<=0)
+        return StatusType::INVALID_INPUT;
+    shared_ptr<Team> team = m_teams.findInt(m_teams.getRoot(), teamId)->getValue();
+    // checking if the team exist and not empty
+    if (!team || (team->getTeamPlayerByIds().getRoot()))
+        return StatusType::FAILURE;
+
+    m_teams.remove(m_teams.getRoot(), team);
+
+	return StatusType::SUCCESS;
 }
 
-*/
+
 StatusType world_cup_t::add_player(int playerId, int teamId, int gamesPlayed,
                                    int goals, int cards, bool goalKeeper)
 {

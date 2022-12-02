@@ -344,6 +344,10 @@ void AVLTree<T>::rotateLeft (AVLNode<T>* B) {
 // Depth-First Search
     template <class T>
     AVLNode<T>* AVLTree<T>::find(AVLNode<T>* root, const T& value) {
+    bool byIDs = false;
+        if (m_orderBy == byIDs){
+            return findInt(root, value->getID());
+        }
         if( root ) {
             //std::cout << root->getValue() << std::endl;
             if(root->getValue() == value )
