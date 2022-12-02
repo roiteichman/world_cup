@@ -21,13 +21,18 @@ int main(){
 
     world_cup_t wc(*new world_cup_t());
     wc.add_team(2, 6);
-    wc.add_team(1, 4);
+    wc.add_team(2, 4);
     wc.add_team(6,7);
     wc.add_team(3,5);
     wc.add_player(1,3,4,1, 5,true);
     wc.add_player(2,3,4,2, 5,true);
     wc.add_player(3,3,4,3, 5,true);
     wc.add_player(4,3,4,4, 5,true);
+    wc.add_player(111,2,4,1, 5,true);
+    wc.add_player(222,2,4,2, 5,true);
+    wc.add_player(333,2,4,3, 5,true);
+    wc.add_player(444,2,4,4, 5,true);
+    StatusType t1 = wc.play_match(2,3);
     output_t<int> t = wc.get_closest_player(2, 3);
     wc.remove_team(2);
 

@@ -4,7 +4,7 @@ const bool BY_STATS = true;
 const bool BY_IDS = false;
 const int VICTORY = 3;
 const int DRAW = 1;
-const int VALID_TEAM = 11;
+const int VALID_TEAM = 3;///not good!!!!!!
 
 world_cup_t::world_cup_t(): m_numOfPlayes(0), m_topScorer(nullptr) , m_teams(* new AVLTree<shared_ptr<Team>>(BY_IDS)), m_playersByID(* new AVLTree<shared_ptr<Player>>(BY_IDS)),
                             m_playersByStats(* new AVLTree<shared_ptr<Player>>(BY_STATS))
