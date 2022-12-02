@@ -160,7 +160,7 @@ StatusType world_cup_t::get_all_players(int teamId, int *const output)
 	return StatusType::SUCCESS;
 }
 */
-output_t<int> world_cup_t::get_closest_player(int playerId, int teamId)
+output_t<int> world_cup_t::get_closest_player(int playerId, int teamId) const
 {
     if (playerId<=0 || teamId<=0){
         output_t<int> output(StatusType::INVALID_INPUT);
@@ -169,13 +169,13 @@ output_t<int> world_cup_t::get_closest_player(int playerId, int teamId)
     // check if the team exist
     if(m_teams.findInt(m_teams.getRoot(), teamId)){
         // get the team
-        shared_ptr<Team> tempTeam = m_teams.findInt(m_teams.getRoot(), teamId)->getValue();
+        Team* tempTeam = &(*(m_teams.findInt(m_teams.getRoot(), teamId)->getValue()));
         // get the tree of the team
-        AVLTree<shared_ptr<Player>> treeOfTempTeam = tempTeam->getTeamPlayerByIds();
+        //AVLTree<shared_ptr<Player>> treeOfTempTeam = tempTeam->getTeamPlayerByIds();
         // check that the player exist
-        if (treeOfTempTeam.findInt(treeOfTempTeam.getRoot() , playerId)){
+        if (tempTeam->getTeamPlayerByIds().findInt(tempTeam->getTeamPlayerByIds().getRoot() , playerId)){
             // get the player
-            shared_ptr<Player> tempPlayer = treeOfTempTeam.findInt(treeOfTempTeam.getRoot() , playerId)->getValue();
+            Player* tempPlayer = &(*(tempTeam->getTeamPlayerByIds().findInt(tempTeam->getTeamPlayerByIds().getRoot() , playerId)->getValue()));
             // if its not the only player in System
             if (tempPlayer->getClosest()){
                 output_t<int> output(tempPlayer->getClosest()->getID());

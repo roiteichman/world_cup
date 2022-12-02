@@ -27,9 +27,10 @@ class world_cup_t {
 private:
 	int m_numOfPlayes;
 	shared_ptr<Player> m_topScorer;
+    AVLTree<shared_ptr<Team>> m_teams;
     AVLTree<shared_ptr<Player>> m_playersByID;
     AVLTree<shared_ptr<Player>> m_playersByStats;
-    AVLTree<shared_ptr<Team>> m_teams;
+
 
 public:
 	// <DO-NOT-MODIFY> {
@@ -64,11 +65,12 @@ public:
 	
 	StatusType get_all_players(int teamId, int *const output);
 	
-	output_t<int> get_closest_player(int playerId, int teamId);
+	//output_t<int> get_closest_player(int playerId, int teamId) const;
 	
 	output_t<int> knockout_winner(int minTeamId, int maxTeamId);
 	
 	// } </DO-NOT-MODIFY>
+    output_t<int> get_closest_player(int playerId, int teamId) const;
 };
 
 #endif // WORLDCUP23A1_H_

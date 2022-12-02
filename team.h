@@ -45,8 +45,8 @@ public:
     void setClosestRight (shared_ptr<Team> right);
     shared_ptr<Team> getClosestLeft() const;
     shared_ptr<Team> getClosestRight() const;
-    AVLTree<shared_ptr<Player>> getTeamPlayerByStats ();
-    AVLTree<shared_ptr<Player>> getTeamPlayerByIds ();
+    AVLTree<shared_ptr<struct Player>> & getTeamPlayerByStats ();
+    AVLTree<shared_ptr<struct Player>> & getTeamPlayerByIds ();
 
     int getID () const;
     int getPoints () const;

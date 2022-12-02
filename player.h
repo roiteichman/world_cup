@@ -20,13 +20,15 @@ private:
     int m_goals;
     int m_cards;
     bool m_goalKeeper;
-    shared_ptr<Player> m_closest_left;
-    shared_ptr<Player> m_closest_right;
-    shared_ptr<Player> m_closest;
+    Player* m_closest_left;
+    Player* m_closest_right;
 
 public:
     Player(int playerId, int teamId, int gamesPlayed, int scoredGoals, int CardsReceived, bool goalKeeper);
-    ~Player() = default;
+    ~Player();
+
+    //virtual ~Player();
+
     Player (const Player& player) = delete;
     Player& operator = (const Player& player) = delete;
     bool operator< (const Player& other) const;
@@ -43,9 +45,9 @@ public:
     int getGamesPlayed () const;
     int getGoalsScored () const;
     int getCardsReceived () const;
-    shared_ptr<Player> getClosestLeft() const;
-    shared_ptr<Player> getClosestRight() const;
-    shared_ptr<Player> getClosest() const;
+    Player* getClosestLeft() const;
+    Player* getClosestRight() const;
+    Player* getClosest() const;
 };
 
 
