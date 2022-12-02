@@ -34,6 +34,9 @@ int main(){
     wc.add_player(444,2,4,4, 5,true);
     StatusType t1 = wc.play_match(2,3);
     output_t<int> t = wc.get_closest_player(2, 3);
+
+    output_t<int> point = wc.get_team_points(2);
+
     wc.remove_team(2);
 
     wc.remove_team(2);

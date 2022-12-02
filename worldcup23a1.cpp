@@ -157,6 +157,7 @@ StatusType world_cup_t::play_match(int teamId1, int teamId2)
     else{
         team1->setPoints(VICTORY);
     }
+    /// problem : we need to update that all the players in the two team have played another game!!
 
 	return StatusType::SUCCESS;
 }
@@ -168,15 +169,25 @@ output_t<int> world_cup_t::get_num_played_games(int playerId)
     if (!m_playersByID.findInt(m_playersByID.getRoot(), playerId))
         return StatusType::FAILURE;
     shared_ptr<Player> player = m_playersByID.findInt(m_playersByID.getRoot(), playerId)->getValue();
-    return output_t<int>(player->getGamesPlayed());
-}
-/*
-output_t<int> world_cup_t::get_team_points(int teamId)
-{
-	// TODO: Your code goes here
-	return 30003;
+    output_t<int> output(player->getGamesPlayed());
+    return output;
 }
 
+output_t<int> world_cup_t::get_team_points(int teamId)
+{
+    if(teamId<=0){
+        return StatusType::INVALID_INPUT;
+    }
+    // checking if exist
+    if (!(m_teams.findInt(m_teams.getRoot(), teamId))){
+        return StatusType::FAILURE;
+    }
+    shared_ptr<Team> team = m_teams.findInt(m_teams.getRoot(), teamId)->getValue();
+
+    output_t<int> output(team->getPoints());
+    return output;
+}
+/*
 StatusType world_cup_t::unite_teams(int teamId1, int teamId2, int newTeamId)
 {
 	// TODO: Your code goes here
