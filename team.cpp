@@ -54,6 +54,8 @@ bool Team::operator<(const Team &other) const {
 }
 
 void Team::removePlayer(const shared_ptr<Player> &player) {
+    m_sumOfGoals -= player->getGoalsScored();
+    m_sumOfCards -= player->getCardsReceived();
     m_teamPlayersByStats.remove(m_teamPlayersByStats.getRoot(), player);
     m_teamPlayersByIds.remove(m_teamPlayersByIds.getRoot(), player);
 }
@@ -61,6 +63,8 @@ void Team::removePlayer(const shared_ptr<Player> &player) {
 void Team::addPlayer(const shared_ptr<Player> &player) {
     m_teamPlayersByStats.insert(player);
     m_teamPlayersByIds.insert(player);
+    m_sumOfGoals += player->getGoalsScored();
+    m_sumOfCards += player->getCardsReceived();
 }
 
 void Team::setClosestLeft(shared_ptr<Team> left) {

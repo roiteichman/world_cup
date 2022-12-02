@@ -122,13 +122,13 @@ StatusType world_cup_t::update_player_stats(int playerId, int gamesPlayed,
 	// TODO: Your code goes here
 	return StatusType::SUCCESS;
 }
-
+*/
 StatusType world_cup_t::play_match(int teamId1, int teamId2)
 {
-	// TODO: Your code goes here
+    // TODO: Your code goes here
 	return StatusType::SUCCESS;
 }
-
+/*
 output_t<int> world_cup_t::get_num_played_games(int playerId)
 {
 	// TODO: Your code goes here
