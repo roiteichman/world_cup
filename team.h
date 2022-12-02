@@ -23,8 +23,8 @@ private:
     AVLTree<shared_ptr<Player>> m_teamPlayersByStats;
     AVLTree<shared_ptr<Player>> m_teamPlayersByIds;
     shared_ptr<Player> m_topScorer;
-    shared_ptr<Team> m_closest_left;
-    shared_ptr<Team> m_closest_right;
+    Team* m_closest_left;
+    Team* m_closest_right;
 
 public:
     explicit Team(int teamId, int point=0);
@@ -43,8 +43,8 @@ public:
     void addPlayer (const shared_ptr<Player>& player);
     void setClosestLeft (shared_ptr<Team> left);
     void setClosestRight (shared_ptr<Team> right);
-    shared_ptr<Team> getClosestLeft() const;
-    shared_ptr<Team> getClosestRight() const;
+    Team* getClosestLeft() const;
+    Team* getClosestRight() const;
     AVLTree<shared_ptr<struct Player>> & getTeamPlayerByStats ();
     AVLTree<shared_ptr<struct Player>> & getTeamPlayerByIds ();
 
