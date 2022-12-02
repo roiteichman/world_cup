@@ -19,7 +19,7 @@ private:
     int m_sumOfGoals;
     int m_sumOfCards;
     int m_numOfPlayers;
-    bool m_hasGoalKeeper;
+    int m_numOfGoalKeepers;
     AVLTree<shared_ptr<Player>> m_teamPlayersByStats;
     AVLTree<shared_ptr<Player>> m_teamPlayersByIds;
     shared_ptr<Player> m_topScorer;
@@ -41,6 +41,9 @@ public:
     void setCards (int cards);
     void removePlayer (const shared_ptr<Player>& player);
     void addPlayer (const shared_ptr<Player>& player);
+
+    int getNumOfGoalKeepers() const;
+
     void setClosestLeft (shared_ptr<Team> left);
     void setClosestRight (shared_ptr<Team> right);
     Team* getClosestLeft() const;

@@ -124,3 +124,7 @@ Player::~Player() {
     m_closest_right= nullptr;
     m_closest_left= nullptr;
 }
+
+bool Player::isGoalkeeper() const {
+    return m_goalKeeper;
+}

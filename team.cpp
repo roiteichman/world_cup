@@ -4,13 +4,13 @@
 
 #include "team.h"
 
-const bool byStats = true;
-const bool byIds = false;
+const bool BY_STATS = true;
+const bool BY_IDS = false;
 
 Team::Team(int teamId, int point):
-    m_teamId(teamId), m_points(point), m_sumOfGoals(0), m_sumOfCards(0), m_numOfPlayers(0), m_hasGoalKeeper(false),
-    m_teamPlayersByStats(* new AVLTree<shared_ptr<Player>>(byStats)), m_teamPlayersByIds(* new AVLTree<shared_ptr<Player>>(byIds)),
-    m_topScorer(nullptr), m_closest_left(nullptr), m_closest_right(nullptr)
+        m_teamId(teamId), m_points(point), m_sumOfGoals(0), m_sumOfCards(0), m_numOfPlayers(0), m_numOfGoalKeepers(0),
+        m_teamPlayersByStats(* new AVLTree<shared_ptr<Player>>(BY_STATS)), m_teamPlayersByIds(* new AVLTree<shared_ptr<Player>>(BY_IDS)),
+        m_topScorer(nullptr), m_closest_left(nullptr), m_closest_right(nullptr)
 {}
 
 void Team::setPoints(int points) {
@@ -56,6 +56,9 @@ bool Team::operator<(const Team &other) const {
 void Team::removePlayer(const shared_ptr<Player> &player) {
     m_sumOfGoals -= player->getGoalsScored();
     m_sumOfCards -= player->getCardsReceived();
+    if (player->isGoalkeeper()){
+        m_numOfGoalKeepers--;
+    }
     m_teamPlayersByStats.remove(m_teamPlayersByStats.getRoot(), player);
     m_teamPlayersByIds.remove(m_teamPlayersByIds.getRoot(), player);
 }
@@ -65,6 +68,9 @@ void Team::addPlayer(const shared_ptr<Player> &player) {
     m_teamPlayersByIds.insert(player);
     m_sumOfGoals += player->getGoalsScored();
     m_sumOfCards += player->getCardsReceived();
+    if (player->isGoalkeeper()){
+        m_numOfGoalKeepers++;
+    }
 }
 
 void Team::setClosestLeft(shared_ptr<Team> left) {
@@ -91,6 +97,10 @@ AVLTree<shared_ptr<Player>> &Team::getTeamPlayerByStats() {
 
 AVLTree<shared_ptr<Player>> &Team::getTeamPlayerByIds(){
     return m_teamPlayersByIds;
+}
+
+int Team::getNumOfGoalKeepers() const {
+    return m_numOfGoalKeepers;
 }
 
 

@@ -31,6 +31,8 @@ int main(){
     output_t<int> t = wc.get_closest_player(2, 3);
     wc.remove_team(2);
 
+    wc.remove_team(2);
+
     wc.remove_team(3);
     wc.remove_team(2);
 

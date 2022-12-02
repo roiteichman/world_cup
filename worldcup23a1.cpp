@@ -1,10 +1,12 @@
 #include "worldcup23a1.h"
 
-const bool byStats = true;
-const bool byIds = false;
+const bool BY_STATS = true;
+const bool BY_IDS = false;
+const int VICTORY = 3;
+const int DRAW = 1;
 
-world_cup_t::world_cup_t(): m_numOfPlayes(0), m_topScorer(nullptr) , m_teams(* new AVLTree<shared_ptr<Team>>(byIds)), m_playersByID(* new AVLTree<shared_ptr<Player>>(byIds)),
-                            m_playersByStats(* new AVLTree<shared_ptr<Player>>(byStats))
+world_cup_t::world_cup_t(): m_numOfPlayes(0), m_topScorer(nullptr) , m_teams(* new AVLTree<shared_ptr<Team>>(BY_IDS)), m_playersByID(* new AVLTree<shared_ptr<Player>>(BY_IDS)),
+                            m_playersByStats(* new AVLTree<shared_ptr<Player>>(BY_STATS))
 {}
 
 world_cup_t::~world_cup_t()
@@ -126,7 +128,35 @@ StatusType world_cup_t::update_player_stats(int playerId, int gamesPlayed,
 */
 StatusType world_cup_t::play_match(int teamId1, int teamId2)
 {
-    // TODO: Your code goes here
+    if(teamId1<=0 || teamId2 <=0 || teamId1==teamId2){
+        return StatusType::INVALID_INPUT;
+    }
+    // checking if exist
+    if (!(m_teams.findInt(m_teams.getRoot(), teamId1)) || !(m_teams.findInt(m_teams.getRoot(), teamId2))){
+        return StatusType::FAILURE;
+    }
+
+    shared_ptr<Team> team1 = m_teams.findInt(m_teams.getRoot(), teamId1)->getValue();
+    shared_ptr<Team> team2 = m_teams.findInt(m_teams.getRoot(), teamId2)->getValue();
+    // checking if valid teams
+    if (!(team1->getNumOfGoalKeepers()) || !(team2->getNumOfGoalKeepers())){
+        return StatusType::FAILURE;
+    }
+
+    int statsTeam1 = team1->getPoints()+team1->getGoals()-team1->getCards();
+    int statsTeam2 = team2->getPoints()+team2->getGoals()-team2->getCards();
+
+    if (statsTeam1<statsTeam2){
+        team2->setPoints(VICTORY);
+    }
+    else if(statsTeam1==statsTeam2){
+        team1->setPoints(DRAW);
+        team2->setPoints(DRAW);
+    }
+    else{
+        team1->setPoints(VICTORY);
+    }
+
 	return StatusType::SUCCESS;
 }
 
