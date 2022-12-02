@@ -438,12 +438,14 @@ void AVLTree<T>::rotateLeft (AVLNode<T>* B) {
             // this node could have one son from right or none
             AVLNode<T>* rightSonOfNextJunction = nextJunction->getRight();
 
+            // checking if willDeleted is the root
             if (parent){
-                // check if willDeleted == root
+                // in case willDeleted is left son
                 if (willDeleted == parent->getLeft()) {
-                    // in case willDeleted is left son
+                    // update the left son
                     parent->setLeft(nextJunction);
                 } else {
+                    // update the right son
                     parent->setRight(nextJunction);
                 }
             }
@@ -451,12 +453,13 @@ void AVLTree<T>::rotateLeft (AVLNode<T>* B) {
             if(hasLeftSon){
                 nextJunction->setRight(willDeleted->getRight());
                 willDeleted->setParent(nextJunction->getParent());
+                nextJunction->getRight()->setParent(nextJunction);
+                willDeleted->getParent()->setLeft(willDeleted);
 
             }
             else{
                 nextJunction->setRight(willDeleted);
                 willDeleted->setParent(nextJunction);
-
             }
 
             nextJunction->setLeft(willDeleted->getLeft());
