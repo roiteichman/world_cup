@@ -29,6 +29,7 @@ int main(){
     wc.add_player(3,3,4,3, 5,true);
     wc.add_player(4,3,4,4, 5,true);
     output_t<int> t = wc.get_closest_player(2, 3);
+    wc.remove_team(2);
 
     wc.remove_team(3);
     wc.remove_team(2);

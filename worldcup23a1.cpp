@@ -47,11 +47,12 @@ StatusType world_cup_t::remove_team(int teamId)
 {
 	if(teamId<=0)
         return StatusType::INVALID_INPUT;
-    shared_ptr<Team> team = m_teams.findInt(m_teams.getRoot(), teamId)->getValue();
     // checking if the team exist and not empty
-    if (!team || (team->getTeamPlayerByIds().getRoot()))
+    if (!m_teams.findInt(m_teams.getRoot(), teamId))
         return StatusType::FAILURE;
-
+    shared_ptr<Team> team = m_teams.findInt(m_teams.getRoot(), teamId)->getValue();
+    if (team->getTeamPlayerByIds().getRoot())
+        return StatusType::FAILURE;
     m_teams.remove(m_teams.getRoot(), team);
 
 	return StatusType::SUCCESS;
@@ -104,9 +105,9 @@ StatusType world_cup_t::remove_player(int playerId)
 {
 	if(playerId<=0)
         return StatusType::INVALID_INPUT;
-    shared_ptr<Player> player = m_playersByID.findInt(m_playersByID.getRoot(), playerId)->getValue();
-    if (!player)
+    if (!m_playersByID.findInt(m_playersByID.getRoot(), playerId))
         return StatusType::FAILURE;
+    shared_ptr<Player> player = m_playersByID.findInt(m_playersByID.getRoot(), playerId)->getValue();
 	m_playersByID.remove(m_playersByID.getRoot(), player);
     m_playersByStats.remove(m_playersByStats.getRoot(), player);
 
@@ -128,13 +129,17 @@ StatusType world_cup_t::play_match(int teamId1, int teamId2)
     // TODO: Your code goes here
 	return StatusType::SUCCESS;
 }
-/*
+
 output_t<int> world_cup_t::get_num_played_games(int playerId)
 {
-	// TODO: Your code goes here
-	return 22;
+    if(playerId<=0)
+        return StatusType::INVALID_INPUT;
+    if (!m_playersByID.findInt(m_playersByID.getRoot(), playerId))
+        return StatusType::FAILURE;
+    shared_ptr<Player> player = m_playersByID.findInt(m_playersByID.getRoot(), playerId)->getValue();
+    return output_t<int>(player->getGamesPlayed());
 }
-
+/*
 output_t<int> world_cup_t::get_team_points(int teamId)
 {
 	// TODO: Your code goes here
