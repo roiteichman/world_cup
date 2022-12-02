@@ -160,7 +160,7 @@ StatusType world_cup_t::get_all_players(int teamId, int *const output)
 	return StatusType::SUCCESS;
 }
 */
-output_t<int> world_cup_t::get_closest_player(int playerId, int teamId) const
+output_t<int> world_cup_t::get_closest_player(int playerId, int teamId)
 {
     if (playerId<=0 || teamId<=0){
         output_t<int> output(StatusType::INVALID_INPUT);
