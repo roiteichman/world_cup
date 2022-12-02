@@ -4,6 +4,7 @@ const bool BY_STATS = true;
 const bool BY_IDS = false;
 const int VICTORY = 3;
 const int DRAW = 1;
+const int VALID_TEAM = 11;
 
 world_cup_t::world_cup_t(): m_numOfPlayes(0), m_topScorer(nullptr) , m_teams(* new AVLTree<shared_ptr<Team>>(BY_IDS)), m_playersByID(* new AVLTree<shared_ptr<Player>>(BY_IDS)),
                             m_playersByStats(* new AVLTree<shared_ptr<Player>>(BY_STATS))
@@ -139,7 +140,7 @@ StatusType world_cup_t::play_match(int teamId1, int teamId2)
     shared_ptr<Team> team1 = m_teams.findInt(m_teams.getRoot(), teamId1)->getValue();
     shared_ptr<Team> team2 = m_teams.findInt(m_teams.getRoot(), teamId2)->getValue();
     // checking if valid teams
-    if (!(team1->getNumOfGoalKeepers()) || !(team2->getNumOfGoalKeepers())){
+    if (!((team1->getNumOfGoalKeepers()) && (team1->getNumOfPlayers()>=VALID_TEAM)) || !((team2->getNumOfGoalKeepers()) && (team1->getNumOfPlayers()>=VALID_TEAM))){
         return StatusType::FAILURE;
     }
 

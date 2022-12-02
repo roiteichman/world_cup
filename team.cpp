@@ -56,6 +56,7 @@ bool Team::operator<(const Team &other) const {
 void Team::removePlayer(const shared_ptr<Player> &player) {
     m_sumOfGoals -= player->getGoalsScored();
     m_sumOfCards -= player->getCardsReceived();
+    m_numOfPlayers--;
     if (player->isGoalkeeper()){
         m_numOfGoalKeepers--;
     }
@@ -66,6 +67,7 @@ void Team::removePlayer(const shared_ptr<Player> &player) {
 void Team::addPlayer(const shared_ptr<Player> &player) {
     m_teamPlayersByStats.insert(player);
     m_teamPlayersByIds.insert(player);
+    m_numOfPlayers++;
     m_sumOfGoals += player->getGoalsScored();
     m_sumOfCards += player->getCardsReceived();
     if (player->isGoalkeeper()){
