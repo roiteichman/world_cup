@@ -359,15 +359,28 @@ output_t<int> world_cup_t::get_all_players_count(int teamId)
     }
     return m_numOfPlayes;
 }
-/*
+
 StatusType world_cup_t::get_all_players(int teamId, int *const output)
 {
-	// TODO: Your code goes here
-    output[0] = 4001;
-    output[1] = 4002;
-	return StatusType::SUCCESS;
+    if (teamId==0 || output == NULL){
+        return StatusType::INVALID_INPUT;
+    }
+    else if (teamId>0){
+        // if the team exist and has player
+        if (m_notEmptyTeams.findInt(m_notEmptyTeams.getRoot(), teamId)){
+            shared_ptr<Team> team = m_notEmptyTeams.findInt(m_notEmptyTeams.getRoot(), teamId)->getValue();
+            team->get_all_players(output);
+            return StatusType::SUCCESS;
+        }
+    }
+    else if (m_numOfPlayes){
+        int i = 0;
+        m_playersByStats.printInOrder(m_playersByStats.getRoot(), output, i);
+        return StatusType::SUCCESS;
+    }
+    return StatusType::FAILURE;
 }
-*/
+
 output_t<int> world_cup_t::get_closest_player(int playerId, int teamId)
 {
     if (playerId<=0 || teamId<=0){

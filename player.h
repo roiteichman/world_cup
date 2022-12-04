@@ -22,8 +22,7 @@ private:
     bool m_goalKeeper;
     Player* m_closest_left;
     Player* m_closest_right;
-    Player* m_closest_teammate_left;
-    Player* m_closest_teammate_right;
+
 
 public:
     Player(int playerId, int teamId, int gamesPlayed, int scoredGoals, int CardsReceived, bool goalKeeper);

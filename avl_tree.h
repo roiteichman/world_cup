@@ -33,7 +33,6 @@
         void      setHeight (int maxHeight) { m_height = maxHeight;}
         int       getHeight () const {return m_height;}
 
-        void      print() const { std::cout << m_data << std::endl; }
     };
 
     template <class T>
@@ -63,7 +62,7 @@
         void rotateRight(AVLNode<T>* C);
 
         void printPreOrder (AVLNode<T>* root) const; // Parent, Left, Right
-        void printInOrder  (AVLNode<T>* root) const; // Left, Parent, Right
+        void printInOrder  (AVLNode<T>* root, int *const output, int& i) ; // Left, Parent, Right
         void printPostOrder(AVLNode<T>* root) const; // Left, Right, Parent
 
         void PrintBreadthSearchFirst() const;
@@ -324,11 +323,12 @@ void AVLTree<T>::rotateLeft (AVLNode<T>* B) {
     }
 
     template <class T>
-    void AVLTree<T>::printInOrder(AVLNode<T>* root) const {
+    void AVLTree<T>::printInOrder(AVLNode<T>* root, int *const output, int& i) {
         if( root ) {
-            printInOrder(root->getLeft());  // Left
-            root->print();                  // Parent
-            printInOrder(root->getRight()); // Right
+            printInOrder(root->getLeft(), output, i);  // Left
+            output[i]=root->getValue()->getID(); // Parent
+            i++;
+            printInOrder(root->getRight(), output, i); // Right
         }
     }
     template <class T>

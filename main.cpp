@@ -61,8 +61,24 @@ int main(){
     wc.remove_team(2);
 
 
-
-
+    // checking get all players
+    output_t<int> count = wc.get_all_players_count(-2);
+    // Allocate if okay
+    int *out_mem = nullptr;
+    if (count.status() == StatusType::SUCCESS && (count.ans() > 0)) {
+        out_mem = new int[count.ans()];
+        for (int i = 0; i < count.ans(); ++i) out_mem[i] = -1;
+    }
+    // Call function
+    StatusType status = wc.get_all_players(-2, out_mem);
+    if (status == StatusType::SUCCESS) {
+        for (int i = 0; i < count.ans(); ++i)
+        {
+            cout << out_mem[i] << endl;
+        }
+    }
+    delete[] out_mem;
+    // finish checking it
 
     //team.removePlayer(p1);
     //team.addPlayer(p1);

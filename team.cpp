@@ -149,3 +149,9 @@ void Team::update_top_scorer(shared_ptr<Player> player) {
 const shared_ptr<Player> &Team::getTopScorer() const {
     return m_topScorer;
 }
+
+void Team::get_all_players(int *const output) {
+
+    int i = 0;
+    m_teamPlayersByStats.printInOrder(m_teamPlayersByStats.getRoot(), output, i);
+}
