@@ -125,6 +125,7 @@ StatusType world_cup_t::add_player(int playerId, int teamId, int gamesPlayed,
     }
 
     update_top_scorer(player_ptr);
+    m_numOfPlayes++;
 
     return StatusType::SUCCESS;
 }
@@ -185,6 +186,7 @@ StatusType world_cup_t::add_player(shared_ptr<Player> player_ptr, shared_ptr<Tea
 
     update_top_scorer(player_ptr);
 
+    m_numOfPlayes++;
     return StatusType::SUCCESS;
 }
 
@@ -217,8 +219,9 @@ StatusType world_cup_t::remove_player(int playerId)
         m_topScorer = closestLeft;
     }
 
-	return StatusType::SUCCESS;
+    m_numOfPlayes--;
 
+    return StatusType::SUCCESS;
 }
 
 StatusType world_cup_t::update_player_stats(int playerId, int gamesPlayed, int scoredGoals, int cardsReceived)
@@ -331,6 +334,7 @@ output_t<int> world_cup_t::get_top_scorer(int teamId)
         else if (m_teams.findInt(m_teams.getRoot(), teamId)->getValue()->getNumOfPlayers()==0){
             return StatusType::FAILURE;
         }
+        // return top scorer in teamID
         return m_teams.findInt(m_teams.getRoot(), teamId)->getValue()->getTopScorer()->getID();
     }
     // no players in system
@@ -340,14 +344,22 @@ output_t<int> world_cup_t::get_top_scorer(int teamId)
 
     return m_topScorer->getID();
 }
-/*
+
 output_t<int> world_cup_t::get_all_players_count(int teamId)
 {
-	// TODO: Your code goes here
-    static int i = 0;
-    return (i++==0) ? 11 : 2;
+    if (teamId==0){
+        return StatusType::INVALID_INPUT;
+    }
+    if (teamId>0) {
+        // checking if team exist
+        if (!(m_teams.findInt(m_teams.getRoot(), teamId))) {
+            return StatusType::FAILURE;
+        }
+        return m_teams.findInt(m_teams.getRoot(), teamId)->getValue()->getNumOfPlayers();
+    }
+    return m_numOfPlayes;
 }
-
+/*
 StatusType world_cup_t::get_all_players(int teamId, int *const output)
 {
 	// TODO: Your code goes here

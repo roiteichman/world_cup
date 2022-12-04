@@ -49,6 +49,9 @@ int main(){
     output_t<int> topScorer2 = wc.get_top_scorer(3);
     output_t<int> topScorer = wc.get_top_scorer(-3);
 
+    output_t<int> numOfPlayers = wc.get_all_players_count(2);
+    output_t<int> numOfPlayersTotal = wc.get_all_players_count(-2);
+    output_t<int> numOfPlayersFailure = wc.get_all_players_count(30);
 
     wc.remove_team(2);
 
