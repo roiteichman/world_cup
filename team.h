@@ -20,6 +20,9 @@ private:
     int m_sumOfCards;
     int m_numOfPlayers;
     int m_numOfGoalKeepers;
+    int m_gamesPlayed;
+
+private:
     AVLTree<shared_ptr<Player>> m_teamPlayersByStats;
     AVLTree<shared_ptr<Player>> m_teamPlayersByIds;
     shared_ptr<Player> m_topScorer;
@@ -43,9 +46,12 @@ public:
     void addPlayer (const shared_ptr<Player>& player);
 
     int getNumOfGoalKeepers() const;
+    int getNumOfPlayers() const;
 
     void setClosestLeft (shared_ptr<Team> left);
     void setClosestRight (shared_ptr<Team> right);
+    void increaseGamesPlayed();
+
     Team* getClosestLeft() const;
     Team* getClosestRight() const;
     AVLTree<shared_ptr<struct Player>> & getTeamPlayerByStats ();
@@ -55,7 +61,10 @@ public:
     int getPoints () const;
     int getGoals () const;
     int getCards () const;
-    int getNumOfPlayers () const;
+
+    int getGamesPlayed() const;
+
+
 
 };
 #endif //MAIN_CPP_TEAM_H

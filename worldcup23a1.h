@@ -28,6 +28,7 @@ private:
 	int m_numOfPlayes;
 	shared_ptr<Player> m_topScorer;
     AVLTree<shared_ptr<Team>> m_teams;
+    AVLTree<shared_ptr<Team>> m_notEmptyTeams;
     AVLTree<shared_ptr<Player>> m_playersByID;
     AVLTree<shared_ptr<Player>> m_playersByStats;
 
@@ -45,6 +46,8 @@ public:
 	
 	StatusType add_player(int playerId, int teamId, int gamesPlayed,
 	                      int goals, int cards, bool goalKeeper);
+
+    StatusType add_player(shared_ptr<Player> player_ptr, shared_ptr<Team> team_ptr);
 	
 	StatusType remove_player(int playerId);
 	

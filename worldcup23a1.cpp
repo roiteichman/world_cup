@@ -6,7 +6,9 @@ const int VICTORY = 3;
 const int DRAW = 1;
 const int VALID_TEAM = 3;///not good!!!!!!
 
-world_cup_t::world_cup_t(): m_numOfPlayes(0), m_topScorer(nullptr) , m_teams(* new AVLTree<shared_ptr<Team>>(BY_IDS)), m_playersByID(* new AVLTree<shared_ptr<Player>>(BY_IDS)),
+world_cup_t::world_cup_t(): m_numOfPlayes(0), m_topScorer(nullptr) , m_teams(* new AVLTree<shared_ptr<Team>>(BY_IDS)),
+                            m_notEmptyTeams(* new AVLTree<shared_ptr<Team>>(BY_IDS)),
+                            m_playersByID(* new AVLTree<shared_ptr<Player>>(BY_IDS)),
                             m_playersByStats(* new AVLTree<shared_ptr<Player>>(BY_STATS))
 {}
 
@@ -69,14 +71,6 @@ StatusType world_cup_t::add_player(int playerId, int teamId, int gamesPlayed,
         return StatusType::INVALID_INPUT;
     }
 
-    shared_ptr<Player> player_ptr;
-
-    try{
-        player_ptr = shared_ptr<Player>(new Player(playerId, teamId, gamesPlayed, goals, cards, goalKeeper));
-    } catch (const bad_alloc& e){
-        return StatusType::ALLOCATION_ERROR;
-    }
-
     // if this player already exist
     if (m_playersByID.getRoot() != nullptr){
         // checking if the player exist or the team does not exist
@@ -85,20 +79,81 @@ StatusType world_cup_t::add_player(int playerId, int teamId, int gamesPlayed,
         }
     }
 
+    shared_ptr<Team> team_ptr;
+    team_ptr= m_teams.findInt(m_teams.getRoot(), teamId)->getValue();
+
+
+    shared_ptr<Player> player_ptr;
+
+    try{
+        // note that we enter the player thr decrease the amount of games that he played because we have field of games of the team and we will return them together when we want to know how much he play
+        player_ptr = shared_ptr<Player>(new Player(playerId, teamId, gamesPlayed-team_ptr->getGamesPlayed(), goals, cards, goalKeeper));
+    } catch (const bad_alloc& e){
+        return StatusType::ALLOCATION_ERROR;
+    }
+
+    // entering the player by ID
     try{
         m_playersByID.insert(player_ptr);
     } catch (const bad_alloc& e){
         return StatusType::ALLOCATION_ERROR;
     }
+    // entering the player by Stats
     try{
         m_playersByStats.insert(player_ptr);
     } catch (const bad_alloc& e){
         return StatusType::ALLOCATION_ERROR;
     }
+    // entering the player to the team
     try{
-        m_teams.findInt(m_teams.getRoot() ,teamId)->getValue()->addPlayer(player_ptr);
+        team_ptr->addPlayer(player_ptr);
     } catch (const bad_alloc& e){
         return StatusType::ALLOCATION_ERROR;
+    }
+
+    // checking if needed to push the team to the non empty team tree
+    if (team_ptr->getNumOfPlayers()==1){
+        // push it
+        try{
+            m_notEmptyTeams.insert(team_ptr);
+        } catch (const bad_alloc& e){
+            return StatusType::ALLOCATION_ERROR;
+        }
+    }
+
+
+    return StatusType::SUCCESS;
+}
+
+StatusType world_cup_t::add_player(shared_ptr<Player> player_ptr, shared_ptr<Team> team_ptr) {
+
+    // entering the player by ID
+    try{
+        m_playersByID.insert(player_ptr);
+    } catch (const bad_alloc& e){
+        return StatusType::ALLOCATION_ERROR;
+    }
+    // entering the player by Stats
+    try{
+        m_playersByStats.insert(player_ptr);
+    } catch (const bad_alloc& e){
+        return StatusType::ALLOCATION_ERROR;
+    }
+    // entering the player to the team
+    try{
+        team_ptr->addPlayer(player_ptr);
+    } catch (const bad_alloc& e){
+        return StatusType::ALLOCATION_ERROR;
+    }
+
+    // checking if needed to push the team to the non empty team tree
+    if (team_ptr->getNumOfPlayers()==1){
+        // push it
+        try{
+            m_notEmptyTeams.insert(team_ptr);
+        } catch (const bad_alloc& e){
+            return StatusType::ALLOCATION_ERROR;
+        }
     }
 
     return StatusType::SUCCESS;
@@ -108,25 +163,52 @@ StatusType world_cup_t::remove_player(int playerId)
 {
 	if(playerId<=0)
         return StatusType::INVALID_INPUT;
+    // if playerPtr does not exist
     if (!m_playersByID.findInt(m_playersByID.getRoot(), playerId))
         return StatusType::FAILURE;
-    shared_ptr<Player> player = m_playersByID.findInt(m_playersByID.getRoot(), playerId)->getValue();
-	m_playersByID.remove(m_playersByID.getRoot(), player);
-    m_playersByStats.remove(m_playersByStats.getRoot(), player);
+    // get pointer to the playerPtr
+    shared_ptr<Player> playerPtr = m_playersByID.findInt(m_playersByID.getRoot(), playerId)->getValue();
 
-    m_teams.findInt(m_teams.getRoot(), player->getTeamID())->getValue()->removePlayer(player);
+    shared_ptr<Team> teamPtr = m_notEmptyTeams.findInt(m_notEmptyTeams.getRoot(), playerPtr->getTeamID())->getValue();
+
+    m_playersByID.remove(m_playersByID.getRoot(), playerPtr);
+    m_playersByStats.remove(m_playersByStats.getRoot(), playerPtr);
+
+    // searching the playerPtr in the not empty teamPtr tree and remove the playerPtr from it
+    teamPtr->removePlayer(playerPtr);
+
+    // if it was the last player in team, remove the team from the non empty team tree
+    if (teamPtr->getNumOfPlayers()==0){
+        m_notEmptyTeams.remove(m_notEmptyTeams.getRoot(), teamPtr);
+    }
 
 	return StatusType::SUCCESS;
 
 }
-/*
-StatusType world_cup_t::update_player_stats(int playerId, int gamesPlayed,
-                                        int scoredGoals, int cardsReceived)
+
+StatusType world_cup_t::update_player_stats(int playerId, int gamesPlayed, int scoredGoals, int cardsReceived)
 {
-	// TODO: Your code goes here
-	return StatusType::SUCCESS;
+    if (playerId<=0 || gamesPlayed<0 || scoredGoals<0 || cardsReceived<0){
+        return StatusType::INVALID_INPUT;
+    }
+    if (!m_playersByID.findInt(m_playersByID.getRoot(), playerId)) {
+        return StatusType::FAILURE;
+    }
+
+    shared_ptr<Player> player = m_playersByID.findInt(m_playersByID.getRoot(), playerId)->getValue();
+
+    shared_ptr<Team> team = m_notEmptyTeams.findInt(m_notEmptyTeams.getRoot(), player->getTeamID())->getValue();
+
+    this->remove_player(playerId);
+
+    player->setGamePlayed(gamesPlayed);
+    player->setGoals(scoredGoals);
+    player->setCards(cardsReceived);
+
+    return this->add_player(player, team);
+
 }
-*/
+
 StatusType world_cup_t::play_match(int teamId1, int teamId2)
 {
     if(teamId1<=0 || teamId2 <=0 || teamId1==teamId2){
@@ -157,7 +239,9 @@ StatusType world_cup_t::play_match(int teamId1, int teamId2)
     else{
         team1->setPoints(VICTORY);
     }
-    /// problem : we need to update that all the players in the two team have played another game!!
+
+    team1->increaseGamesPlayed();
+    team2->increaseGamesPlayed();
 
 	return StatusType::SUCCESS;
 }
@@ -169,7 +253,10 @@ output_t<int> world_cup_t::get_num_played_games(int playerId)
     if (!m_playersByID.findInt(m_playersByID.getRoot(), playerId))
         return StatusType::FAILURE;
     shared_ptr<Player> player = m_playersByID.findInt(m_playersByID.getRoot(), playerId)->getValue();
-    output_t<int> output(player->getGamesPlayed());
+    shared_ptr<Team> team = m_notEmptyTeams.findInt(m_notEmptyTeams.getRoot(), player->getTeamID())->getValue();
+
+    // adding the amount of games of the player with the amount of the team
+    output_t<int> output(player->getGamesPlayed()+team->getGamesPlayed());
     return output;
 }
 
@@ -242,6 +329,7 @@ output_t<int> world_cup_t::get_closest_player(int playerId, int teamId)
     return output;
 
 }
+
 /*
 output_t<int> world_cup_t::knockout_winner(int minTeamId, int maxTeamId)
 {

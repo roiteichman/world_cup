@@ -157,7 +157,7 @@ void AVLTree<T>::insertAvlNodeByIds(AVLNode<T> *root, AVLNode<T> *newNode) {
     // comparing by the value of the pointer
     if(*(newNode->getValue()) > *(root->getValue()) ) {
         if(root->getRight() ) // If there is a left child, keep searching
-            insertAvlNodeByStats(root->getRight(), newNode);
+            insertAvlNodeByIds(root->getRight(), newNode);
         else { // Found the right spot
             root->setRight(newNode);
             newNode->setParent(root);
@@ -165,7 +165,7 @@ void AVLTree<T>::insertAvlNodeByIds(AVLNode<T> *root, AVLNode<T> *newNode) {
     }
     else {
         if(root->getLeft() ) // If there is a right child, keep searching
-            insertAvlNodeByStats(root->getLeft(), newNode);
+            insertAvlNodeByIds(root->getLeft(), newNode);
         else {// Found the right spot
             root->setLeft(newNode);
             newNode->setParent(root);
@@ -386,12 +386,18 @@ void AVLTree<T>::rotateLeft (AVLNode<T>* B) {
 
         // 1: if is a leaf - height==0
         if (!height(willDeleted)) {
-            if (willDeleted == parent->getLeft()) {
-                // after recursion the leaf is smaller than the parent but he is a right son of him
-                parent->setLeft(nullptr);
-            } else {
-                parent->setRight(nullptr);
+            // if is not a root
+            if (parent){
+                if (willDeleted == parent->getLeft()) {
+                    // after recursion the leaf is smaller than the parent but he is a right son of him
+                    parent->setLeft(nullptr);
+                } else {
+                    parent->setRight(nullptr);
+                }
             }
+            // if is the last junction in tree reset the tree, pointer to nullptr
+            else
+                m_root= nullptr;
             removed = true;
         }
         else if(willDeleted->getLeft() == nullptr || willDeleted->getRight() == nullptr){
@@ -407,9 +413,11 @@ void AVLTree<T>::rotateLeft (AVLNode<T>* B) {
             if (willDeleted == parent->getLeft()) {
                 // if willDeleted is a left son
                 parent->setLeft(singleSon);
+                singleSon->setParent(parent);
             }
             else {
                 parent->setRight(singleSon);
+                singleSon->setParent(parent);
             }
             willDeleted->setRight(nullptr);
             willDeleted->setLeft(nullptr);

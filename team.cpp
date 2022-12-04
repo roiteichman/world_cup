@@ -8,7 +8,7 @@ const bool BY_STATS = true;
 const bool BY_IDS = false;
 
 Team::Team(int teamId, int point):
-        m_teamId(teamId), m_points(point), m_sumOfGoals(0), m_sumOfCards(0), m_numOfPlayers(0), m_numOfGoalKeepers(0),
+        m_teamId(teamId), m_points(point), m_sumOfGoals(0), m_sumOfCards(0), m_numOfPlayers(0), m_numOfGoalKeepers(0), m_gamesPlayed(0),
         m_teamPlayersByStats(* new AVLTree<shared_ptr<Player>>(BY_STATS)), m_teamPlayersByIds(* new AVLTree<shared_ptr<Player>>(BY_IDS)),
         m_topScorer(nullptr), m_closest_left(nullptr), m_closest_right(nullptr)
 {}
@@ -105,5 +105,12 @@ int Team::getNumOfGoalKeepers() const {
     return m_numOfGoalKeepers;
 }
 
+int Team::getGamesPlayed() const {
+    return m_gamesPlayed;
+}
+
+void Team::increaseGamesPlayed() {
+    m_gamesPlayed++;
+}
 
 

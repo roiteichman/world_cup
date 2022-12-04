@@ -25,6 +25,9 @@ int main(){
     wc.add_team(6,7);
     wc.add_team(3,5);
     wc.add_player(1,3,4,1, 5,true);
+
+    wc.remove_player(1);
+
     wc.add_player(2,3,4,2, 5,true);
     wc.add_player(3,3,4,3, 5,true);
     wc.add_player(4,3,4,4, 5,true);
@@ -32,10 +35,16 @@ int main(){
     wc.add_player(222,2,4,2, 5,true);
     wc.add_player(333,2,4,3, 5,true);
     wc.add_player(444,2,4,4, 5,true);
-    StatusType t1 = wc.play_match(2,3);
+    wc.play_match(2,3);
+    wc.play_match(2,3);
+
+    output_t<int> a = wc.get_num_played_games(2);
+
     output_t<int> t = wc.get_closest_player(2, 3);
 
     output_t<int> point = wc.get_team_points(2);
+
+    wc.update_player_stats(2, 3, 4, 5);
 
     wc.remove_team(2);
 
