@@ -51,6 +51,8 @@ public:
     void setClosestLeft (shared_ptr<Team> left);
     void setClosestRight (shared_ptr<Team> right);
     void increaseGamesPlayed();
+    void update_top_scorer(shared_ptr<Player> player);
+
 
     Team* getClosestLeft() const;
     Team* getClosestRight() const;
@@ -61,6 +63,8 @@ public:
     int getPoints () const;
     int getGoals () const;
     int getCards () const;
+
+    const shared_ptr<Player>& getTopScorer() const;
 
     int getGamesPlayed() const;
 

@@ -111,8 +111,7 @@
         else {
             if (m_orderBy){
                 insertAvlNodeByStats(m_root, newNode);
-                findPrevious(newNode);
-                findNext(newNode);
+
             }
             else{
                 insertAvlNodeByIds(m_root, newNode);
@@ -352,7 +351,7 @@ void AVLTree<T>::rotateLeft (AVLNode<T>* B) {
             //std::cout << root->getValue() << std::endl;
             if(root->getValue() == value )
                 return root; // Found
-            else if( value < root->getValue() )
+            else if( *value < *(root->getValue()) )
                 return find(root->getLeft(), value);
             else
                 return find(root->getRight(), value);

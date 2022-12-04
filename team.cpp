@@ -60,8 +60,27 @@ void Team::removePlayer(const shared_ptr<Player> &player) {
     if (player->isGoalkeeper()){
         m_numOfGoalKeepers--;
     }
+
+
+    AVLNode<shared_ptr<Player>>* playerNode = m_teamPlayersByStats.find(m_teamPlayersByStats.getRoot(), player);
+
+    // update top scorer
+    if (player==m_topScorer){
+        // if the top scorer has a parent he is the new top scorer
+        if (playerNode->getParent()){
+            m_topScorer = (playerNode->getParent()->getValue());
+        }
+        else if (playerNode->getLeft()){
+            m_topScorer=(playerNode->getLeft()->getValue());
+        }
+        else{
+            m_topScorer = nullptr;
+        }
+    }
+
     m_teamPlayersByStats.remove(m_teamPlayersByStats.getRoot(), player);
     m_teamPlayersByIds.remove(m_teamPlayersByIds.getRoot(), player);
+
 }
 
 void Team::addPlayer(const shared_ptr<Player> &player) {
@@ -73,6 +92,7 @@ void Team::addPlayer(const shared_ptr<Player> &player) {
     if (player->isGoalkeeper()){
         m_numOfGoalKeepers++;
     }
+    update_top_scorer(player);
 }
 
 void Team::setClosestLeft(shared_ptr<Team> left) {
@@ -113,4 +133,19 @@ void Team::increaseGamesPlayed() {
     m_gamesPlayed++;
 }
 
+void Team::update_top_scorer(shared_ptr<Player> player) {
 
+    // first player is the top scorer
+    if (!m_topScorer){
+        m_topScorer=player;
+    }
+
+    else if (((m_topScorer->getGoalsScored() == player->getGoalsScored()) && (m_topScorer->getID()<player->getID())) ||
+             (m_topScorer->getGoalsScored()<player->getGoalsScored())){
+        m_topScorer = player;
+    }
+}
+
+const shared_ptr<Player> &Team::getTopScorer() const {
+    return m_topScorer;
+}

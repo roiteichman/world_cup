@@ -104,6 +104,9 @@ StatusType world_cup_t::add_player(int playerId, int teamId, int gamesPlayed,
     } catch (const bad_alloc& e){
         return StatusType::ALLOCATION_ERROR;
     }
+
+    update_previous_next(player_ptr);
+
     // entering the player to the team
     try{
         team_ptr->addPlayer(player_ptr);
@@ -121,9 +124,30 @@ StatusType world_cup_t::add_player(int playerId, int teamId, int gamesPlayed,
         }
     }
 
+    update_top_scorer(player_ptr);
 
     return StatusType::SUCCESS;
 }
+
+void world_cup_t::update_top_scorer(shared_ptr<Player> player) {
+
+    // first player is the top scorer
+    if (!m_topScorer){
+        m_topScorer=player;
+    }
+
+    else if (((m_topScorer->getGoalsScored() == player->getGoalsScored()) && (m_topScorer->getID()<player->getID())) ||
+    (m_topScorer->getGoalsScored()<player->getGoalsScored())){
+        m_topScorer = player;
+    }
+}
+
+void world_cup_t::update_previous_next(shared_ptr<Player> player_ptr) {
+    AVLNode<shared_ptr<Player>>* newNode = m_playersByStats.find(m_playersByStats.getRoot(), player_ptr);
+    m_playersByStats.findPrevious(newNode);
+    m_playersByStats.findNext(newNode);
+}
+
 
 StatusType world_cup_t::add_player(shared_ptr<Player> player_ptr, shared_ptr<Team> team_ptr) {
 
@@ -139,6 +163,9 @@ StatusType world_cup_t::add_player(shared_ptr<Player> player_ptr, shared_ptr<Tea
     } catch (const bad_alloc& e){
         return StatusType::ALLOCATION_ERROR;
     }
+
+    update_previous_next(player_ptr);
+
     // entering the player to the team
     try{
         team_ptr->addPlayer(player_ptr);
@@ -155,6 +182,8 @@ StatusType world_cup_t::add_player(shared_ptr<Player> player_ptr, shared_ptr<Tea
             return StatusType::ALLOCATION_ERROR;
         }
     }
+
+    update_top_scorer(player_ptr);
 
     return StatusType::SUCCESS;
 }
@@ -180,6 +209,12 @@ StatusType world_cup_t::remove_player(int playerId)
     // if it was the last player in team, remove the team from the non empty team tree
     if (teamPtr->getNumOfPlayers()==0){
         m_notEmptyTeams.remove(m_notEmptyTeams.getRoot(), teamPtr);
+    }
+
+    // update top scorer
+    if (playerPtr==m_topScorer){
+        shared_ptr<Player> closestLeft (playerPtr->getClosestLeft());
+        m_topScorer = closestLeft;
     }
 
 	return StatusType::SUCCESS;
@@ -280,13 +315,32 @@ StatusType world_cup_t::unite_teams(int teamId1, int teamId2, int newTeamId)
 	// TODO: Your code goes here
 	return StatusType::SUCCESS;
 }
+*/
 
 output_t<int> world_cup_t::get_top_scorer(int teamId)
 {
-	// TODO: Your code goes here
-	return 2008;
-}
+    if (teamId==0){
+        return StatusType::INVALID_INPUT;
+    }
+    if (teamId>0){
+        // checking if team exist
+        if (!(m_teams.findInt(m_teams.getRoot(), teamId))){
+            return StatusType::FAILURE;
+        }
+        // checking if there are players in team
+        else if (m_teams.findInt(m_teams.getRoot(), teamId)->getValue()->getNumOfPlayers()==0){
+            return StatusType::FAILURE;
+        }
+        return m_teams.findInt(m_teams.getRoot(), teamId)->getValue()->getTopScorer()->getID();
+    }
+    // no players in system
+    if (!m_topScorer){
+        return StatusType::FAILURE;
+    }
 
+    return m_topScorer->getID();
+}
+/*
 output_t<int> world_cup_t::get_all_players_count(int teamId)
 {
 	// TODO: Your code goes here
@@ -314,6 +368,7 @@ output_t<int> world_cup_t::get_closest_player(int playerId, int teamId)
         Team* tempTeam = &(*(m_teams.findInt(m_teams.getRoot(), teamId)->getValue()));
         // get the tree of the team
         //AVLTree<shared_ptr<Player>> treeOfTempTeam = tempTeam->getTeamPlayerByIds();
+
         // check that the player exist
         if (tempTeam->getTeamPlayerByIds().findInt(tempTeam->getTeamPlayerByIds().getRoot() , playerId)){
             // get the player

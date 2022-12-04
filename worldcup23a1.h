@@ -53,7 +53,11 @@ public:
 	
 	StatusType update_player_stats(int playerId, int gamesPlayed,
 	                                int scoredGoals, int cardsReceived);
-	
+
+    void update_top_scorer(shared_ptr<Player> player);
+
+    void update_previous_next(shared_ptr<Player> player_ptr);
+
 	StatusType play_match(int teamId1, int teamId2);
 	
 	output_t<int> get_num_played_games(int playerId);
