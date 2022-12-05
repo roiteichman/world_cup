@@ -413,7 +413,7 @@ void AVLTree<T>::printInOrderT(AVLNode<T>* root, T* const output, int& i) {
                 m_root= nullptr;
             removed = true;
         }
-        else if(willDeleted->getLeft() == nullptr || willDeleted->getRight() == nullptr){
+        else if(willDeleted->getLeft() == nullptr || willDeleted->getRight() == nullptr) {
             AVLNode<T> *singleSon;
 
             // 2: if it has a single son
@@ -422,15 +422,20 @@ void AVLTree<T>::printInOrderT(AVLNode<T>* root, T* const output, int& i) {
             } else if (willDeleted->getRight() == nullptr) {
                 singleSon = willDeleted->getLeft();
             }
-
-            if (willDeleted == parent->getLeft()) {
-                // if willDeleted is a left son
-                parent->setLeft(singleSon);
-                singleSon->setParent(parent);
+            if (parent) {
+                if (willDeleted == parent->getLeft()) {
+                    // if willDeleted is a left son
+                    parent->setLeft(singleSon);
+                    singleSon->setParent(parent);
+                } else {
+                    parent->setRight(singleSon);
+                    singleSon->setParent(parent);
+                }
             }
             else {
-                parent->setRight(singleSon);
                 singleSon->setParent(parent);
+                m_root = singleSon;
+                removed = true;
             }
             willDeleted->setRight(nullptr);
             willDeleted->setLeft(nullptr);

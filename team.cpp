@@ -129,8 +129,8 @@ int Team::getGamesPlayed() const {
     return m_gamesPlayed;
 }
 
-void Team::increaseGamesPlayed() {
-    m_gamesPlayed++;
+void Team::increaseGamesPlayed(int gamesPlayed) {
+    m_gamesPlayed+=gamesPlayed;
 }
 
 void Team::update_top_scorer(shared_ptr<Player> player) {
@@ -166,5 +166,9 @@ void Team::setTeamPlayersByIds(const AVLTree<shared_ptr<Player>>& TeamPlayersByI
 
 void Team::setMNumOfPlayers(int mNumOfPlayers) {
     m_numOfPlayers = mNumOfPlayers;
+}
+
+void Team::setMNumOfGoalKeepers(int mNumOfGoalKeepers) {
+    m_numOfGoalKeepers += mNumOfGoalKeepers;
 }
 

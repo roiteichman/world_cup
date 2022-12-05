@@ -14,6 +14,7 @@ int main(){
     AVLTree<shared_ptr<Player>> ppp = new AVLTree<shared_ptr<Player>>(false);
     AVLNode<shared_ptr<Player>>* pppp= ppp.sortedArrayToBST(pp, 0, 3);
 
+
     Team team(2,4);
     //Team team1(3,4);
     //Team team2(4,4);
@@ -41,6 +42,7 @@ int main(){
     wc.add_player(444,2,4,4, 5,true);
     wc.play_match(2,3);
     wc.play_match(2,3);
+    wc.unite_teams(3,2,2);
 
     output_t<int> a = wc.get_num_played_games(2);
 

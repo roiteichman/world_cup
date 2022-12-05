@@ -22,7 +22,6 @@ private:
     int m_numOfGoalKeepers;
     int m_gamesPlayed;
 
-private:
     AVLTree<shared_ptr<Player>> m_teamPlayersByStats;
     AVLTree<shared_ptr<Player>> m_teamPlayersByIds;
     shared_ptr<Player> m_topScorer;
@@ -57,10 +56,11 @@ public:
 
     void setClosestLeft (shared_ptr<Team> left);
     void setClosestRight (shared_ptr<Team> right);
-    void increaseGamesPlayed();
+    void increaseGamesPlayed(int gamesPlayed);
     void update_top_scorer(shared_ptr<Player> player);
     void get_all_players(int *const output);
 
+    void setMNumOfGoalKeepers(int mNumOfGoalKeepers);
 
     Team* getClosestLeft() const;
     Team* getClosestRight() const;

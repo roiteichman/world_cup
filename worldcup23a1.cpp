@@ -59,6 +59,8 @@ StatusType world_cup_t::remove_team(int teamId)
     if (team->getTeamPlayerByIds().getRoot())
         return StatusType::FAILURE;
     m_teams.remove(m_teams.getRoot(), team);
+    if(m_notEmptyTeams.findInt(m_notEmptyTeams.getRoot(), teamId))
+        m_notEmptyTeams.remove(m_notEmptyTeams.getRoot(), team);
 
 	return StatusType::SUCCESS;
 }
@@ -78,6 +80,9 @@ StatusType world_cup_t::add_player(int playerId, int teamId, int gamesPlayed,
             return StatusType::FAILURE;
         }
     }
+    else
+        return StatusType::FAILURE;
+
 
     shared_ptr<Team> team_ptr;
     team_ptr= m_teams.findInt(m_teams.getRoot(), teamId)->getValue();
@@ -278,8 +283,8 @@ StatusType world_cup_t::play_match(int teamId1, int teamId2)
         team1->setPoints(VICTORY);
     }
 
-    team1->increaseGamesPlayed();
-    team2->increaseGamesPlayed();
+    team1->increaseGamesPlayed(1);
+    team2->increaseGamesPlayed(1);
 
 	return StatusType::SUCCESS;
 }
@@ -325,6 +330,11 @@ StatusType world_cup_t::unite_teams(int teamId1, int teamId2, int newTeamId)
     shared_ptr<Team> team1 = m_teams.findInt(m_teams.getRoot(), teamId1)->getValue();
     shared_ptr<Team> team2 = m_teams.findInt(m_teams.getRoot(), teamId2)->getValue();
 
+    m_teams.remove(m_teams.getRoot(), team1);
+    m_notEmptyTeams.remove(m_notEmptyTeams.getRoot(), team1);
+    m_teams.remove(m_teams.getRoot(), team2);
+    m_notEmptyTeams.remove(m_notEmptyTeams.getRoot(), team2);
+
     shared_ptr<Player>* arrTeam1ByStats = new shared_ptr<Player>[team1->getNumOfPlayers()];
     shared_ptr<Player>* arrTeam1ByIDs = new shared_ptr<Player>[team1->getNumOfPlayers()];
     shared_ptr<Player>* arrTeam2ByStats = new shared_ptr<Player>[team2->getNumOfPlayers()];
@@ -338,17 +348,17 @@ StatusType world_cup_t::unite_teams(int teamId1, int teamId2, int newTeamId)
     team2->getTeamPlayerByStats().printInOrderT(team2->getTeamPlayerByStats().getRoot(), arrTeam2ByStats, i);
     team2->getTeamPlayerByIds().printInOrderT(team2->getTeamPlayerByIds().getRoot(), arrTeam2ByIDs, k);
 
-    AVLTree<shared_ptr<Player>> Team1ByStats = m_teams.findInt(m_teams.getRoot(), teamId1)->getValue()->getTeamPlayerByStats();
-    AVLTree<shared_ptr<Player>> Team1ByIDs = m_teams.findInt(m_teams.getRoot(), teamId1)->getValue()->getTeamPlayerByIds();
+    AVLTree<shared_ptr<Player>>* Team1ByStats = &team1->getTeamPlayerByStats();
+    AVLTree<shared_ptr<Player>>* Team1ByIDs = &team1->getTeamPlayerByIds();
 
-    AVLTree<shared_ptr<Player>> Team2ByStats = m_teams.findInt(m_teams.getRoot(), teamId2)->getValue()->getTeamPlayerByStats();
-    AVLTree<shared_ptr<Player>> Team2ByIDs = m_teams.findInt(m_teams.getRoot(), teamId2)->getValue()->getTeamPlayerByIds();
+    AVLTree<shared_ptr<Player>>* Team2ByStats = &team2->getTeamPlayerByStats();
+    AVLTree<shared_ptr<Player>>* Team2ByIDs = &team2->getTeamPlayerByIds();
 
-    m_teams.findInt(m_teams.getRoot(), teamId1)->getValue()->getTeamPlayerByStats().setRoot(nullptr);
-    m_teams.findInt(m_teams.getRoot(), teamId1)->getValue()->getTeamPlayerByIds().setRoot(nullptr);
+    //m_teams.findInt(m_teams.getRoot(), teamId1)->getValue()->getTeamPlayerByStats().setRoot(nullptr);
+    //m_teams.findInt(m_teams.getRoot(), teamId1)->getValue()->getTeamPlayerByIds().setRoot(nullptr);
 
-    m_teams.findInt(m_teams.getRoot(), teamId2)->getValue()->getTeamPlayerByStats().setRoot(nullptr);
-    m_teams.findInt(m_teams.getRoot(), teamId2)->getValue()->getTeamPlayerByIds().setRoot(nullptr);
+    //m_teams.findInt(m_teams.getRoot(), teamId2)->getValue()->getTeamPlayerByStats().setRoot(nullptr);
+    //m_teams.findInt(m_teams.getRoot(), teamId2)->getValue()->getTeamPlayerByIds().setRoot(nullptr);
 
 
 
@@ -365,17 +375,22 @@ StatusType world_cup_t::unite_teams(int teamId1, int teamId2, int newTeamId)
     mergeArraiesByStats(arrTeam1ByStats, arrTeam2ByStats, arrUniteTeamByStats, team1->getNumOfPlayers(), team2->getNumOfPlayers(), total);
     mergeArraiesByIds(arrTeam1ByIDs, arrTeam2ByIDs, arrUniteTeamByIDs, team1->getNumOfPlayers(), team2->getNumOfPlayers(), total);
 
-    AVLNode<shared_ptr<Player>>* nodeUniteTeamByStats = m_playersByStats.sortedArrayToBST(arrUniteTeamByStats, 0, total);
-    AVLNode<shared_ptr<Player>>* nodeUniteTeamByIDs = m_playersByStats.sortedArrayToBST(arrUniteTeamByIDs, 0, total);
+    AVLNode<shared_ptr<Player>>* nodeUniteTeamByStats = m_playersByStats.sortedArrayToBST(arrUniteTeamByStats, 0, total-1);
+    AVLNode<shared_ptr<Player>>* nodeUniteTeamByIDs = m_playersByStats.sortedArrayToBST(arrUniteTeamByIDs, 0, total-1);
 
-    AVLTree<shared_ptr<Player>> unitedTeamByStats (* new AVLTree<shared_ptr<Player>>(true, nodeUniteTeamByStats));
-    AVLTree<shared_ptr<Player>> unitedTeamById (* new AVLTree<shared_ptr<Player>>(true, nodeUniteTeamByIDs));
+    AVLTree<shared_ptr<Player>>* unitedTeamByStats (&(* new AVLTree<shared_ptr<Player>>(true, nodeUniteTeamByStats)));
+    AVLTree<shared_ptr<Player>>* unitedTeamById (&(* new AVLTree<shared_ptr<Player>>(false, nodeUniteTeamByIDs)));
 
-
-    remove_team(teamId1);
-    remove_team(teamId2);
-
-
+    shared_ptr<Team> newTeam( new Team(newTeamId, team1->getPoints()+team2->getPoints()));
+    newTeam->setTeamPlayersByIds(*unitedTeamById);
+    newTeam->setTeamPlayersByStats(*unitedTeamByStats);
+    newTeam->setMNumOfPlayers(team1->getNumOfGoalKeepers()+team2->getNumOfGoalKeepers());
+    newTeam->setCards(team1->getCards()+team2->getCards());
+    newTeam->setGoals(team1->getGoals()+team2->getGoals());
+    newTeam->increaseGamesPlayed(team1->getGamesPlayed()+team2->getGamesPlayed());
+    newTeam->setMNumOfGoalKeepers(team1->getNumOfGoalKeepers()+team2->getNumOfGoalKeepers());
+    m_teams.insert(newTeam);
+    m_notEmptyTeams.insert(newTeam);
     // TODO: Your code goes here
 	return StatusType::SUCCESS;
 }
@@ -391,7 +406,7 @@ void world_cup_t::mergeArraiesByStats(shared_ptr<Player> *arrTeam1ByStats, share
                                       shared_ptr<Player> *arrUniteTeamByStats, int team1, int team2, int total) {
     int i=0, k=0;
     for (int j = 0; j < total; ++j) {
-        if (i != team1 || k != team2) {
+        if (i != team1 && k != team2) {
             if (*arrTeam1ByStats[i] < *arrTeam2ByStats[k]) {
                 arrUniteTeamByStats[j] = arrTeam1ByStats[i];
                 i++;
@@ -413,13 +428,13 @@ void world_cup_t::mergeArraiesByStats(shared_ptr<Player> *arrTeam1ByStats, share
                                         shared_ptr<Player> *arrUniteTeamByIDs, int team1, int team2, int total) {
         int i=0, k=0;
         for (int j = 0; j < total; ++j) {
-            if (i != team1 || k != team2) {
+            if (i != team1 && k != team2) {
                 if (*arrTeam1ByIDs[i] > *arrTeam2ByIDs[k]) {
-                    arrUniteTeamByIDs[j] = arrTeam1ByIDs[i];
-                    i++;
-                } else {
                     arrUniteTeamByIDs[j] = arrTeam2ByIDs[k];
                     k++;
+                } else {
+                    arrUniteTeamByIDs[j] = arrTeam1ByIDs[i];
+                    i++;
                 }
             } else if (i == team1) {
                 arrUniteTeamByIDs[j] = arrTeam2ByIDs[k];
@@ -522,11 +537,9 @@ output_t<int> world_cup_t::get_closest_player(int playerId, int teamId)
 
 }
 
-
-/*
 output_t<int> world_cup_t::knockout_winner(int minTeamId, int maxTeamId)
 {
-	// TODO: Your code goes here
+	//teamsToArray(teamId1, teamId2)
 	return 2;
 }
-*/
+
