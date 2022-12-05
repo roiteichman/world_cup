@@ -42,6 +42,13 @@ public:
     void setPoints (int points);
     void setGoals (int goals);
     void setCards (int cards);
+
+    void setTeamPlayersByStats(const AVLTree<shared_ptr<Player>> &TeamPlayersByStats);
+
+    void setTeamPlayersByIds(const AVLTree<shared_ptr<Player>> &TeamPlayersByIds);
+
+    void setMNumOfPlayers(int mNumOfPlayers);
+
     void removePlayer (const shared_ptr<Player>& player);
     void addPlayer (const shared_ptr<Player>& player);
 

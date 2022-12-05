@@ -58,6 +58,12 @@ public:
 
     void update_previous_next(shared_ptr<Player> player_ptr);
 
+    void mergeArraiesByStats(shared_ptr<Player>* arrTeam1ByStats, shared_ptr<Player>* arrTeam2ByStats, shared_ptr<Player>* arrUniteTeamByStats, int team1, int team2, int total);
+
+    void mergeArraiesByIds(shared_ptr<Player>* arrTeam1ByIDs, shared_ptr<Player>* arrTeam2ByIDs, shared_ptr<Player>* arrUniteTeamByIDs, int team1, int team2, int total);
+
+    void updatePlayers(shared_ptr<Player>* arrTeamByStats, int uniteTeamID, int size, int teamsGame);
+
 	StatusType play_match(int teamId1, int teamId2);
 	
 	output_t<int> get_num_played_games(int playerId);

@@ -38,12 +38,14 @@
     template <class T>
     class AVLTree {
     public:
-        AVLTree(bool orderBy) : m_root(nullptr), m_orderBy(orderBy){}
+        AVLTree(bool orderBy=true, AVLNode<T>* root = nullptr) : m_root(root), m_orderBy(orderBy){}
         ~AVLTree();
 
         bool insert(const T& value);
 
         AVLNode<T>* getRoot() const { return m_root; }
+
+        void setRoot(AVLNode<T> *mRoot);
 
         AVLNode<T>* find(AVLNode<T>* root, const T& value);
         AVLNode<T> *findInt(AVLNode<T> *root, int value) const;
@@ -63,8 +65,9 @@
 
         void printPreOrder (AVLNode<T>* root) const; // Parent, Left, Right
         void printInOrder  (AVLNode<T>* root, int *const output, int& i) ; // Left, Parent, Right
+        void printInOrderT  (AVLNode<T>* root, T *const output, int& i) ; // Left, Parent, Right
         void printPostOrder(AVLNode<T>* root) const; // Left, Right, Parent
-
+        AVLNode<T> *sortedArrayToBST(T* arr, int start, int end);
         void PrintBreadthSearchFirst() const;
 
     private:
@@ -74,7 +77,6 @@
         bool m_orderBy;
 
         AVLNode<T>* m_root;
-
 
     };
 
@@ -331,6 +333,18 @@ void AVLTree<T>::rotateLeft (AVLNode<T>* B) {
             printInOrder(root->getRight(), output, i); // Right
         }
     }
+
+template <class T>
+void AVLTree<T>::printInOrderT(AVLNode<T>* root, T* const output, int& i) {
+    if( root ) {
+        printInOrderT(root->getLeft(), output, i);  // Left
+        output[i]=root->getValue(); // Parent
+        i++;
+        printInOrderT(root->getRight(), output, i); // Right
+    }
+}
+
+
     template <class T>
     void AVLTree<T>::printPostOrder(AVLNode<T>* root) const {
         if( root ) {
@@ -507,6 +521,41 @@ void AVLTree<T>::rotateLeft (AVLNode<T>* B) {
     }
 
 
+template <class T>
+AVLNode<T>* AVLTree<T>::sortedArrayToBST(T* arr, int start, int end)
+{
+    /* Base Case */
+    if (start > end)
+        return NULL;
 
+    /* Get the middle element and make it root */
+    int mid = (start + end)/2;
+    AVLNode<T> *root;
+    try {
+        root = new AVLNode<T>(arr[mid]);
+    }
+    catch (const bad_alloc& e){
+        return nullptr;
+    }
+
+
+    /* Recursively construct the left subtree and make it
+       left child of root */
+    root->setLeft(sortedArrayToBST(arr, start, mid-1));
+    if(root->getLeft())
+        root->getLeft()->setParent(root);
+    /* Recursively construct the right subtree and make it
+       right child of root */
+    root->setRight(sortedArrayToBST(arr, mid+1, end));
+    if(root->getRight())
+        root->getRight()->setParent(root);
+    return root;
+}
+
+template<class T>
+void AVLTree<T>::setRoot(AVLNode<T> *mRoot) {
+    m_root = mRoot;
+}
 
 #endif //MAIN23A1_CPP_AVL_TREE_H
+

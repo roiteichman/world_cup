@@ -155,3 +155,16 @@ void Team::get_all_players(int *const output) {
     int i = 0;
     m_teamPlayersByStats.printInOrder(m_teamPlayersByStats.getRoot(), output, i);
 }
+
+void Team::setTeamPlayersByStats(const AVLTree<shared_ptr<Player>>& TeamPlayersByStats) {
+    m_teamPlayersByStats = TeamPlayersByStats;
+}
+
+void Team::setTeamPlayersByIds(const AVLTree<shared_ptr<Player>>& TeamPlayersByIds) {
+    m_teamPlayersByIds = TeamPlayersByIds;
+}
+
+void Team::setMNumOfPlayers(int mNumOfPlayers) {
+    m_numOfPlayers = mNumOfPlayers;
+}
+
