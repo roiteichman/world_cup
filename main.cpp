@@ -28,6 +28,7 @@ int main(){
     wc.add_team(2, 6);
     wc.add_team(2, 4);
     wc.add_team(6,7);
+    wc.add_team(8,9);
     wc.add_team(3,5);
     wc.add_player(1,3,4,1, 5,true);
 
@@ -42,7 +43,7 @@ int main(){
     wc.add_player(444,2,4,4, 5,true);
     wc.play_match(2,3);
     wc.play_match(2,3);
-    wc.unite_teams(3,2,2);
+    wc.unite_teams(8,6,2);
 
     output_t<int> a = wc.get_num_played_games(2);
 

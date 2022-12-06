@@ -422,7 +422,9 @@ StatusType world_cup_t::unite_teams(int teamId1, int teamId2, int newTeamId)
 
     m_teams.insert(newTeam);
 
-    m_notEmptyTeams.insert(newTeam);
+    if (newTeam->getNumOfPlayers()){
+        m_notEmptyTeams.insert(newTeam);
+    }
 
 	return StatusType::SUCCESS;
 }
