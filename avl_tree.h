@@ -544,16 +544,22 @@ AVLNode<T>* AVLTree<T>::sortedArrayToBST(T* arr, int start, int end)
     }
 
 
+    int height=0;
     /* Recursively construct the left subtree and make it
        left child of root */
     root->setLeft(sortedArrayToBST(arr, start, mid-1));
-    if(root->getLeft())
+    if(root->getLeft()) {
         root->getLeft()->setParent(root);
+        height = root->getLeft()->getHeight()+1;
+    }
     /* Recursively construct the right subtree and make it
        right child of root */
     root->setRight(sortedArrayToBST(arr, mid+1, end));
-    if(root->getRight())
+    if(root->getRight()) {
         root->getRight()->setParent(root);
+        height = height>root->getRight()->getHeight()+1;
+    }
+    root->setHeight(height);
     return root;
 }
 
