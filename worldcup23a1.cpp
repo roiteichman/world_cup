@@ -324,7 +324,17 @@ StatusType world_cup_t::unite_teams(int teamId1, int teamId2, int newTeamId)
     if (newTeamId<=0 || teamId1<=0 || teamId2<=0 || teamId1==teamId2){
         return StatusType::INVALID_INPUT;
     }
-    ///if (!m_teams.findInt(m_teams.getRoot(), teamId1) || !m_teams.findInt(m_teams.getRoot(), teamId2) || m_teams.findInt(m_teams.getRoot(), newTeamId))
+    // if team 1 or 2 does not exist
+    if (!m_teams.findInt(m_teams.getRoot(), teamId1) || !m_teams.findInt(m_teams.getRoot(), teamId2)){
+        return StatusType::FAILURE;
+    }
+    // check if there is a team with newTeamId that are not one of the two others
+    if (m_teams.findInt(m_teams.getRoot(), newTeamId)){
+        if (m_teams.findInt(m_teams.getRoot(), newTeamId) != m_teams.findInt(m_teams.getRoot(), teamId1) &&
+            m_teams.findInt(m_teams.getRoot(), newTeamId) != m_teams.findInt(m_teams.getRoot(), teamId2) ){
+            return StatusType::FAILURE;
+        }
+    }
 
     // get the teams to unite
     shared_ptr<Team> team1 = m_teams.findInt(m_teams.getRoot(), teamId1)->getValue();
@@ -340,11 +350,28 @@ StatusType world_cup_t::unite_teams(int teamId1, int teamId2, int newTeamId)
         m_notEmptyTeams.remove(m_notEmptyTeams.getRoot(), team2);
     }
 
+    int sumOfPlayersTotal = team1->getNumOfPlayers() + team2->getNumOfPlayers();
+
     // allocate arrays
-    shared_ptr<Player>* arrTeam1ByStats = new shared_ptr<Player>[team1->getNumOfPlayers()];
-    shared_ptr<Player>* arrTeam1ByIDs = new shared_ptr<Player>[team1->getNumOfPlayers()];
-    shared_ptr<Player>* arrTeam2ByStats = new shared_ptr<Player>[team2->getNumOfPlayers()];
-    shared_ptr<Player>* arrTeam2ByIDs = new shared_ptr<Player>[team2->getNumOfPlayers()];
+    shared_ptr<Player>* arrTeam1ByStats;
+    shared_ptr<Player>* arrTeam1ByIDs;
+    shared_ptr<Player>* arrTeam2ByStats;
+    shared_ptr<Player>* arrTeam2ByIDs;
+    // allocate new arrays for the unite team
+    shared_ptr<Player>* arrUniteTeamByStats;
+    shared_ptr<Player>* arrUniteTeamByIDs;
+
+    try{
+        arrTeam1ByStats = new shared_ptr<Player>[team1->getNumOfPlayers()];
+        arrTeam1ByIDs = new shared_ptr<Player>[team1->getNumOfPlayers()];
+        arrTeam2ByStats = new shared_ptr<Player>[team2->getNumOfPlayers()];
+        arrTeam2ByIDs = new shared_ptr<Player>[team2->getNumOfPlayers()];
+        arrUniteTeamByStats = new shared_ptr<Player>[sumOfPlayersTotal];
+        arrUniteTeamByIDs = new shared_ptr<Player>[sumOfPlayersTotal];
+
+    } catch (const bad_alloc& e){
+        return StatusType::ALLOCATION_ERROR;
+    }
 
     // fill the arrays with the teams inOrder
     int i = 0, k=0;
@@ -359,24 +386,32 @@ StatusType world_cup_t::unite_teams(int teamId1, int teamId2, int newTeamId)
     updatePlayers(arrTeam1ByStats, newTeamId, team1->getNumOfPlayers(), team1->getGamesPlayed());
     updatePlayers(arrTeam2ByStats, newTeamId, team2->getNumOfPlayers(), team2->getGamesPlayed());
 
-    int total = team1->getNumOfPlayers()+team2->getNumOfPlayers();
 
-    // allocate new arrays for the unite team
-    shared_ptr<Player>* arrUniteTeamByStats (new shared_ptr<Player>[total]);
-    shared_ptr<Player>* arrUniteTeamByIDs (new shared_ptr<Player>[total]);
 
     // merging the teams once by Stats and next time by Ids
-    mergeArraiesByStats(arrTeam1ByStats, arrTeam2ByStats, arrUniteTeamByStats, team1->getNumOfPlayers(), team2->getNumOfPlayers(), total);
-    mergeArraiesByIds(arrTeam1ByIDs, arrTeam2ByIDs, arrUniteTeamByIDs, team1->getNumOfPlayers(), team2->getNumOfPlayers(), total);
+    mergeArraiesByStats(arrTeam1ByStats, arrTeam2ByStats, arrUniteTeamByStats, team1->getNumOfPlayers(), team2->getNumOfPlayers(), sumOfPlayersTotal);
+    mergeArraiesByIds(arrTeam1ByIDs, arrTeam2ByIDs, arrUniteTeamByIDs, team1->getNumOfPlayers(), team2->getNumOfPlayers(), sumOfPlayersTotal);
 
 
-    AVLNode<shared_ptr<Player>>* nodeUniteTeamByStats = m_playersByStats.sortedArrayToBST(arrUniteTeamByStats, 0, total-1);
-    AVLNode<shared_ptr<Player>>* nodeUniteTeamByIDs = m_playersByStats.sortedArrayToBST(arrUniteTeamByIDs, 0, total-1);
+    AVLNode<shared_ptr<Player>>* nodeUniteTeamByStats = m_playersByStats.sortedArrayToBST(arrUniteTeamByStats, 0, sumOfPlayersTotal - 1);
+    AVLNode<shared_ptr<Player>>* nodeUniteTeamByIDs = m_playersByStats.sortedArrayToBST(arrUniteTeamByIDs, 0, sumOfPlayersTotal - 1);
 
-    AVLTree<shared_ptr<Player>>* unitedTeamByStats (&(* new AVLTree<shared_ptr<Player>>(true, nodeUniteTeamByStats)));
-    AVLTree<shared_ptr<Player>>* unitedTeamById (&(* new AVLTree<shared_ptr<Player>>(false, nodeUniteTeamByIDs)));
 
-    shared_ptr<Team> newTeam( new Team(newTeamId, team1->getPoints()+team2->getPoints()));
+    AVLTree<shared_ptr<Player>>* unitedTeamByStats;
+    AVLTree<shared_ptr<Player>>* unitedTeamById;
+
+    try {
+        unitedTeamByStats = (&(* new AVLTree<shared_ptr<Player>>(true, nodeUniteTeamByStats)));
+        unitedTeamById = (&(* new AVLTree<shared_ptr<Player>>(false, nodeUniteTeamByIDs)));
+    } catch (const bad_alloc& e){
+        return StatusType::ALLOCATION_ERROR;
+    }
+
+    // create new Team
+    /// we have a problem with try & catch right here
+    shared_ptr<Team> newTeam (new Team(newTeamId, team1->getPoints()+team2->getPoints()));
+
+    // update or the other field in newTeam
     newTeam->setTeamPlayersByIds(*unitedTeamById);
     newTeam->setTeamPlayersByStats(*unitedTeamByStats);
     newTeam->setMNumOfPlayers(team1->getNumOfGoalKeepers()+team2->getNumOfGoalKeepers());
@@ -384,9 +419,11 @@ StatusType world_cup_t::unite_teams(int teamId1, int teamId2, int newTeamId)
     newTeam->setGoals(team1->getGoals()+team2->getGoals());
     newTeam->increaseGamesPlayed(team1->getGamesPlayed()+team2->getGamesPlayed());
     newTeam->setMNumOfGoalKeepers(team1->getNumOfGoalKeepers()+team2->getNumOfGoalKeepers());
+
     m_teams.insert(newTeam);
+
     m_notEmptyTeams.insert(newTeam);
-    // TODO: Your code goes here
+
 	return StatusType::SUCCESS;
 }
 

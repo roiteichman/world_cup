@@ -557,7 +557,7 @@ AVLNode<T>* AVLTree<T>::sortedArrayToBST(T* arr, int start, int end)
     root->setRight(sortedArrayToBST(arr, mid+1, end));
     if(root->getRight()) {
         root->getRight()->setParent(root);
-        height = height>root->getRight()->getHeight()+1;
+        height = height>root->getRight()->getHeight()+1 ? height : root->getRight()->getHeight()+1;
     }
     root->setHeight(height);
     return root;
