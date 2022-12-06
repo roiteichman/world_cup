@@ -40,8 +40,8 @@ public:
     void setGamePlayed (int gamesPlayed);
     void setGoals (int goals);
     void setCards (int cardsReceived);
-    void setClosestLeft (shared_ptr<Player> left);
-    void setClosestRight (shared_ptr<Player> right);
+    void setClosestLeft (Player* left);
+    void setClosestRight (Player* right);
 
     int getID() const;
     int getTeamID() const;

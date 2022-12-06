@@ -289,8 +289,8 @@ void AVLTree<T>::rotateLeft (AVLNode<T>* B) {
             }
         }
         if(next->getParent()) {
-            leaf->getValue()->setClosestRight(next->getParent()->getValue());
-            next->getParent()->getValue()->setClosestLeft(leaf->getValue());
+            leaf->getValue()->setClosestRight(&(*next->getParent()->getValue()));
+            next->getParent()->getValue()->setClosestLeft(&(*leaf->getValue()));
         }
     }
 
@@ -310,8 +310,8 @@ void AVLTree<T>::rotateLeft (AVLNode<T>* B) {
             }
         }
         if(next->getParent()) {
-            leaf->getValue()->setClosestLeft(next->getParent()->getValue());
-            next->getParent()->getValue()->setClosestRight(leaf->getValue());
+            leaf->getValue()->setClosestLeft(&(*next->getParent()->getValue()));
+            next->getParent()->getValue()->setClosestRight(&(*leaf->getValue()));
         }
     }
 

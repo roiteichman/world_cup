@@ -56,7 +56,11 @@ public:
 
     void update_top_scorer(shared_ptr<Player> player);
 
-    void update_previous_next(shared_ptr<Player> player_ptr);
+    void update_previous_next_add_player(shared_ptr<Player> player_ptr);
+    void update_previous_next_remove_player(shared_ptr<Player> player_ptr);
+
+    void update_previous_next_add_team(shared_ptr<Team> team_ptr);
+    void update_previous_next_remove_team(shared_ptr<Team> team_ptr);
 
     void mergeArraiesByStats(shared_ptr<Player>* arrTeam1ByStats, shared_ptr<Player>* arrTeam2ByStats, shared_ptr<Player>* arrUniteTeamByStats, int team1, int team2, int total);
 

@@ -45,6 +45,7 @@ StatusType world_cup_t::add_team(int teamId, int points)
 		return StatusType::ALLOCATION_ERROR;
 	}
 
+    update_previous_next_add_team(team_ptr);
 	return StatusType::SUCCESS;
 }
 
@@ -56,6 +57,7 @@ StatusType world_cup_t::remove_team(int teamId)
     if (!m_teams.findInt(m_teams.getRoot(), teamId))
         return StatusType::FAILURE;
     shared_ptr<Team> team = m_teams.findInt(m_teams.getRoot(), teamId)->getValue();
+    update_previous_next_remove_team(team);
     if (team->getTeamPlayerByIds().getRoot())
         return StatusType::FAILURE;
     m_teams.remove(m_teams.getRoot(), team);
@@ -73,16 +75,16 @@ StatusType world_cup_t::add_player(int playerId, int teamId, int gamesPlayed,
         return StatusType::INVALID_INPUT;
     }
 
-    // if this player already exist
-    if (m_playersByID.getRoot() != nullptr){
-        // checking if the player exist or the team does not exist
-        if ((m_playersByID.findInt(m_playersByID.getRoot(), playerId) != nullptr) || (m_teams.findInt(m_teams.getRoot(), teamId) == nullptr)) {
-            return StatusType::FAILURE;
-        }
+
+    // checking if the player exist or the team does not exist
+    if ((m_playersByID.findInt(m_playersByID.getRoot(), playerId) != nullptr) || (m_teams.findInt(m_teams.getRoot(), teamId) == nullptr)) {
+        return StatusType::FAILURE;
     }
 
-    /// we forgot to do return Failure some where
-
+    // there is no team in this ID in system
+    if (!m_teams.findInt(m_teams.getRoot(), teamId)){
+        return StatusType::FAILURE;
+    }
 
     shared_ptr<Team> team_ptr;
     team_ptr= m_teams.findInt(m_teams.getRoot(), teamId)->getValue();
@@ -110,7 +112,7 @@ StatusType world_cup_t::add_player(int playerId, int teamId, int gamesPlayed,
         return StatusType::ALLOCATION_ERROR;
     }
 
-    update_previous_next(player_ptr);
+    update_previous_next_add_player(player_ptr);
 
     // entering the player to the team
     try{
@@ -148,10 +150,33 @@ void world_cup_t::update_top_scorer(shared_ptr<Player> player) {
     }
 }
 
-void world_cup_t::update_previous_next(shared_ptr<Player> player_ptr) {
+void world_cup_t::update_previous_next_add_player(shared_ptr<Player> player_ptr) {
     AVLNode<shared_ptr<Player>>* newNode = m_playersByStats.find(m_playersByStats.getRoot(), player_ptr);
     m_playersByStats.findPrevious(newNode);
     m_playersByStats.findNext(newNode);
+}
+
+void world_cup_t::update_previous_next_remove_player(shared_ptr<Player> player_ptr) {
+
+    if (player_ptr->getClosestRight())
+        player_ptr->getClosestRight()->setClosestLeft(player_ptr->getClosestLeft());
+    if (player_ptr->getClosestLeft())
+        player_ptr->getClosestLeft()->setClosestRight(player_ptr->getClosestRight());
+}
+
+
+void world_cup_t::update_previous_next_add_team(shared_ptr<Team> team_ptr) {
+    AVLNode<shared_ptr<Team>>* newNode = m_teams.find(m_teams.getRoot(), team_ptr);
+    m_teams.findPrevious(newNode);
+    m_teams.findNext(newNode);
+}
+
+void world_cup_t::update_previous_next_remove_team(shared_ptr<Team> team_ptr) {
+
+    if (team_ptr->getClosestRight())
+        team_ptr->getClosestRight()->setClosestLeft(team_ptr->getClosestLeft());
+    if (team_ptr->getClosestLeft())
+        team_ptr->getClosestLeft()->setClosestRight(team_ptr->getClosestRight());
 }
 
 
@@ -170,7 +195,7 @@ StatusType world_cup_t::add_player(shared_ptr<Player> player_ptr, shared_ptr<Tea
         return StatusType::ALLOCATION_ERROR;
     }
 
-    update_previous_next(player_ptr);
+    update_previous_next_add_player(player_ptr);
 
     // entering the player to the team
     try{
@@ -207,6 +232,8 @@ StatusType world_cup_t::remove_player(int playerId)
 
     shared_ptr<Team> teamPtr = m_notEmptyTeams.findInt(m_notEmptyTeams.getRoot(), playerPtr->getTeamID())->getValue();
 
+    update_previous_next_remove_player(playerPtr);
+
     m_playersByID.remove(m_playersByID.getRoot(), playerPtr);
     m_playersByStats.remove(m_playersByStats.getRoot(), playerPtr);
 
@@ -218,7 +245,7 @@ StatusType world_cup_t::remove_player(int playerId)
         m_notEmptyTeams.remove(m_notEmptyTeams.getRoot(), teamPtr);
     }
 
-    // update top scorer
+    // update top scorer + closest right of the next one
     if (playerPtr==m_topScorer){
         shared_ptr<Player> closestLeft (playerPtr->getClosestLeft());
         m_topScorer = closestLeft;
@@ -573,7 +600,13 @@ output_t<int> world_cup_t::get_closest_player(int playerId, int teamId)
 
 output_t<int> world_cup_t::knockout_winner(int minTeamId, int maxTeamId)
 {
-	//teamsToArray(teamId1, teamId2)
-	return 2;
+    /// adding check
+
+    shared_ptr<Team> minIdTeam = m_teams.findInt(m_teams.getRoot(), minTeamId)->getValue();
+    shared_ptr<Team> maxIdTeam = m_teams.findInt(m_teams.getRoot(), maxTeamId)->getValue();
+    while ()
+
+
+
 }
 

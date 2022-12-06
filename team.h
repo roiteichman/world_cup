@@ -54,8 +54,8 @@ public:
     int getNumOfGoalKeepers() const;
     int getNumOfPlayers() const;
 
-    void setClosestLeft (shared_ptr<Team> left);
-    void setClosestRight (shared_ptr<Team> right);
+    void setClosestLeft (Team* left);
+    void setClosestRight (Team* right);
     void increaseGamesPlayed(int gamesPlayed);
     void update_top_scorer(shared_ptr<Player> player);
     void get_all_players(int *const output);

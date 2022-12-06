@@ -31,12 +31,12 @@ int main(){
     wc.add_team(8,9);
     wc.add_team(3,5);
     wc.add_player(1,3,4,1, 5,true);
-
-    wc.remove_player(1);
-
     wc.add_player(2,3,4,2, 5,true);
     wc.add_player(3,3,4,3, 5,true);
     wc.add_player(4,3,4,4, 5,true);
+
+    wc.remove_player(3);
+
     wc.add_player(111,2,4,10, 5,true);
     wc.add_player(222,2,4,13, 5,true);
     wc.add_player(333,2,4,1, 5,true);
@@ -60,7 +60,7 @@ int main(){
     output_t<int> numOfPlayersTotal = wc.get_all_players_count(-2);
     output_t<int> numOfPlayersFailure = wc.get_all_players_count(30);
 
-    wc.remove_team(2);
+    wc.remove_team(6);
 
     wc.remove_team(2);
 

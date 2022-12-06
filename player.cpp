@@ -63,12 +63,12 @@ int Player::getID() const {
     m_team=newTeam;
 }*/
 
-void Player::setClosestLeft(shared_ptr<Player> left) {
-    m_closest_left=&(*left);
+void Player::setClosestLeft(Player* left) {
+    m_closest_left=left;
 }
 
-void Player::setClosestRight(shared_ptr<Player> right) {
-    m_closest_right=&(*right);
+void Player::setClosestRight(Player* right) {
+    m_closest_right=right;
 }
 
 

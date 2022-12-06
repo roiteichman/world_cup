@@ -95,12 +95,12 @@ void Team::addPlayer(const shared_ptr<Player> &player) {
     update_top_scorer(player);
 }
 
-void Team::setClosestLeft(shared_ptr<Team> left) {
-    m_closest_left=&(*(left));
+void Team::setClosestLeft(Team* left) {
+    m_closest_left=left;
 }
 
-void Team::setClosestRight(shared_ptr<Team> right) {
-    m_closest_right=&(*(right));
+void Team::setClosestRight(Team* right) {
+    m_closest_right=right;
 }
 
 
