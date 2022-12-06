@@ -331,9 +331,13 @@ StatusType world_cup_t::unite_teams(int teamId1, int teamId2, int newTeamId)
     shared_ptr<Team> team2 = m_teams.findInt(m_teams.getRoot(), teamId2)->getValue();
 
     m_teams.remove(m_teams.getRoot(), team1);
-    m_notEmptyTeams.remove(m_notEmptyTeams.getRoot(), team1);
+    if(team1->getNumOfPlayers()){
+        m_notEmptyTeams.remove(m_notEmptyTeams.getRoot(), team1);
+    }
     m_teams.remove(m_teams.getRoot(), team2);
-    m_notEmptyTeams.remove(m_notEmptyTeams.getRoot(), team2);
+    if(team2->getNumOfPlayers()) {
+        m_notEmptyTeams.remove(m_notEmptyTeams.getRoot(), team2);
+    }
 
     shared_ptr<Player>* arrTeam1ByStats = new shared_ptr<Player>[team1->getNumOfPlayers()];
     shared_ptr<Player>* arrTeam1ByIDs = new shared_ptr<Player>[team1->getNumOfPlayers()];
