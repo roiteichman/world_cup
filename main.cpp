@@ -67,6 +67,8 @@ int main(){
     wc.remove_team(3);
     wc.remove_team(2);
 
+    output_t<int> winner = wc.knockout_winner(2,3);
+
 
     // checking get all players
     output_t<int> count = wc.get_all_players_count(-2);

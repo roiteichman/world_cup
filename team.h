@@ -77,7 +77,5 @@ public:
 
     int getGamesPlayed() const;
 
-
-
 };
 #endif //MAIN_CPP_TEAM_H

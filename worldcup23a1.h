@@ -17,11 +17,24 @@
 
 #include "wet1util.h"
 #include <memory>
+#include <cmath>
 using namespace std;
 
 #include "avl_tree.h"
 #include "player.h"
 #include "team.h"
+
+
+struct FakeTeam{
+
+    int m_id;
+    int m_stats;
+
+    FakeTeam(int id, int stats);
+
+    bool game(FakeTeam* other);
+};
+
 
 class world_cup_t {
 private:
@@ -86,11 +99,14 @@ public:
 	StatusType get_all_players(int teamId, int *const output);
 	
 	output_t<int> get_closest_player(int playerId, int teamId);
+
+    int playSimulation(FakeTeam** teams, int size);
 	
 	output_t<int> knockout_winner(int minTeamId, int maxTeamId);
 	
 	// } </DO-NOT-MODIFY>
 
 };
+
 
 #endif // WORLDCUP23A1_H_

@@ -643,13 +643,14 @@ output_t<int> world_cup_t::get_closest_player(int playerId, int teamId)
     return output;
 
 }
-/*
+
 output_t<int> world_cup_t::knockout_winner(int minTeamId, int maxTeamId)
 {
-    /// adding check
+    if (minTeamId<0 || maxTeamId<0 || maxTeamId<minTeamId){
+        return StatusType::INVALID_INPUT;
+    }
 
     Team* minValidTeam = &(*m_validTeams.findInt(m_validTeams.getRoot(), minTeamId)->getValue());
-
 
     shared_ptr<Team> fictiveTeam;
     try{
@@ -658,7 +659,7 @@ output_t<int> world_cup_t::knockout_winner(int minTeamId, int maxTeamId)
         return StatusType::ALLOCATION_ERROR;
     }
 
-    if (minValidTeam){
+    if (!minValidTeam){
         m_validTeams.insert(fictiveTeam);
         update_previous_next_add_team(fictiveTeam);
         minValidTeam = (fictiveTeam->getClosestRight());
@@ -668,22 +669,66 @@ output_t<int> world_cup_t::knockout_winner(int minTeamId, int maxTeamId)
 
     Team* temp = minValidTeam;
 
-    // allocate array
-    Team** arrValidTeamForGames;
-
-    try{
-        //arrValidTeamForGames = new Team()[m_numOfValidTeams];
-    } catch (const bad_alloc& e){
-        return StatusType::ALLOCATION_ERROR;
+    if (!temp || temp->getID()>maxTeamId){
+        return StatusType::FAILURE;
     }
 
+    // allocate array
+    FakeTeam* arrValidTeamForGames[m_numOfValidTeams];
+    int i=0;
     while (temp){
         if (temp->getID()>maxTeamId){
             break;
         }
-
-
+        int stats = temp->getPoints()+temp->getGoals()-temp->getCards();
+        arrValidTeamForGames[i]= new FakeTeam(temp->getID(), stats);
+        temp=temp->getClosestRight();
+        i++;
     }
 
+    int winnerId = playSimulation(arrValidTeamForGames, i);
+
+    // delete the pointers for the FactTeams
+    for (int j = 0; j < i; ++j) {
+        delete arrValidTeamForGames[j];
+    }
+
+    return winnerId;
+
 }
-*/
+
+int world_cup_t::playSimulation(FakeTeam** teams, int size) {
+    // return the winner
+    if (size==1){
+        return teams[0]->m_id;
+    }
+    // play the matches
+    for (int i = 0; i < (size/2); ++i) {
+        if (teams[2*i]->game(teams[2*i+1])){
+            teams[i]=teams[2*i];
+        }
+        else {
+            teams[i] = teams[2 * i + 1];
+        }
+    }
+    // recursion
+    return playSimulation(teams, ceil(size/2));
+}
+
+FakeTeam::FakeTeam(int id, int stats) : m_id(id), m_stats(stats) {}
+
+bool FakeTeam::game(FakeTeam* other) {
+    if (m_stats < other->m_stats) {
+        other->m_stats+= m_stats+ 3;
+    }
+    else if((m_stats == other->m_stats) && (m_id < other->m_id)){
+        other->m_stats+= m_stats+ 3;
+    }
+    else{
+        m_stats+=other->m_stats+3;
+        return true;
+    }
+    return false;
+}
+
+
