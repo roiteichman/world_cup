@@ -328,7 +328,7 @@ template <class T>
 void AVLTree<T>::printInOrderT(AVLNode<T>* root, T* const output, int& i) {
     if( root ) {
         printInOrderT(root->getLeft(), output, i);  // Left
-        output[i]=root->getValue(); // Parent
+        output[i] = root->getValue(); // Parent
         i++;
         printInOrderT(root->getRight(), output, i); // Right
     }
@@ -453,7 +453,7 @@ void AVLTree<T>::printInOrderT(AVLNode<T>* root, T* const output, int& i) {
             }
 
             T temp = willDeleted->getValue();
-            nextJunction->setValue(temp);
+            //nextJunction->setValue(temp);
             willDeleted->setValue(nextJunction->getValue());
             /*
             // this node could have one son from right or none

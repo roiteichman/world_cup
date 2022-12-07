@@ -73,7 +73,7 @@ void Team::removePlayer(const shared_ptr<Player> &player) {
             m_topScorer = (playerNode->getParent()->getValue());
         }
         else if (playerNode->getLeft()){
-            m_topScorer=(playerNode->getLeft()->getValue());
+            m_topScorer=(playerNode->getLeft()->getValue());///TODO ?
         }
         else{
             m_topScorer = nullptr;
@@ -140,13 +140,24 @@ void Team::update_top_scorer(shared_ptr<Player> player) {
     // first player is the top scorer
     if (!m_topScorer){
         m_topScorer=player;
+        return;
     }
-
-    else if (((m_topScorer->getGoalsScored() == player->getGoalsScored()) && (m_topScorer->getID()<player->getID())) ||
-             (m_topScorer->getGoalsScored()<player->getGoalsScored())){
+    ///TODO forget cards
+    if (m_topScorer->getGoalsScored() < player->getGoalsScored())
+    {
         m_topScorer = player;
+        return;
+    }
+    if(((m_topScorer->getGoalsScored() == player->getGoalsScored()))) {
+        if (m_topScorer->getCardsReceived() > player->getCardsReceived()) {
+            m_topScorer = player;
+            return;
+        } else if (m_topScorer->getCardsReceived() == player->getCardsReceived())
+            if (m_topScorer->getID() < player->getID())
+                m_topScorer = player;
     }
 }
+
 
 const shared_ptr<Player> &Team::getTopScorer() const {
     return m_topScorer;

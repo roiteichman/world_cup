@@ -148,11 +148,21 @@ void world_cup_t::update_top_scorer(shared_ptr<Player> player) {
     // first player is the top scorer
     if (!m_topScorer){
         m_topScorer=player;
+        return;
     }
-
-    else if (((m_topScorer->getGoalsScored() == player->getGoalsScored()) && (m_topScorer->getID()<player->getID())) ||
-    (m_topScorer->getGoalsScored()<player->getGoalsScored())){
+    ///TODO forget cards
+    if (m_topScorer->getGoalsScored() < player->getGoalsScored())
+    {
         m_topScorer = player;
+        return;
+    }
+    if(((m_topScorer->getGoalsScored() == player->getGoalsScored()))) {
+        if (m_topScorer->getCardsReceived() > player->getCardsReceived()) {
+            m_topScorer = player;
+            return;
+        } else if (m_topScorer->getCardsReceived() == player->getCardsReceived())
+            if (m_topScorer->getID() < player->getID())
+                m_topScorer = player;
     }
 }
 
@@ -166,11 +176,12 @@ void world_cup_t::update_previous_next_remove_player(shared_ptr<Player> player_p
 
     if (player_ptr->getClosestRight()) {
         player_ptr->getClosestRight()->setClosestLeft(player_ptr->getClosestLeft());
-        player_ptr->setClosestRight(nullptr);
+        //player_ptr->setClosestRight(nullptr);
     }
     if (player_ptr->getClosestLeft()) {
         player_ptr->getClosestLeft()->setClosestRight(player_ptr->getClosestRight());
         player_ptr->setClosestLeft(nullptr);
+        player_ptr->setClosestRight(nullptr);
     }
 }
 
@@ -252,7 +263,11 @@ StatusType world_cup_t::remove_player(int playerId)
 
     shared_ptr<Team> teamPtr = m_notEmptyTeams.findInt(m_notEmptyTeams.getRoot(), playerPtr->getTeamID())->getValue();
 
-    update_previous_next_remove_player(playerPtr);
+    // update top scorer + closest right of the next one
+    if (playerPtr==m_topScorer){
+        shared_ptr<Player> closestLeft (playerPtr->getClosestLeft());
+        m_topScorer = closestLeft;
+    }
 
     m_playersByID.remove(m_playersByID.getRoot(), playerPtr);
     m_playersByStats.remove(m_playersByStats.getRoot(), playerPtr);
@@ -270,12 +285,8 @@ StatusType world_cup_t::remove_player(int playerId)
     if (teamPtr->getNumOfPlayers()==0){
         m_notEmptyTeams.remove(m_notEmptyTeams.getRoot(), teamPtr);
     }
+    update_previous_next_remove_player(playerPtr);
 
-    // update top scorer + closest right of the next one
-    if (playerPtr==m_topScorer){
-        shared_ptr<Player> closestLeft (playerPtr->getClosestLeft());
-        m_topScorer = closestLeft;
-    }
 
     m_numOfPlayes--;
 
@@ -567,15 +578,15 @@ output_t<int> world_cup_t::get_top_scorer(int teamId)
     }
     if (teamId>0){
         // checking if team exist
-        if (!(m_teams.findInt(m_teams.getRoot(), teamId))){
+        if (!(m_notEmptyTeams.findInt(m_notEmptyTeams.getRoot(), teamId))){
             return StatusType::FAILURE;
         }
-        // checking if there are players in team
-        else if (m_teams.findInt(m_teams.getRoot(), teamId)->getValue()->getNumOfPlayers()==0){
+        // checking if there are players in team///TODO .
+        /*else if (m_teams.findInt(m_teams.getRoot(), teamId)->getValue()->getNumOfPlayers()==0){
             return StatusType::FAILURE;
-        }
+        }*/
         // return top scorer in teamID
-        return m_teams.findInt(m_teams.getRoot(), teamId)->getValue()->getTopScorer()->getID();
+        return m_notEmptyTeams.findInt(m_notEmptyTeams.getRoot(), teamId)->getValue()->getTopScorer()->getID();
     }
     // no players in system
     if (!m_topScorer){
