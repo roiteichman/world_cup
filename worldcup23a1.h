@@ -20,9 +20,9 @@
 #include <cmath>
 using namespace std;
 
-#include "avl_tree.h"
-#include "player.h"
-#include "team.h"
+#include "AVLTree.h"
+#include "Player.h"
+#include "Team.h"
 
 
 struct FakeTeam{

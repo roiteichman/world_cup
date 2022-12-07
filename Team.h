@@ -5,8 +5,8 @@
 #ifndef MAIN_CPP_TEAM_H
 #define MAIN_CPP_TEAM_H
 #include <memory>
-#include "player.h"
-#include "avl_tree.h"
+#include "Player.h"
+#include "AVLTree.h"
 
 
 using namespace std;

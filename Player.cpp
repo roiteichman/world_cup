@@ -2,7 +2,7 @@
 // Created by shlom on 27/11/2022.
 //
 
-#include "player.h"
+#include "Player.h"
 #include <cstdlib>
 
 

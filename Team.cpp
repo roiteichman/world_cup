@@ -2,7 +2,7 @@
 // Created by teich on 27/11/2022.
 //
 
-#include "team.h"
+#include "Team.h"
 
 const bool BY_STATS = true;
 const bool BY_IDS = false;
