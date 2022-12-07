@@ -27,9 +27,6 @@ private:
 public:
     Player(int playerId, int teamId, int gamesPlayed, int scoredGoals, int CardsReceived, bool goalKeeper);
     ~Player();
-
-    //virtual ~Player();
-
     Player (const Player& player) = delete;
     Player& operator = (const Player& player) = delete;
     bool operator< (const Player& other) const;

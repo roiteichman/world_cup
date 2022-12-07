@@ -453,8 +453,10 @@ StatusType world_cup_t::unite_teams(int teamId1, int teamId2, int newTeamId)
                      team2->getNumOfPlayers(), sumOfPlayersTotal);
 
 
-    AVLNode<shared_ptr<Player>>* nodeUniteTeamByStats = m_playersByStats.sortedArrayToBST(arrUniteTeamByStats, 0, sumOfPlayersTotal - 1);
-    AVLNode<shared_ptr<Player>>* nodeUniteTeamByIDs = m_playersByStats.sortedArrayToBST(arrUniteTeamByIDs, 0, sumOfPlayersTotal - 1);
+    AVLNode<shared_ptr<Player>>* nodeUniteTeamByStats = m_playersByStats.sortedArrayToAVL(arrUniteTeamByStats, 0,
+                                                                                          sumOfPlayersTotal - 1);
+    AVLNode<shared_ptr<Player>>* nodeUniteTeamByIDs = m_playersByStats.sortedArrayToAVL(arrUniteTeamByIDs, 0,
+                                                                                        sumOfPlayersTotal - 1);
 
 
     AVLTree<shared_ptr<Player>>* unitedTeamByStats;

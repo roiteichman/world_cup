@@ -12,7 +12,7 @@ int main(){
 
     shared_ptr<Player> pp [] = {p, p1, p2, p3};
     AVLTree<shared_ptr<Player>> ppp = new AVLTree<shared_ptr<Player>>(false);
-    AVLNode<shared_ptr<Player>>* pppp= ppp.sortedArrayToBST(pp, 0, 3);
+    AVLNode<shared_ptr<Player>>* pppp= ppp.sortedArrayToAVL(pp, 0, 3);
 
 
     Team team(2,4);
