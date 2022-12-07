@@ -26,6 +26,7 @@ using namespace std;
 class world_cup_t {
 private:
 	int m_numOfPlayes;
+    int m_numOfValidTeams;
 	shared_ptr<Player> m_topScorer;
     AVLTree<shared_ptr<Team>> m_teams;
     AVLTree<shared_ptr<Team>> m_notEmptyTeams;

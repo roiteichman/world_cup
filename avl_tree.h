@@ -406,8 +406,16 @@ void AVLTree<T>::printInOrderT(AVLNode<T>* root, T* const output, int& i) {
                 if (willDeleted == parent->getLeft()) {
                     // after recursion the leaf is smaller than the parent but he is a right son of him
                     parent->setLeft(nullptr);
+                    // if parent now is leaf
+                    if (!parent->getRight()){
+                        parent->setHeight(0);
+                    }
                 } else {
                     parent->setRight(nullptr);
+                    // if parent now is leaf
+                    if (!parent->getLeft()){
+                        parent->setHeight(0);
+                    }
                 }
             }
             // if is the last junction in tree reset the tree, pointer to nullptr

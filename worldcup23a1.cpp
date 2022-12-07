@@ -5,7 +5,7 @@ const bool BY_IDS = false;
 const int VICTORY = 3;
 const int DRAW = 1;
 
-world_cup_t::world_cup_t(): m_numOfPlayes(0), m_topScorer(nullptr) , m_teams(* new AVLTree<shared_ptr<Team>>(BY_IDS)),
+world_cup_t::world_cup_t(): m_numOfPlayes(0), m_numOfValidTeams(0), m_topScorer(nullptr) , m_teams(* new AVLTree<shared_ptr<Team>>(BY_IDS)),
                             m_notEmptyTeams(* new AVLTree<shared_ptr<Team>>(BY_IDS)),
                             m_validTeams(* new AVLTree<shared_ptr<Team>>(BY_IDS)),
                             m_playersByID(* new AVLTree<shared_ptr<Player>>(BY_IDS)),
@@ -131,6 +131,7 @@ StatusType world_cup_t::add_player(int playerId, int teamId, int gamesPlayed,
     if (team_ptr->isValid() && !(m_validTeams.find(m_validTeams.getRoot(), team_ptr))) {
         m_validTeams.insert(team_ptr);
         update_previous_next_add_team(team_ptr);
+        m_numOfValidTeams++;
     }
     update_top_scorer(player_ptr);
     m_numOfPlayes++;
@@ -226,6 +227,7 @@ StatusType world_cup_t::add_player(shared_ptr<Player> player_ptr, shared_ptr<Tea
     if (team_ptr->isValid() && !(m_validTeams.find(m_validTeams.getRoot(), team_ptr))) {
         m_validTeams.insert(team_ptr);
         update_previous_next_add_team(team_ptr);
+        m_numOfValidTeams++;
     }
 
     update_top_scorer(player_ptr);
@@ -253,9 +255,11 @@ StatusType world_cup_t::remove_player(int playerId)
 
     // searching the playerPtr in the not empty teamPtr tree and remove the playerPtr from it
     teamPtr->removePlayer(playerPtr);
+
     if (!teamPtr->isValid()) {
         m_validTeams.remove(m_validTeams.getRoot(), teamPtr);
         update_previous_next_remove_team(teamPtr);
+        m_numOfValidTeams--;
     }
 
     // if it was the last player in team, remove the team from the non empty team tree
@@ -392,6 +396,7 @@ StatusType world_cup_t::unite_teams(int teamId1, int teamId2, int newTeamId)
 
     if(team1->isValid()){
         update_previous_next_remove_team(team1);
+        m_numOfValidTeams--;
     }
 
     m_teams.remove(m_teams.getRoot(), team2);
@@ -400,6 +405,7 @@ StatusType world_cup_t::unite_teams(int teamId1, int teamId2, int newTeamId)
 
     if(team2->isValid()) {
         update_previous_next_remove_team(team2);
+        m_numOfValidTeams--;
     }
 
     int sumOfPlayersTotal = team1->getNumOfPlayers() + team2->getNumOfPlayers();
@@ -462,7 +468,7 @@ StatusType world_cup_t::unite_teams(int teamId1, int teamId2, int newTeamId)
     }
 
     // create new Team
-    /// we have a problem with try & catch right here
+    /// TODO: we have a problem with try & catch right here
     shared_ptr<Team> newTeam (new Team(newTeamId, team1->getPoints()+team2->getPoints()));
 
     // update or the other field in newTeam
@@ -479,6 +485,19 @@ StatusType world_cup_t::unite_teams(int teamId1, int teamId2, int newTeamId)
     if (newTeam->getNumOfPlayers()){
         m_notEmptyTeams.insert(newTeam);
     }
+
+    if (newTeam->isValid()) {
+        m_validTeams.insert(newTeam);
+        update_previous_next_add_team(newTeam);
+        m_numOfValidTeams++;
+    }
+
+    delete[] arrTeam1ByStats;
+    delete[] arrTeam1ByIDs;
+    delete[] arrTeam2ByStats;
+    delete[] arrTeam2ByIDs;
+    delete[] arrUniteTeamByStats;
+    delete[] arrUniteTeamByIDs;
 
 	return StatusType::SUCCESS;
 }
@@ -624,21 +643,47 @@ output_t<int> world_cup_t::get_closest_player(int playerId, int teamId)
     return output;
 
 }
-
+/*
 output_t<int> world_cup_t::knockout_winner(int minTeamId, int maxTeamId)
 {
     /// adding check
 
-    shared_ptr<Team> minIdTeam = m_teams.findInt(m_teams.getRoot(), minTeamId)->getValue();
-    shared_ptr<Team> maxIdTeam = m_teams.findInt(m_teams.getRoot(), maxTeamId)->getValue();
-    shared_ptr<Team> temp = minIdTeam;
+    Team* minValidTeam = &(*m_validTeams.findInt(m_validTeams.getRoot(), minTeamId)->getValue());
 
 
-    while (temp!=maxIdTeam){
+    shared_ptr<Team> fictiveTeam;
+    try{
+        fictiveTeam = shared_ptr<Team>(new Team(minTeamId, 0));
+    } catch (const bad_alloc& e){
+        return StatusType::ALLOCATION_ERROR;
+    }
+
+    if (minValidTeam){
+        m_validTeams.insert(fictiveTeam);
+        update_previous_next_add_team(fictiveTeam);
+        minValidTeam = (fictiveTeam->getClosestRight());
+        update_previous_next_remove_team(fictiveTeam);
+        m_validTeams.remove(m_validTeams.getRoot(), fictiveTeam);
+    }
+
+    Team* temp = minValidTeam;
+
+    // allocate array
+    Team** arrValidTeamForGames;
+
+    try{
+        //arrValidTeamForGames = new Team()[m_numOfValidTeams];
+    } catch (const bad_alloc& e){
+        return StatusType::ALLOCATION_ERROR;
+    }
+
+    while (temp){
+        if (temp->getID()>maxTeamId){
+            break;
+        }
+
 
     }
 
-
-
 }
-
+*/
