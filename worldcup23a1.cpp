@@ -72,7 +72,9 @@ StatusType world_cup_t::add_player(int playerId, int teamId, int gamesPlayed,
     if(teamId<=0 || playerId<=0 || gamesPlayed<0 || goals<0 || cards<0){
         return StatusType::INVALID_INPUT;
     }
-
+    if (gamesPlayed==0 && (goals>0 || cards>0)){
+        return StatusType::INVALID_INPUT;
+    }
 
     // checking if the player exist or the team does not exist
     if ((m_playersByID.findInt(m_playersByID.getRoot(), playerId) != nullptr) || (m_teams.findInt(m_teams.getRoot(), teamId) == nullptr)) {
