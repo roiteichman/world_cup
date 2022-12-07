@@ -45,7 +45,6 @@ StatusType world_cup_t::add_team(int teamId, int points)
 		return StatusType::ALLOCATION_ERROR;
 	}
 
-    update_previous_next_add_team(team_ptr);
 	return StatusType::SUCCESS;
 }
 
@@ -57,7 +56,6 @@ StatusType world_cup_t::remove_team(int teamId)
     if (!m_teams.findInt(m_teams.getRoot(), teamId))
         return StatusType::FAILURE;
     shared_ptr<Team> team = m_teams.findInt(m_teams.getRoot(), teamId)->getValue();
-    update_previous_next_remove_team(team);
     if (team->getTeamPlayerByIds().getRoot())
         return StatusType::FAILURE;
     m_teams.remove(m_teams.getRoot(), team);
@@ -130,9 +128,10 @@ StatusType world_cup_t::add_player(int playerId, int teamId, int gamesPlayed,
             return StatusType::ALLOCATION_ERROR;
         }
     }
-    if (team_ptr->isValid())
+    if (team_ptr->isValid()) {
         m_validTeams.insert(team_ptr);
-
+        update_previous_next_add_team(team_ptr);
+    }
     update_top_scorer(player_ptr);
     m_numOfPlayes++;
 
@@ -215,8 +214,10 @@ StatusType world_cup_t::add_player(shared_ptr<Player> player_ptr, shared_ptr<Tea
             return StatusType::ALLOCATION_ERROR;
         }
     }
-    if (team_ptr->isValid())
+    if (team_ptr->isValid()) {
         m_validTeams.insert(team_ptr);
+        update_previous_next_add_team(team_ptr);
+    }
 
     update_top_scorer(player_ptr);
 
@@ -243,8 +244,10 @@ StatusType world_cup_t::remove_player(int playerId)
 
     // searching the playerPtr in the not empty teamPtr tree and remove the playerPtr from it
     teamPtr->removePlayer(playerPtr);
-    if (!teamPtr->isValid())
+    if (!teamPtr->isValid()) {
         m_validTeams.remove(m_validTeams.getRoot(), teamPtr);
+        update_previous_next_remove_team(teamPtr);
+    }
 
     // if it was the last player in team, remove the team from the non empty team tree
     if (teamPtr->getNumOfPlayers()==0){
@@ -375,12 +378,19 @@ StatusType world_cup_t::unite_teams(int teamId1, int teamId2, int newTeamId)
 
     // remove the teams from World Cup trees
     m_teams.remove(m_teams.getRoot(), team1);
-    if(team1->getNumOfPlayers()){
-        m_notEmptyTeams.remove(m_notEmptyTeams.getRoot(), team1);
+    m_notEmptyTeams.remove(m_notEmptyTeams.getRoot(), team1);
+    m_validTeams.remove(m_validTeams.getRoot(), team1);
+
+    if(team1->isValid()){
+        update_previous_next_remove_team(team1);
     }
+
     m_teams.remove(m_teams.getRoot(), team2);
-    if(team2->getNumOfPlayers()) {
-        m_notEmptyTeams.remove(m_notEmptyTeams.getRoot(), team2);
+    m_notEmptyTeams.remove(m_notEmptyTeams.getRoot(), team2);
+    m_validTeams.remove(m_validTeams.getRoot(), team2);
+
+    if(team2->isValid()) {
+        update_previous_next_remove_team(team2);
     }
 
     int sumOfPlayersTotal = team1->getNumOfPlayers() + team2->getNumOfPlayers();
