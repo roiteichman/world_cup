@@ -168,9 +168,9 @@ void world_cup_t::update_previous_next_remove_player(shared_ptr<Player> player_p
 
 
 void world_cup_t::update_previous_next_add_team(shared_ptr<Team> team_ptr) {
-    AVLNode<shared_ptr<Team>>* newNode = m_teams.find(m_teams.getRoot(), team_ptr);
-    m_teams.findPrevious(newNode);
-    m_teams.findNext(newNode);
+    AVLNode<shared_ptr<Team>>* newNode = m_validTeams.find(m_validTeams.getRoot(), team_ptr);
+    m_validTeams.findPrevious(newNode);
+    m_validTeams.findNext(newNode);
 }
 
 void world_cup_t::update_previous_next_remove_team(shared_ptr<Team> team_ptr) {
@@ -422,8 +422,10 @@ StatusType world_cup_t::unite_teams(int teamId1, int teamId2, int newTeamId)
 
 
     // merging the teams once by Stats and next time by Ids
-    mergeArraiesByStats(arrTeam1ByStats, arrTeam2ByStats, arrUniteTeamByStats, team1->getNumOfPlayers(), team2->getNumOfPlayers(), sumOfPlayersTotal);
-    mergeArraiesByIds(arrTeam1ByIDs, arrTeam2ByIDs, arrUniteTeamByIDs, team1->getNumOfPlayers(), team2->getNumOfPlayers(), sumOfPlayersTotal);
+    mergeArraysByStats(arrTeam1ByStats, arrTeam2ByStats, arrUniteTeamByStats, team1->getNumOfPlayers(),
+                       team2->getNumOfPlayers(), sumOfPlayersTotal);
+    mergeArraysByIds(arrTeam1ByIDs, arrTeam2ByIDs, arrUniteTeamByIDs, team1->getNumOfPlayers(),
+                     team2->getNumOfPlayers(), sumOfPlayersTotal);
 
 
     AVLNode<shared_ptr<Player>>* nodeUniteTeamByStats = m_playersByStats.sortedArrayToBST(arrUniteTeamByStats, 0, sumOfPlayersTotal - 1);
@@ -469,8 +471,8 @@ void world_cup_t::updatePlayers(shared_ptr<Player> *arrTeamByStats, int uniteTea
     }
 }
 
-void world_cup_t::mergeArraiesByStats(shared_ptr<Player> *arrTeam1ByStats, shared_ptr<Player> *arrTeam2ByStats,
-                                      shared_ptr<Player> *arrUniteTeamByStats, int team1, int team2, int total) {
+void world_cup_t::mergeArraysByStats(shared_ptr<Player> *arrTeam1ByStats, shared_ptr<Player> *arrTeam2ByStats,
+                                     shared_ptr<Player> *arrUniteTeamByStats, int team1, int team2, int total) {
     int i=0, k=0;
     for (int j = 0; j < total; ++j) {
         if (i != team1 && k != team2) {
@@ -491,8 +493,8 @@ void world_cup_t::mergeArraiesByStats(shared_ptr<Player> *arrTeam1ByStats, share
     }
 }
 
-    void world_cup_t::mergeArraiesByIds(shared_ptr<Player> *arrTeam1ByIDs, shared_ptr<Player> *arrTeam2ByIDs,
-                                        shared_ptr<Player> *arrUniteTeamByIDs, int team1, int team2, int total) {
+    void world_cup_t::mergeArraysByIds(shared_ptr<Player> *arrTeam1ByIDs, shared_ptr<Player> *arrTeam2ByIDs,
+                                       shared_ptr<Player> *arrUniteTeamByIDs, int team1, int team2, int total) {
         int i=0, k=0;
         for (int j = 0; j < total; ++j) {
             if (i != team1 && k != team2) {
