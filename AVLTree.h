@@ -22,6 +22,7 @@
         ~AVLNode() {}
 
         const T&  getValue () const { return m_data; }
+        void      setValue(T data) {m_data=data; }
         void      setLeft (AVLNode* left) { m_left = left; }
         AVLNode*  getLeft () const { return m_left; }
         void      setRight (AVLNode* right) { m_right = right; }
@@ -217,11 +218,14 @@ template <class T>
 void AVLTree<T>::rotateLeft (AVLNode<T>* B) {
     AVLNode<T>* A = B->getRight();
     B->setRight(A->getLeft());
+    if (B->getRight())
+        B->getRight()->setParent(B);
     A->setLeft(B);
+    A->setParent(B->getParent());
+
 
     if(B->getParent() == nullptr ) {
         m_root = A;
-        A->setParent(nullptr);
     }
     else {
         if(B->getParent()->getLeft() == B ) {
@@ -230,7 +234,6 @@ void AVLTree<T>::rotateLeft (AVLNode<T>* B) {
         else {
             B->getParent()->setRight(A);
         }
-        A->setParent(B->getParent());
     }
     B->setParent(A);
 }
@@ -240,6 +243,8 @@ void AVLTree<T>::rotateLeft (AVLNode<T>* B) {
         // Rotate node
         AVLNode<T>* A = C->getLeft();
         C->setLeft(A->getRight());
+        if (C->getLeft())
+            C->getLeft()->setParent(C);
         A->setRight(C);
 
         // Adjust tree
@@ -441,12 +446,16 @@ void AVLTree<T>::printInOrderT(AVLNode<T>* root, T* const output, int& i) {
         if (!removed) {
             // searching for the next junction one step right and all the way down to the left
             AVLNode<T>* nextJunction = willDeleted->getRight();
-            bool hasLeftSon = false;
+            //bool hasLeftSon = false;
             while (nextJunction->getLeft()) {
                 nextJunction = nextJunction->getLeft();
-                hasLeftSon = true;
+                //hasLeftSon = true;
             }
 
+            T temp = willDeleted->getValue();
+            nextJunction->setValue(temp);
+            willDeleted->setValue(nextJunction->getValue());
+            /*
             // this node could have one son from right or none
             AVLNode<T>* rightSonOfNextJunction = nextJunction->getRight();
 
@@ -456,13 +465,16 @@ void AVLTree<T>::printInOrderT(AVLNode<T>* root, T* const output, int& i) {
                 if (willDeleted == parent->getLeft()) {
                     // update the left son
                     parent->setLeft(nextJunction);
+                    nextJunction->setParent(parent);
                 } else {
                     // update the right son
                     parent->setRight(nextJunction);
+                    nextJunction->setParent(parent);
                 }
             }
 
             if(hasLeftSon){
+                nextJunction->getParent()->setLeft(willDeleted);
                 nextJunction->setRight(willDeleted->getRight());
                 willDeleted->setParent(nextJunction->getParent());
                 nextJunction->getRight()->setParent(nextJunction);
@@ -490,9 +502,9 @@ void AVLTree<T>::printInOrderT(AVLNode<T>* root, T* const output, int& i) {
             int tempHeight = willDeleted->getHeight();
             willDeleted->setHeight(nextJunction->getHeight());
             nextJunction->setHeight(tempHeight);
-
+            */
             // now we can delete it by steps 1 or 2
-            remove(willDeleted, value);
+            remove(nextJunction, value);
         }
     }
 

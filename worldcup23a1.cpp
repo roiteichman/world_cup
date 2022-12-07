@@ -4,6 +4,8 @@ const bool BY_STATS = true;
 const bool BY_IDS = false;
 const int VICTORY = 3;
 const int DRAW = 1;
+const int VALID_TEAM = 11;
+
 
 world_cup_t::world_cup_t(): m_numOfPlayes(0), m_numOfValidTeams(0), m_topScorer(nullptr) , m_teams(* new AVLTree<shared_ptr<Team>>(BY_IDS)),
                             m_notEmptyTeams(* new AVLTree<shared_ptr<Team>>(BY_IDS)),
@@ -258,7 +260,7 @@ StatusType world_cup_t::remove_player(int playerId)
     // searching the playerPtr in the not empty teamPtr tree and remove the playerPtr from it
     teamPtr->removePlayer(playerPtr);
 
-    if (!teamPtr->isValid()) {
+    if (!teamPtr->isValid() && teamPtr->getNumOfPlayers()==VALID_TEAM-1) {
         m_validTeams.remove(m_validTeams.getRoot(), teamPtr);
         update_previous_next_remove_team(teamPtr);
         m_numOfValidTeams--;
