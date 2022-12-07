@@ -30,6 +30,7 @@ struct FakeTeam{
     int m_id;
     int m_stats;
 
+    FakeTeam();
     FakeTeam(int id, int stats);
 
     bool game(FakeTeam* other);

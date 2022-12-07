@@ -676,7 +676,7 @@ output_t<int> world_cup_t::knockout_winner(int minTeamId, int maxTeamId)
     }
 
     // allocate array
-    FakeTeam* arrValidTeamForGames[m_numOfValidTeams];
+    FakeTeam** arrValidTeamForGames = new FakeTeam*[m_numOfValidTeams];
     int i=0;
     while (temp){
         if (temp->getID()>maxTeamId){

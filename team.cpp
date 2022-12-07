@@ -6,8 +6,8 @@
 
 const bool BY_STATS = true;
 const bool BY_IDS = false;
-const int VALID_TEAM = 3;
-/// TODO: not good!!!!!!
+const int VALID_TEAM = 11;
+/// TODO: change for test or real
 
 Team::Team(int teamId, int point):
         m_teamId(teamId), m_points(point), m_sumOfGoals(0), m_sumOfCards(0), m_numOfPlayers(0), m_numOfGoalKeepers(0), m_gamesPlayed(0),
