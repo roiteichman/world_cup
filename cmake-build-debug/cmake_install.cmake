@@ -1,4 +1,4 @@
-# Install script for directory: C:/Users/shlom/Desktop/New folder (3)/world_cup
+# Install script for directory: C:/Users/teich/OneDrive - Technion/Documents/technion/semester_3/data_structure/wet/1/1_newGit/world_cup
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -45,5 +45,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "C:/Users/shlom/Desktop/New folder (3)/world_cup/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "C:/Users/teich/OneDrive - Technion/Documents/technion/semester_3/data_structure/wet/1/1_newGit/world_cup/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

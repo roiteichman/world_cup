@@ -5,7 +5,6 @@
 #ifndef MAIN23A1_CPP_AVL_TREE_H
 #define MAIN23A1_CPP_AVL_TREE_H
 #include <iostream>
-#include "list.h"
 
     template <class T>
     class AVLNode {

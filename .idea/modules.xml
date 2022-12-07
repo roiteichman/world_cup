@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/player.h.iml" filepath="$PROJECT_DIR$/.idea/player.h.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/world_cup.iml" filepath="$PROJECT_DIR$/.idea/world_cup.iml" />
     </modules>
   </component>

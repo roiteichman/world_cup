@@ -651,8 +651,10 @@ output_t<int> world_cup_t::knockout_winner(int minTeamId, int maxTeamId)
     if (minTeamId<0 || maxTeamId<0 || maxTeamId<minTeamId){
         return StatusType::INVALID_INPUT;
     }
-
-    Team* minValidTeam = &(*m_validTeams.findInt(m_validTeams.getRoot(), minTeamId)->getValue());
+    Team* minValidTeam = nullptr;
+    if (m_validTeams.findInt(m_validTeams.getRoot(), minTeamId)){
+        minValidTeam = &(*m_validTeams.findInt(m_validTeams.getRoot(), minTeamId)->getValue());
+    }
 
     shared_ptr<Team> fictiveTeam;
     try{
