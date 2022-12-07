@@ -8,6 +8,7 @@ const int VALID_TEAM = 3;///not good!!!!!!
 
 world_cup_t::world_cup_t(): m_numOfPlayes(0), m_topScorer(nullptr) , m_teams(* new AVLTree<shared_ptr<Team>>(BY_IDS)),
                             m_notEmptyTeams(* new AVLTree<shared_ptr<Team>>(BY_IDS)),
+                            m_validTeams(* new AVLTree<shared_ptr<Team>>(BY_IDS)),
                             m_playersByID(* new AVLTree<shared_ptr<Player>>(BY_IDS)),
                             m_playersByStats(* new AVLTree<shared_ptr<Player>>(BY_STATS))
 {}
@@ -61,8 +62,8 @@ StatusType world_cup_t::remove_team(int teamId)
     if (team->getTeamPlayerByIds().getRoot())
         return StatusType::FAILURE;
     m_teams.remove(m_teams.getRoot(), team);
-    if(m_notEmptyTeams.findInt(m_notEmptyTeams.getRoot(), teamId))
-        m_notEmptyTeams.remove(m_notEmptyTeams.getRoot(), team);
+    m_notEmptyTeams.remove(m_notEmptyTeams.getRoot(), team);
+    m_notEmptyTeams.remove(m_notEmptyTeams.getRoot(), team);
 
 	return StatusType::SUCCESS;
 }

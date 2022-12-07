@@ -393,6 +393,8 @@ void AVLTree<T>::printInOrderT(AVLNode<T>* root, T* const output, int& i) {
     void AVLTree<T>::remove(AVLNode<T>* root, const T &value){
 
         AVLNode<T>* willDeleted = find(root, value);
+        if(!willDeleted)
+            return;
         AVLNode<T>* parent = willDeleted->getParent();
 
         bool removed = false;

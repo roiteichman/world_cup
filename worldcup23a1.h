@@ -29,8 +29,10 @@ private:
 	shared_ptr<Player> m_topScorer;
     AVLTree<shared_ptr<Team>> m_teams;
     AVLTree<shared_ptr<Team>> m_notEmptyTeams;
+    AVLTree<shared_ptr<Team>> m_validTeams;
     AVLTree<shared_ptr<Player>> m_playersByID;
     AVLTree<shared_ptr<Player>> m_playersByStats;
+
 
 
 public:
