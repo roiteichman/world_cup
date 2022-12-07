@@ -38,7 +38,7 @@
     template <class T>
     class AVLTree {
     public:
-        AVLTree(bool orderBy=true, AVLNode<T>* root = nullptr) : m_root(root), m_orderBy(orderBy){}
+        AVLTree(bool orderBy=true, AVLNode<T>* root = nullptr) : m_orderBy(orderBy), m_root(root) {}
         ~AVLTree();
 
         bool insert(const T& value);
