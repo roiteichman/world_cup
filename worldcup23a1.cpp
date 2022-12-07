@@ -130,6 +130,8 @@ StatusType world_cup_t::add_player(int playerId, int teamId, int gamesPlayed,
             return StatusType::ALLOCATION_ERROR;
         }
     }
+    if (team_ptr->isValid())
+        m_validTeams.insert(team_ptr);
 
     update_top_scorer(player_ptr);
     m_numOfPlayes++;
@@ -213,6 +215,8 @@ StatusType world_cup_t::add_player(shared_ptr<Player> player_ptr, shared_ptr<Tea
             return StatusType::ALLOCATION_ERROR;
         }
     }
+    if (team_ptr->isValid())
+        m_validTeams.insert(team_ptr);
 
     update_top_scorer(player_ptr);
 
@@ -239,6 +243,8 @@ StatusType world_cup_t::remove_player(int playerId)
 
     // searching the playerPtr in the not empty teamPtr tree and remove the playerPtr from it
     teamPtr->removePlayer(playerPtr);
+    if (!teamPtr->isValid())
+        m_validTeams.remove(m_validTeams.getRoot(), teamPtr);
 
     // if it was the last player in team, remove the team from the non empty team tree
     if (teamPtr->getNumOfPlayers()==0){
