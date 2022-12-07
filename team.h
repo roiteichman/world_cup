@@ -59,6 +59,7 @@ public:
     void increaseGamesPlayed(int gamesPlayed);
     void update_top_scorer(shared_ptr<Player> player);
     void get_all_players(int *const output);
+    bool isValid() const;
 
     void setMNumOfGoalKeepers(int mNumOfGoalKeepers);
 

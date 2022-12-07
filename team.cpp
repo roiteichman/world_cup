@@ -6,6 +6,8 @@
 
 const bool BY_STATS = true;
 const bool BY_IDS = false;
+const int VALID_TEAM = 3;
+/// TODO: not good!!!!!!
 
 Team::Team(int teamId, int point):
         m_teamId(teamId), m_points(point), m_sumOfGoals(0), m_sumOfCards(0), m_numOfPlayers(0), m_numOfGoalKeepers(0), m_gamesPlayed(0),
@@ -170,5 +172,9 @@ void Team::setMNumOfPlayers(int mNumOfPlayers) {
 
 void Team::setMNumOfGoalKeepers(int mNumOfGoalKeepers) {
     m_numOfGoalKeepers += mNumOfGoalKeepers;
+}
+
+bool Team::isValid() const {
+    return (m_numOfGoalKeepers) && (m_numOfPlayers>=VALID_TEAM);
 }
 

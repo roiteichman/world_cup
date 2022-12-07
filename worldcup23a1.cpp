@@ -4,7 +4,6 @@ const bool BY_STATS = true;
 const bool BY_IDS = false;
 const int VICTORY = 3;
 const int DRAW = 1;
-const int VALID_TEAM = 3;///not good!!!!!!
 
 world_cup_t::world_cup_t(): m_numOfPlayes(0), m_topScorer(nullptr) , m_teams(* new AVLTree<shared_ptr<Team>>(BY_IDS)),
                             m_notEmptyTeams(* new AVLTree<shared_ptr<Team>>(BY_IDS)),
@@ -292,7 +291,7 @@ StatusType world_cup_t::play_match(int teamId1, int teamId2)
     shared_ptr<Team> team1 = m_teams.findInt(m_teams.getRoot(), teamId1)->getValue();
     shared_ptr<Team> team2 = m_teams.findInt(m_teams.getRoot(), teamId2)->getValue();
     // checking if valid teams
-    if (!((team1->getNumOfGoalKeepers()) && (team1->getNumOfPlayers()>=VALID_TEAM)) || !((team2->getNumOfGoalKeepers()) && (team1->getNumOfPlayers()>=VALID_TEAM))){
+    if (!team1->isValid() || !team2->isValid()){
         return StatusType::FAILURE;
     }
 
@@ -604,7 +603,12 @@ output_t<int> world_cup_t::knockout_winner(int minTeamId, int maxTeamId)
 
     shared_ptr<Team> minIdTeam = m_teams.findInt(m_teams.getRoot(), minTeamId)->getValue();
     shared_ptr<Team> maxIdTeam = m_teams.findInt(m_teams.getRoot(), maxTeamId)->getValue();
-    while ()
+    shared_ptr<Team> temp = minIdTeam;
+
+
+    while (temp!=maxIdTeam){
+
+    }
 
 
 
