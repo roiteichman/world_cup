@@ -128,7 +128,7 @@ StatusType world_cup_t::add_player(int playerId, int teamId, int gamesPlayed,
             return StatusType::ALLOCATION_ERROR;
         }
     }
-    if (team_ptr->isValid()) {
+    if (team_ptr->isValid() && !(m_validTeams.find(m_validTeams.getRoot(), team_ptr))) {
         m_validTeams.insert(team_ptr);
         update_previous_next_add_team(team_ptr);
     }
@@ -159,10 +159,14 @@ void world_cup_t::update_previous_next_add_player(shared_ptr<Player> player_ptr)
 
 void world_cup_t::update_previous_next_remove_player(shared_ptr<Player> player_ptr) {
 
-    if (player_ptr->getClosestRight())
+    if (player_ptr->getClosestRight()) {
         player_ptr->getClosestRight()->setClosestLeft(player_ptr->getClosestLeft());
-    if (player_ptr->getClosestLeft())
+        player_ptr->setClosestRight(nullptr);
+    }
+    if (player_ptr->getClosestLeft()) {
         player_ptr->getClosestLeft()->setClosestRight(player_ptr->getClosestRight());
+        player_ptr->setClosestLeft(nullptr);
+    }
 }
 
 
@@ -174,10 +178,14 @@ void world_cup_t::update_previous_next_add_team(shared_ptr<Team> team_ptr) {
 
 void world_cup_t::update_previous_next_remove_team(shared_ptr<Team> team_ptr) {
 
-    if (team_ptr->getClosestRight())
+    if (team_ptr->getClosestRight()) {
         team_ptr->getClosestRight()->setClosestLeft(team_ptr->getClosestLeft());
-    if (team_ptr->getClosestLeft())
+        team_ptr->setClosestRight(nullptr);
+    }
+    if (team_ptr->getClosestLeft()) {
         team_ptr->getClosestLeft()->setClosestRight(team_ptr->getClosestRight());
+        team_ptr->setClosestLeft(nullptr);
+    }
 }
 
 
@@ -214,7 +222,8 @@ StatusType world_cup_t::add_player(shared_ptr<Player> player_ptr, shared_ptr<Tea
             return StatusType::ALLOCATION_ERROR;
         }
     }
-    if (team_ptr->isValid()) {
+    // if the team is valid and not in the valid teams tree add her into it
+    if (team_ptr->isValid() && !(m_validTeams.find(m_validTeams.getRoot(), team_ptr))) {
         m_validTeams.insert(team_ptr);
         update_previous_next_add_team(team_ptr);
     }
