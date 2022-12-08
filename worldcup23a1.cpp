@@ -100,6 +100,7 @@ StatusType world_cup_t::add_player(int playerId, int teamId, int gamesPlayed,
     try{
         m_playersByStats.insert(player_ptr);
     } catch (const bad_alloc& e){
+        m_playersByID.remove(m_playersByID.getRoot(), player_ptr);
         return StatusType::ALLOCATION_ERROR;
     }
 
@@ -109,6 +110,8 @@ StatusType world_cup_t::add_player(int playerId, int teamId, int gamesPlayed,
     try{
         team_ptr->addPlayer(player_ptr);
     } catch (const bad_alloc& e){
+        m_playersByID.remove(m_playersByID.getRoot(), player_ptr);
+        m_playersByStats.remove(m_playersByStats.getRoot(), player_ptr);
         return StatusType::ALLOCATION_ERROR;
     }
 
@@ -118,6 +121,9 @@ StatusType world_cup_t::add_player(int playerId, int teamId, int gamesPlayed,
         try{
             m_notEmptyTeams.insert(team_ptr);
         } catch (const bad_alloc& e){
+            m_playersByID.remove(m_playersByID.getRoot(), player_ptr);
+            m_playersByStats.remove(m_playersByStats.getRoot(), player_ptr);
+            team_ptr->removePlayer(player_ptr);
             return StatusType::ALLOCATION_ERROR;
         }
     }
@@ -206,6 +212,7 @@ StatusType world_cup_t::add_player(shared_ptr<Player> player_ptr, shared_ptr<Tea
     try{
         m_playersByStats.insert(player_ptr);
     } catch (const bad_alloc& e){
+        m_playersByID.remove(m_playersByID.getRoot(), player_ptr);
         return StatusType::ALLOCATION_ERROR;
     }
 
@@ -215,6 +222,8 @@ StatusType world_cup_t::add_player(shared_ptr<Player> player_ptr, shared_ptr<Tea
     try{
         team_ptr->addPlayer(player_ptr);
     } catch (const bad_alloc& e){
+        m_playersByID.remove(m_playersByID.getRoot(), player_ptr);
+        m_playersByStats.remove(m_playersByStats.getRoot(), player_ptr);
         return StatusType::ALLOCATION_ERROR;
     }
 
@@ -224,6 +233,9 @@ StatusType world_cup_t::add_player(shared_ptr<Player> player_ptr, shared_ptr<Tea
         try{
             m_notEmptyTeams.insert(team_ptr);
         } catch (const bad_alloc& e){
+            m_playersByID.remove(m_playersByID.getRoot(), player_ptr);
+            m_playersByStats.remove(m_playersByStats.getRoot(), player_ptr);
+            team_ptr->removePlayer(player_ptr);
             return StatusType::ALLOCATION_ERROR;
         }
     }
@@ -424,13 +436,49 @@ StatusType world_cup_t::unite_teams(int teamId1, int teamId2, int newTeamId)
 
     try{
         arrTeam1ByStats = new shared_ptr<Player>[team1->getNumOfPlayers()];
-        arrTeam1ByIDs = new shared_ptr<Player>[team1->getNumOfPlayers()];
-        arrTeam2ByStats = new shared_ptr<Player>[team2->getNumOfPlayers()];
-        arrTeam2ByIDs = new shared_ptr<Player>[team2->getNumOfPlayers()];
-        arrUniteTeamByStats = new shared_ptr<Player>[sumOfPlayersTotal];
-        arrUniteTeamByIDs = new shared_ptr<Player>[sumOfPlayersTotal];
 
     } catch (const bad_alloc& e){
+        return StatusType::ALLOCATION_ERROR;
+    }
+    try{
+        arrTeam1ByIDs = new shared_ptr<Player>[team1->getNumOfPlayers()];
+    } catch (const bad_alloc& e){
+        delete arrTeam1ByStats;
+        return StatusType::ALLOCATION_ERROR;
+    }
+    try{
+        arrTeam2ByStats = new shared_ptr<Player>[team2->getNumOfPlayers()];
+    } catch (const bad_alloc& e){
+        delete arrTeam1ByStats;
+        delete arrTeam1ByIDs;
+        return StatusType::ALLOCATION_ERROR;
+    }
+    try{
+        arrTeam2ByIDs = new shared_ptr<Player>[team2->getNumOfPlayers()];
+
+    } catch (const bad_alloc& e){
+        delete arrTeam1ByStats;
+        delete arrTeam1ByIDs;
+        delete arrTeam2ByStats;
+        return StatusType::ALLOCATION_ERROR;
+    }
+    try{
+        arrUniteTeamByStats = new shared_ptr<Player>[sumOfPlayersTotal];
+    } catch (const bad_alloc& e){
+        delete arrTeam1ByStats;
+        delete arrTeam1ByIDs;
+        delete arrTeam2ByStats;
+        delete arrTeam2ByIDs;
+        return StatusType::ALLOCATION_ERROR;
+    }
+    try{
+        arrUniteTeamByIDs = new shared_ptr<Player>[sumOfPlayersTotal];
+    } catch (const bad_alloc& e){
+        delete arrTeam1ByStats;
+        delete arrTeam1ByIDs;
+        delete arrTeam2ByStats;
+        delete arrTeam2ByIDs;
+        delete arrUniteTeamByStats;
         return StatusType::ALLOCATION_ERROR;
     }
 
@@ -467,19 +515,35 @@ StatusType world_cup_t::unite_teams(int teamId1, int teamId2, int newTeamId)
 
     try {
         unitedTeamByStats = new AVLTree<shared_ptr<Player>>(true, nodeUniteTeamByStats);
+    } catch (const bad_alloc& e){
+        delete arrTeam1ByStats;
+        delete arrTeam1ByIDs;
+        delete arrTeam2ByStats;
+        delete arrTeam2ByIDs;
+        delete arrUniteTeamByStats;
+        delete arrUniteTeamByIDs;
+        return StatusType::ALLOCATION_ERROR;
+    }
+    try {
         unitedTeamById = new AVLTree<shared_ptr<Player>>(false, nodeUniteTeamByIDs);
     } catch (const bad_alloc& e){
+        delete arrTeam1ByStats;
+        delete arrTeam1ByIDs;
+        delete arrTeam2ByStats;
+        delete arrTeam2ByIDs;
+        delete arrUniteTeamByStats;
+        delete arrUniteTeamByIDs;
+        delete unitedTeamByStats;
         return StatusType::ALLOCATION_ERROR;
     }
 
     // create new Team
-    /// TODO: we have a problem with try & catch right here
     shared_ptr<Team> newTeam (new Team(newTeamId, team1->getPoints()+team2->getPoints()));
 
     // update or the other field in newTeam
     newTeam->setTeamPlayersByIds(*unitedTeamById);
     newTeam->setTeamPlayersByStats(*unitedTeamByStats);
-    newTeam->setMNumOfPlayers(sumOfPlayersTotal);///TODO .
+    newTeam->setMNumOfPlayers(sumOfPlayersTotal);
     newTeam->setCards(team1->getCards()+team2->getCards());
     newTeam->setGoals(team1->getGoals()+team2->getGoals());
     newTeam->increaseGamesPlayed(team1->getGamesPlayed()+team2->getGamesPlayed());
@@ -503,8 +567,7 @@ StatusType world_cup_t::unite_teams(int teamId1, int teamId2, int newTeamId)
     delete[] arrTeam2ByIDs;
     delete[] arrUniteTeamByStats;
     delete[] arrUniteTeamByIDs;
-   // delete nodeUniteTeamByIDs;
-   // delete nodeUniteTeamByStats;
+
    unitedTeamById->setMRoot(nullptr);
    unitedTeamByStats->setMRoot(nullptr);
     delete unitedTeamByStats;
@@ -575,10 +638,7 @@ output_t<int> world_cup_t::get_top_scorer(int teamId)
         if (!(m_notEmptyTeams.findInt(m_notEmptyTeams.getRoot(), teamId))){
             return StatusType::FAILURE;
         }
-        // checking if there are players in team///TODO .
-        /*else if (m_teams.findInt(m_teams.getRoot(), teamId)->getValue()->getNumOfPlayers()==0){
-            return StatusType::FAILURE;
-        }*/
+
         // return top scorer in teamID
         return m_notEmptyTeams.findInt(m_notEmptyTeams.getRoot(), teamId)->getValue()->getTopScorer()->getID();
     }
