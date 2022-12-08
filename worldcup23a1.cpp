@@ -309,15 +309,11 @@ StatusType world_cup_t::play_match(int teamId1, int teamId2)
     if(teamId1<=0 || teamId2 <=0 || teamId1==teamId2){
         return StatusType::INVALID_INPUT;
     }
-    // checking if exist
-    if (!(m_teams.findInt(m_teams.getRoot(), teamId1)) || !(m_teams.findInt(m_teams.getRoot(), teamId2))){
-        return StatusType::FAILURE;
-    }
 
-    shared_ptr<Team> team1 = m_teams.findInt(m_teams.getRoot(), teamId1)->getValue();
-    shared_ptr<Team> team2 = m_teams.findInt(m_teams.getRoot(), teamId2)->getValue();
-    // checking if valid teams
-    if (!team1->isValid() || !team2->isValid()){
+    shared_ptr<Team> team1 = m_validTeams.findInt(m_validTeams.getRoot(), teamId1)->getValue();
+    shared_ptr<Team> team2 = m_validTeams.findInt(m_validTeams.getRoot(), teamId2)->getValue();
+    // checking if valid teams - if not, the pointer == nullptr
+    if (!team1 || !team2){
         return StatusType::FAILURE;
     }
 
