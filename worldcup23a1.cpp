@@ -7,16 +7,17 @@ const int DRAW = 1;
 const int VALID_TEAM = 11;
 
 
-world_cup_t::world_cup_t(): m_numOfPlayes(0), m_numOfValidTeams(0), m_topScorer(nullptr) , m_teams(* new AVLTree<shared_ptr<Team>>(BY_IDS)),
-                            m_notEmptyTeams(* new AVLTree<shared_ptr<Team>>(BY_IDS)),
-                            m_validTeams(* new AVLTree<shared_ptr<Team>>(BY_IDS)),
-                            m_playersByID(* new AVLTree<shared_ptr<Player>>(BY_IDS)),
-                            m_playersByStats(* new AVLTree<shared_ptr<Player>>(BY_STATS))
+world_cup_t::world_cup_t(): m_numOfPlayes(0), m_numOfValidTeams(0), m_topScorer(nullptr) ,
+                                m_teams(AVLTree<shared_ptr<Team>>(BY_IDS)),
+                            m_notEmptyTeams(AVLTree<shared_ptr<Team>>(BY_IDS)),
+                            m_validTeams(AVLTree<shared_ptr<Team>>(BY_IDS)),
+                            m_playersByID(AVLTree<shared_ptr<Player>>(BY_IDS)),
+                            m_playersByStats(AVLTree<shared_ptr<Player>>(BY_STATS))
 {}
 
 world_cup_t::~world_cup_t()
 {
-	// TODO: Your code goes here
+	//delete &m_playersByStats;
 }
 
 
@@ -26,13 +27,13 @@ StatusType world_cup_t::add_team(int teamId, int points)
 		return StatusType::INVALID_INPUT;
 	}
 
-	shared_ptr<Team> team_ptr;
+	shared_ptr<Team> team_ptr(new Team(teamId, points));
 
-	try{
-		team_ptr = shared_ptr<Team>(new Team(teamId, points));
+	/*try{
+		team_ptr;
 	} catch (const bad_alloc& e){
 		return StatusType::ALLOCATION_ERROR;
-		}
+		}*/
 
 	// if this team already exist
     if (m_teams.getRoot() != nullptr){
@@ -92,14 +93,18 @@ StatusType world_cup_t::add_player(int playerId, int teamId, int gamesPlayed,
     team_ptr= m_teams.findInt(m_teams.getRoot(), teamId)->getValue();
 
 
-    shared_ptr<Player> player_ptr;
+    shared_ptr<Player> player_ptr(new Player(playerId, teamId,
+                                             gamesPlayed - team_ptr->getGamesPlayed(), goals,
+                                             cards, goalKeeper));;
 
-    try{
+    /*try{
         // note that we enter the player thr decrease the amount of games that he played because we have field of games of the team and we will return them together when we want to know how much he play
-        player_ptr = shared_ptr<Player>(new Player(playerId, teamId, gamesPlayed-team_ptr->getGamesPlayed(), goals, cards, goalKeeper));
+        player_ptr = shared_ptr<Player>(new Player(playerId, teamId,
+                                                                      gamesPlayed - team_ptr->getGamesPlayed(), goals,
+                                                                      cards, goalKeeper));
     } catch (const bad_alloc& e){
         return StatusType::ALLOCATION_ERROR;
-    }
+    }*/
 
     // entering the player by ID
     try{
@@ -147,22 +152,22 @@ void world_cup_t::update_top_scorer(shared_ptr<Player> player) {
 
     // first player is the top scorer
     if (!m_topScorer){
-        m_topScorer=player;
+        m_topScorer=&*player;
         return;
     }
     ///TODO forget cards
     if (m_topScorer->getGoalsScored() < player->getGoalsScored())
     {
-        m_topScorer = player;
+        m_topScorer = &*player;
         return;
     }
     if(((m_topScorer->getGoalsScored() == player->getGoalsScored()))) {
         if (m_topScorer->getCardsReceived() > player->getCardsReceived()) {
-            m_topScorer = player;
+            m_topScorer = &*player;
             return;
         } else if (m_topScorer->getCardsReceived() == player->getCardsReceived())
             if (m_topScorer->getID() < player->getID())
-                m_topScorer = player;
+                m_topScorer = &*player;
     }
 }
 
@@ -264,9 +269,8 @@ StatusType world_cup_t::remove_player(int playerId)
     shared_ptr<Team> teamPtr = m_notEmptyTeams.findInt(m_notEmptyTeams.getRoot(), playerPtr->getTeamID())->getValue();
 
     // update top scorer + closest right of the next one
-    if (playerPtr==m_topScorer){
-        shared_ptr<Player> closestLeft (playerPtr->getClosestLeft());
-        m_topScorer = closestLeft;
+    if (playerPtr.get()==m_topScorer){
+        m_topScorer = playerPtr->getClosestLeft();
     }
 
     m_playersByID.remove(m_playersByID.getRoot(), playerPtr);
@@ -478,8 +482,8 @@ StatusType world_cup_t::unite_teams(int teamId1, int teamId2, int newTeamId)
     AVLTree<shared_ptr<Player>>* unitedTeamById;
 
     try {
-        unitedTeamByStats = (&(* new AVLTree<shared_ptr<Player>>(true, nodeUniteTeamByStats)));
-        unitedTeamById = (&(* new AVLTree<shared_ptr<Player>>(false, nodeUniteTeamByIDs)));
+        unitedTeamByStats = new AVLTree<shared_ptr<Player>>(true, nodeUniteTeamByStats);
+        unitedTeamById = new AVLTree<shared_ptr<Player>>(false, nodeUniteTeamByIDs);
     } catch (const bad_alloc& e){
         return StatusType::ALLOCATION_ERROR;
     }
@@ -489,9 +493,9 @@ StatusType world_cup_t::unite_teams(int teamId1, int teamId2, int newTeamId)
     shared_ptr<Team> newTeam (new Team(newTeamId, team1->getPoints()+team2->getPoints()));
 
     // update or the other field in newTeam
-    newTeam->setTeamPlayersByIds(*unitedTeamById);
-    newTeam->setTeamPlayersByStats(*unitedTeamByStats);
-    newTeam->setMNumOfPlayers(team1->getNumOfGoalKeepers()+team2->getNumOfGoalKeepers());
+    newTeam->setTeamPlayersByIds(unitedTeamById);
+    newTeam->setTeamPlayersByStats(unitedTeamByStats);
+    newTeam->setMNumOfPlayers(sumOfPlayersTotal);///TODO .
     newTeam->setCards(team1->getCards()+team2->getCards());
     newTeam->setGoals(team1->getGoals()+team2->getGoals());
     newTeam->increaseGamesPlayed(team1->getGamesPlayed()+team2->getGamesPlayed());
@@ -515,6 +519,10 @@ StatusType world_cup_t::unite_teams(int teamId1, int teamId2, int newTeamId)
     delete[] arrTeam2ByIDs;
     delete[] arrUniteTeamByStats;
     delete[] arrUniteTeamByIDs;
+   // delete nodeUniteTeamByIDs;
+   // delete nodeUniteTeamByStats;
+    delete unitedTeamByStats;
+    delete unitedTeamById;
 
 	return StatusType::SUCCESS;
 }
@@ -693,37 +701,39 @@ output_t<int> world_cup_t::knockout_winner(int minTeamId, int maxTeamId)
     }
 
     // allocate array
-    FakeTeam** arrValidTeamForGames = new FakeTeam*[m_numOfValidTeams];
+    FakeTeam* arrValidTeamForGames = new FakeTeam[m_numOfValidTeams];
     int i=0;
     while (temp){
         if (temp->getID()>maxTeamId){
             break;
         }
         int stats = temp->getPoints()+temp->getGoals()-temp->getCards();
-        arrValidTeamForGames[i]= new FakeTeam(temp->getID(), stats);
+        arrValidTeamForGames[i] = FakeTeam(temp->getID(), stats);
         temp=temp->getClosestRight();
         i++;
     }
 
     int winnerId = playSimulation(arrValidTeamForGames, i);
 
-    // delete the pointers for the FactTeams
-    for (int j = 0; j < i; ++j) {
+    /*for (int j=0; j<i; j++)
+    {
         delete arrValidTeamForGames[j];
-    }
+    }*/
+    // delete the pointers for the FactTeams
+    delete[] arrValidTeamForGames;
 
     return winnerId;
 
 }
 
-int world_cup_t::playSimulation(FakeTeam** teams, int size) {
+int world_cup_t::playSimulation(FakeTeam* teams, int size) {
     // return the winner
     if (size==1){
-        return teams[0]->m_id;
+        return teams[0].m_id;
     }
     // play the matches
     for (int i = 0; i < (size/2); ++i) {
-        if (teams[2*i]->game(teams[2*i+1])){
+        if (teams[2*i].game(teams[2*i+1])){
             teams[i]=teams[2*i];
         }
         else {
@@ -736,18 +746,22 @@ int world_cup_t::playSimulation(FakeTeam** teams, int size) {
 
 FakeTeam::FakeTeam(int id, int stats) : m_id(id), m_stats(stats) {}
 
-bool FakeTeam::game(FakeTeam* other) {
-    if (m_stats < other->m_stats) {
-        other->m_stats+= m_stats+ 3;
+bool FakeTeam::game(FakeTeam other) {
+    if (m_stats < other.m_stats) {
+        other.m_stats+= m_stats+ 3;
     }
-    else if((m_stats == other->m_stats) && (m_id < other->m_id)){
-        other->m_stats+= m_stats+ 3;
+    else if((m_stats == other.m_stats) && (m_id < other.m_id)){
+        other.m_stats+= m_stats+ 3;
     }
     else{
-        m_stats+=other->m_stats+3;
+        m_stats+=other.m_stats+3;
         return true;
     }
     return false;
+}
+
+FakeTeam::FakeTeam() {
+
 }
 
 

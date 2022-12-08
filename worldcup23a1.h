@@ -33,7 +33,7 @@ struct FakeTeam{
     FakeTeam();
     FakeTeam(int id, int stats);
 
-    bool game(FakeTeam* other);
+    bool game(FakeTeam other);
 };
 
 
@@ -41,7 +41,7 @@ class world_cup_t {
 private:
 	int m_numOfPlayes;
     int m_numOfValidTeams;
-	shared_ptr<Player> m_topScorer;
+	Player* m_topScorer;
     AVLTree<shared_ptr<Team>> m_teams;
     AVLTree<shared_ptr<Team>> m_notEmptyTeams;
     AVLTree<shared_ptr<Team>> m_validTeams;
@@ -101,7 +101,7 @@ public:
 	
 	output_t<int> get_closest_player(int playerId, int teamId);
 
-    int playSimulation(FakeTeam** teams, int size);
+    int playSimulation(FakeTeam* teams, int size);
 	
 	output_t<int> knockout_winner(int minTeamId, int maxTeamId);
 	
