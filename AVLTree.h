@@ -43,6 +43,8 @@
 
         bool insert(const T& value);
 
+        void setMRoot(AVLNode<T> *mRoot);
+
         AVLNode<T>* getRoot() const { return m_root; }
 
         AVLNode<T>* find(AVLNode<T>* root, const T& value);
@@ -544,6 +546,11 @@ AVLNode<T>* AVLTree<T>::sortedArrayToAVL(T* arr, int start, int end)
     }
     root->setHeight(height);
     return root;
+}
+
+template<class T>
+void AVLTree<T>::setMRoot(AVLNode<T> *mRoot) {
+    m_root = mRoot;
 }
 
 #endif //MAIN23A1_CPP_AVL_TREE_H

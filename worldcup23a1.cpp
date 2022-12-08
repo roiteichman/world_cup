@@ -521,8 +521,10 @@ StatusType world_cup_t::unite_teams(int teamId1, int teamId2, int newTeamId)
     delete[] arrUniteTeamByIDs;
    // delete nodeUniteTeamByIDs;
    // delete nodeUniteTeamByStats;
-    //delete unitedTeamByStats;
-    //delete unitedTeamById;
+   unitedTeamById->setMRoot(nullptr);
+   unitedTeamByStats->setMRoot(nullptr);
+    delete unitedTeamByStats;
+    delete unitedTeamById;
 
 	return StatusType::SUCCESS;
 }
@@ -739,7 +741,8 @@ int world_cup_t::playSimulation(FakeTeam* teams, int size) {
         else {
             teams[i] = teams[2 * i + 1];
         }
-        teams[i+1] = teams[2*i+2];
+        if(2*i+2<size)
+            teams[i+1] = teams[2*i+2];
     }
     // recursion
     return playSimulation(teams, (size/2)+(size%2));
@@ -762,8 +765,6 @@ bool FakeTeam::game(FakeTeam* other) {
     }
 }
 
-FakeTeam::FakeTeam() {
-
-}
+FakeTeam::FakeTeam() {}
 
 
