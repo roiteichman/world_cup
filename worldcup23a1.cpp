@@ -201,7 +201,7 @@ void world_cup_t::update_previous_next_remove_team(shared_ptr<Team> team_ptr) {
 
     if (team_ptr->getClosestRight()) {
         team_ptr->getClosestRight()->setClosestLeft(team_ptr->getClosestLeft());
-        team_ptr->setClosestRight(nullptr);
+        //team_ptr->setClosestRight(nullptr);
     }
     if (team_ptr->getClosestLeft()) {
         team_ptr->getClosestLeft()->setClosestRight(team_ptr->getClosestRight());
@@ -493,8 +493,8 @@ StatusType world_cup_t::unite_teams(int teamId1, int teamId2, int newTeamId)
     shared_ptr<Team> newTeam (new Team(newTeamId, team1->getPoints()+team2->getPoints()));
 
     // update or the other field in newTeam
-    newTeam->setTeamPlayersByIds(unitedTeamById);
-    newTeam->setTeamPlayersByStats(unitedTeamByStats);
+    newTeam->setTeamPlayersByIds(*unitedTeamById);
+    newTeam->setTeamPlayersByStats(*unitedTeamByStats);
     newTeam->setMNumOfPlayers(sumOfPlayersTotal);///TODO .
     newTeam->setCards(team1->getCards()+team2->getCards());
     newTeam->setGoals(team1->getGoals()+team2->getGoals());
@@ -521,8 +521,8 @@ StatusType world_cup_t::unite_teams(int teamId1, int teamId2, int newTeamId)
     delete[] arrUniteTeamByIDs;
    // delete nodeUniteTeamByIDs;
    // delete nodeUniteTeamByStats;
-    delete unitedTeamByStats;
-    delete unitedTeamById;
+    //delete unitedTeamByStats;
+    //delete unitedTeamById;
 
 	return StatusType::SUCCESS;
 }
@@ -733,31 +733,33 @@ int world_cup_t::playSimulation(FakeTeam* teams, int size) {
     }
     // play the matches
     for (int i = 0; i < (size/2); ++i) {
-        if (teams[2*i].game(teams[2*i+1])){
+        if (teams[2*i].game(&teams[2*i+1])){
             teams[i]=teams[2*i];
         }
         else {
             teams[i] = teams[2 * i + 1];
         }
+        teams[i+1] = teams[2*i+2];
     }
     // recursion
-    return playSimulation(teams, ceil(size/2));
+    return playSimulation(teams, (size/2)+(size%2));
 }
 
 FakeTeam::FakeTeam(int id, int stats) : m_id(id), m_stats(stats) {}
 
-bool FakeTeam::game(FakeTeam other) {
-    if (m_stats < other.m_stats) {
-        other.m_stats+= m_stats+ 3;
+bool FakeTeam::game(FakeTeam* other) {
+    if (m_stats < other->m_stats) {
+        other->m_stats += m_stats+ 3;
+        return false;
     }
-    else if((m_stats == other.m_stats) && (m_id < other.m_id)){
-        other.m_stats+= m_stats+ 3;
+    else if((m_stats == other->m_stats) && (m_id < other->m_id)){
+        other->m_stats+= m_stats+ 3;
+        return false;
     }
     else{
-        m_stats+=other.m_stats+3;
+        m_stats+=other->m_stats+3;
         return true;
     }
-    return false;
 }
 
 FakeTeam::FakeTeam() {

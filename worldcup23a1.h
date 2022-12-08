@@ -33,7 +33,7 @@ struct FakeTeam{
     FakeTeam();
     FakeTeam(int id, int stats);
 
-    bool game(FakeTeam other);
+    bool game(FakeTeam* other);
 };
 
 

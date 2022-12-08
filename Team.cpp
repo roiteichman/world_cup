@@ -55,7 +55,7 @@ bool Team::operator<(const Team &other) const {
     return m_teamId<other.m_teamId;
 }
 
-void Team::removePlayer(const shared_ptr<Player> &player) {
+void Team::removePlayer(shared_ptr<Player> player) {
     m_sumOfGoals -= player->getGoalsScored();
     m_sumOfCards -= player->getCardsReceived();
     m_numOfPlayers--;
@@ -67,7 +67,7 @@ void Team::removePlayer(const shared_ptr<Player> &player) {
     AVLNode<shared_ptr<Player>>* playerNode = m_teamPlayersByStats.find(m_teamPlayersByStats.getRoot(), player);
 
     // update top scorer
-    if (&*player==m_topScorer){
+    if (player.get()==m_topScorer){
         // if the top scorer has a parent he is the new top scorer
         if (playerNode->getParent()){
             m_topScorer = &*(playerNode->getParent()->getValue());
@@ -169,11 +169,11 @@ void Team::get_all_players(int *const output) {
     m_teamPlayersByStats.printInOrder(m_teamPlayersByStats.getRoot(), output, i);
 }
 
-void Team::setTeamPlayersByStats(AVLTree<shared_ptr<Player>> TeamPlayersByStats) {
+void Team::setTeamPlayersByStats(const AVLTree<shared_ptr<Player>>& TeamPlayersByStats) {
     m_teamPlayersByStats = TeamPlayersByStats;
 }
 
-void Team::setTeamPlayersByIds(AVLTree<shared_ptr<Player>> TeamPlayersByIds) {
+void Team::setTeamPlayersByIds(const AVLTree<shared_ptr<Player>>& TeamPlayersByIds) {
     m_teamPlayersByIds = TeamPlayersByIds;
 }
 

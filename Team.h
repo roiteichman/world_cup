@@ -24,7 +24,7 @@ private:
 
     AVLTree<shared_ptr<Player>> m_teamPlayersByStats;
     AVLTree<shared_ptr<Player>> m_teamPlayersByIds;
-    shared_ptr<Player> m_topScorer;
+    Player* m_topScorer;
     Team* m_closest_left;
     Team* m_closest_right;
 
@@ -42,13 +42,13 @@ public:
     void setGoals (int goals);
     void setCards (int cards);
 
-    void setTeamPlayersByStats(const AVLTree<shared_ptr<Player>> &TeamPlayersByStats);
+    void setTeamPlayersByStats(const AVLTree<shared_ptr<Player>>& TeamPlayersByStats);
 
-    void setTeamPlayersByIds(const AVLTree<shared_ptr<Player>> &TeamPlayersByIds);
+    void setTeamPlayersByIds(const AVLTree<shared_ptr<Player>>& TeamPlayersByIds);
 
     void setMNumOfPlayers(int mNumOfPlayers);
 
-    void removePlayer (const shared_ptr<Player>& player);
+    void removePlayer (shared_ptr<Player> player);
     void addPlayer (const shared_ptr<Player>& player);
 
     int getNumOfGoalKeepers() const;
@@ -73,7 +73,7 @@ public:
     int getGoals () const;
     int getCards () const;
 
-    const shared_ptr<Player>& getTopScorer() const;
+    Player* getTopScorer() const;
 
     int getGamesPlayed() const;
 

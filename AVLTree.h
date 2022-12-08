@@ -18,7 +18,7 @@
         int m_height;
 
     public:
-        AVLNode(T value) : m_data(value), m_left(nullptr), m_right(nullptr), m_parent(nullptr), m_height(0) {}
+        AVLNode(const T& value) : m_data(value), m_left(nullptr), m_right(nullptr), m_parent(nullptr), m_height(0) {}
         ~AVLNode() {}
 
         const T&  getValue () const { return m_data; }
