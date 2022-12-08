@@ -7,8 +7,8 @@ const int DRAW = 1;
 const int VALID_TEAM = 11;
 
 
-world_cup_t::world_cup_t(): m_numOfPlayes(0), m_numOfValidTeams(0), m_topScorer(nullptr) ,
-                                m_teams(AVLTree<shared_ptr<Team>>(BY_IDS)),
+world_cup_t::world_cup_t(): m_numOfPlayers(0), m_numOfValidTeams(0), m_topScorer(nullptr) ,
+                            m_teams(AVLTree<shared_ptr<Team>>(BY_IDS)),
                             m_notEmptyTeams(AVLTree<shared_ptr<Team>>(BY_IDS)),
                             m_validTeams(AVLTree<shared_ptr<Team>>(BY_IDS)),
                             m_playersByID(AVLTree<shared_ptr<Player>>(BY_IDS)),
@@ -16,9 +16,7 @@ world_cup_t::world_cup_t(): m_numOfPlayes(0), m_numOfValidTeams(0), m_topScorer(
 {}
 
 world_cup_t::~world_cup_t()
-{
-	//delete &m_playersByStats;
-}
+{}
 
 
 StatusType world_cup_t::add_team(int teamId, int points)
@@ -28,12 +26,6 @@ StatusType world_cup_t::add_team(int teamId, int points)
 	}
 
 	shared_ptr<Team> team_ptr(new Team(teamId, points));
-
-	/*try{
-		team_ptr;
-	} catch (const bad_alloc& e){
-		return StatusType::ALLOCATION_ERROR;
-		}*/
 
 	// if this team already exist
     if (m_teams.getRoot() != nullptr){
@@ -97,14 +89,6 @@ StatusType world_cup_t::add_player(int playerId, int teamId, int gamesPlayed,
                                              gamesPlayed - team_ptr->getGamesPlayed(), goals,
                                              cards, goalKeeper));;
 
-    /*try{
-        // note that we enter the player thr decrease the amount of games that he played because we have field of games of the team and we will return them together when we want to know how much he play
-        player_ptr = shared_ptr<Player>(new Player(playerId, teamId,
-                                                                      gamesPlayed - team_ptr->getGamesPlayed(), goals,
-                                                                      cards, goalKeeper));
-    } catch (const bad_alloc& e){
-        return StatusType::ALLOCATION_ERROR;
-    }*/
 
     // entering the player by ID
     try{
@@ -143,7 +127,7 @@ StatusType world_cup_t::add_player(int playerId, int teamId, int gamesPlayed,
         m_numOfValidTeams++;
     }
     update_top_scorer(player_ptr);
-    m_numOfPlayes++;
+    m_numOfPlayers++;
 
     return StatusType::SUCCESS;
 }
@@ -152,22 +136,22 @@ void world_cup_t::update_top_scorer(shared_ptr<Player> player) {
 
     // first player is the top scorer
     if (!m_topScorer){
-        m_topScorer=&*player;
+        m_topScorer=player.get();
         return;
     }
-    ///TODO forget cards
+
     if (m_topScorer->getGoalsScored() < player->getGoalsScored())
     {
-        m_topScorer = &*player;
+        m_topScorer = player.get();
         return;
     }
     if(((m_topScorer->getGoalsScored() == player->getGoalsScored()))) {
         if (m_topScorer->getCardsReceived() > player->getCardsReceived()) {
-            m_topScorer = &*player;
+            m_topScorer = player.get();
             return;
         } else if (m_topScorer->getCardsReceived() == player->getCardsReceived())
             if (m_topScorer->getID() < player->getID())
-                m_topScorer = &*player;
+                m_topScorer = player.get();
     }
 }
 
@@ -252,7 +236,7 @@ StatusType world_cup_t::add_player(shared_ptr<Player> player_ptr, shared_ptr<Tea
 
     update_top_scorer(player_ptr);
 
-    m_numOfPlayes++;
+    m_numOfPlayers++;
     return StatusType::SUCCESS;
 }
 
@@ -292,7 +276,7 @@ StatusType world_cup_t::remove_player(int playerId)
     update_previous_next_remove_player(playerPtr);
 
 
-    m_numOfPlayes--;
+    m_numOfPlayers--;
 
     return StatusType::SUCCESS;
 }
@@ -452,12 +436,12 @@ StatusType world_cup_t::unite_teams(int teamId1, int teamId2, int newTeamId)
 
     // fill the arrays with the teams inOrder
     int i = 0, k=0;
-    team1->getTeamPlayerByStats().printInOrderT(team1->getTeamPlayerByStats().getRoot(), arrTeam1ByStats, i);
-    team1->getTeamPlayerByIds().printInOrderT(team1->getTeamPlayerByIds().getRoot(), arrTeam1ByIDs, k);
+    team1->getTeamPlayerByStats().printInOrder(team1->getTeamPlayerByStats().getRoot(), arrTeam1ByStats, i);
+    team1->getTeamPlayerByIds().printInOrder(team1->getTeamPlayerByIds().getRoot(), arrTeam1ByIDs, k);
 
     i=0, k=0;
-    team2->getTeamPlayerByStats().printInOrderT(team2->getTeamPlayerByStats().getRoot(), arrTeam2ByStats, i);
-    team2->getTeamPlayerByIds().printInOrderT(team2->getTeamPlayerByIds().getRoot(), arrTeam2ByIDs, k);
+    team2->getTeamPlayerByStats().printInOrder(team2->getTeamPlayerByStats().getRoot(), arrTeam2ByStats, i);
+    team2->getTeamPlayerByIds().printInOrder(team2->getTeamPlayerByIds().getRoot(), arrTeam2ByIDs, k);
 
     // update players detail: Games played + teamId
     updatePlayers(arrTeam1ByStats, newTeamId, team1->getNumOfPlayers(), team1->getGamesPlayed());
@@ -499,7 +483,7 @@ StatusType world_cup_t::unite_teams(int teamId1, int teamId2, int newTeamId)
     newTeam->setCards(team1->getCards()+team2->getCards());
     newTeam->setGoals(team1->getGoals()+team2->getGoals());
     newTeam->increaseGamesPlayed(team1->getGamesPlayed()+team2->getGamesPlayed());
-    newTeam->setMNumOfGoalKeepers(team1->getNumOfGoalKeepers()+team2->getNumOfGoalKeepers());
+    newTeam->setNumOfGoalKeepers(team1->getNumOfGoalKeepers() + team2->getNumOfGoalKeepers());
 
     m_teams.insert(newTeam);
 
@@ -618,7 +602,7 @@ output_t<int> world_cup_t::get_all_players_count(int teamId)
         }
         return m_teams.findInt(m_teams.getRoot(), teamId)->getValue()->getNumOfPlayers();
     }
-    return m_numOfPlayes;
+    return m_numOfPlayers;
 }
 
 StatusType world_cup_t::get_all_players(int teamId, int *const output)
@@ -634,9 +618,9 @@ StatusType world_cup_t::get_all_players(int teamId, int *const output)
             return StatusType::SUCCESS;
         }
     }
-    else if (m_numOfPlayes){
+    else if (m_numOfPlayers){
         int i = 0;
-        m_playersByStats.printInOrder(m_playersByStats.getRoot(), output, i);
+        m_playersByStats.printInOrderByID(m_playersByStats.getRoot(), output, i);
         return StatusType::SUCCESS;
     }
     return StatusType::FAILURE;
@@ -651,14 +635,14 @@ output_t<int> world_cup_t::get_closest_player(int playerId, int teamId)
     // check if the team exist
     if(m_teams.findInt(m_teams.getRoot(), teamId)){
         // get the team
-        Team* tempTeam = &(*(m_teams.findInt(m_teams.getRoot(), teamId)->getValue()));
+        Team* tempTeam = m_teams.findInt(m_teams.getRoot(), teamId)->getValue().get();
         // get the tree of the team
         //AVLTree<shared_ptr<Player>> treeOfTempTeam = tempTeam->getTeamPlayerByIds();
 
         // check that the player exist
         if (tempTeam->getTeamPlayerByIds().findInt(tempTeam->getTeamPlayerByIds().getRoot() , playerId)){
             // get the player
-            Player* tempPlayer = &(*(tempTeam->getTeamPlayerByIds().findInt(tempTeam->getTeamPlayerByIds().getRoot() , playerId)->getValue()));
+            Player* tempPlayer = tempTeam->getTeamPlayerByIds().findInt(tempTeam->getTeamPlayerByIds().getRoot() , playerId)->getValue().get();
             // if its not the only player in System
             if (tempPlayer->getClosest()){
                 output_t<int> output(tempPlayer->getClosest()->getID());
@@ -678,7 +662,7 @@ output_t<int> world_cup_t::knockout_winner(int minTeamId, int maxTeamId)
     }
     Team* minValidTeam = nullptr;
     if (m_validTeams.findInt(m_validTeams.getRoot(), minTeamId)){
-        minValidTeam = &(*m_validTeams.findInt(m_validTeams.getRoot(), minTeamId)->getValue());
+        minValidTeam = m_validTeams.findInt(m_validTeams.getRoot(), minTeamId)->getValue().get();
     }
 
     shared_ptr<Team> fictiveTeam;

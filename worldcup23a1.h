@@ -27,8 +27,8 @@ using namespace std;
 
 struct FakeTeam{
 
-    int m_id;
-    int m_stats;
+    int m_id{};
+    int m_stats{};
 
     FakeTeam();
     FakeTeam(int id, int stats);
@@ -39,7 +39,7 @@ struct FakeTeam{
 
 class world_cup_t {
 private:
-	int m_numOfPlayes;
+	int m_numOfPlayers;
     int m_numOfValidTeams;
 	Player* m_topScorer;
     AVLTree<shared_ptr<Team>> m_teams;
@@ -74,16 +74,16 @@ public:
     void update_top_scorer(shared_ptr<Player> player);
 
     void update_previous_next_add_player(shared_ptr<Player> player_ptr);
-    void update_previous_next_remove_player(shared_ptr<Player> player_ptr);
+    static void update_previous_next_remove_player(shared_ptr<Player> player_ptr);
 
     void update_previous_next_add_team(shared_ptr<Team> team_ptr);
-    void update_previous_next_remove_team(shared_ptr<Team> team_ptr);
+    static void update_previous_next_remove_team(shared_ptr<Team> team_ptr);
 
-    void mergeArraysByStats(shared_ptr<Player>* arrTeam1ByStats, shared_ptr<Player>* arrTeam2ByStats, shared_ptr<Player>* arrUniteTeamByStats, int team1, int team2, int total);
+    static void mergeArraysByStats(shared_ptr<Player>* arrTeam1ByStats, shared_ptr<Player>* arrTeam2ByStats, shared_ptr<Player>* arrUniteTeamByStats, int team1, int team2, int total);
 
-    void mergeArraysByIds(shared_ptr<Player>* arrTeam1ByIDs, shared_ptr<Player>* arrTeam2ByIDs, shared_ptr<Player>* arrUniteTeamByIDs, int team1, int team2, int total);
+    static void mergeArraysByIds(shared_ptr<Player>* arrTeam1ByIDs, shared_ptr<Player>* arrTeam2ByIDs, shared_ptr<Player>* arrUniteTeamByIDs, int team1, int team2, int total);
 
-    void updatePlayers(shared_ptr<Player>* arrTeamByStats, int uniteTeamID, int size, int teamsGame);
+    static void updatePlayers(shared_ptr<Player>* arrTeamByStats, int uniteTeamID, int size, int teamsGame);
 
 	StatusType play_match(int teamId1, int teamId2);
 	

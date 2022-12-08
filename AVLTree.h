@@ -38,7 +38,7 @@
     template <class T>
     class AVLTree {
     public:
-        AVLTree(bool orderBy=true, AVLNode<T>* root = nullptr) : m_orderBy(orderBy), m_root(root) {}
+        explicit AVLTree(bool orderBy=true, AVLNode<T>* root = nullptr) : m_orderBy(orderBy), m_root(root) {}
         ~AVLTree();
 
         bool insert(const T& value);
@@ -63,18 +63,18 @@
         void rotateLeft (AVLNode<T>* B);
         void rotateRight(AVLNode<T>* C);
 
-        void printInOrder  (AVLNode<T>* root, int *const output, int& i) ; // Left, Parent, Right
-        void printInOrderT  (AVLNode<T>* root, T *const output, int& i) ; // Left, Parent, Right
+        void printInOrderByID  (AVLNode<T>* root, int *const output, int& i) ; // Left, Parent, Right
+        void printInOrder  (AVLNode<T>* root, T *const output, int& i) ; // Left, Parent, Right
         AVLNode<T> *sortedArrayToAVL(T* arr, int start, int end);
-
-    private:
         void insertAvlNodeByStats(AVLNode<T>* root, AVLNode<T>* newNode);
         void insertAvlNodeByIds(AVLNode<T>* root, AVLNode<T>* newNode);
-        void deleteAvlNode(AVLNode<T>* node);
+
+
+
+    private:
         bool m_orderBy;
-
         AVLNode<T>* m_root;
-
+        void deleteAvlNode(AVLNode<T>* node);
     };
 
     template <class T>
@@ -107,21 +107,18 @@
             m_root = newNode;
         }
         else {
-            if (m_orderBy){
+            if (m_orderBy)
                 insertAvlNodeByStats(m_root, newNode);
-
-            }
-            else{
+            else
                 insertAvlNodeByIds(m_root, newNode);
-            }
         }
         return false;
     }
 
     template <class T>
     void AVLTree<T>::insertAvlNodeByStats(AVLNode<T>* root, AVLNode<T>* newNode) {
+        // if the node exist we catch it from outside
         // Binary Search Tree insertion algorithm
-
         // comparing by the value of the pointer
         if(*(newNode->getValue()) < *(root->getValue()) ) {
             if(root->getLeft() ) // If there is a left child, keep searching
@@ -139,18 +136,14 @@
                 newNode->setParent(root);
             }
         }
-        // if the node exist we catch it from outside
-
         root->setHeight(maxHeight(root));
-
         balanceTheTree(root);
-        //root->getLeft()->getValue().setClosest() = findNext(root->getLeft());
     }
 
 template <class T>
 void AVLTree<T>::insertAvlNodeByIds(AVLNode<T> *root, AVLNode<T> *newNode) {
+    // if the node exist we catch it from outside
     // Binary Search Tree insertion algorithm
-
     // comparing by the value of the pointer
     if(*(newNode->getValue()) > *(root->getValue()) ) {
         if(root->getRight() ) // If there is a left child, keep searching
@@ -168,12 +161,8 @@ void AVLTree<T>::insertAvlNodeByIds(AVLNode<T> *root, AVLNode<T> *newNode) {
             newNode->setParent(root);
         }
     }
-    // if the node exist we catch it from outside
-
     root->setHeight(maxHeight(root));
-
     balanceTheTree(root);
-    //root->getLeft()->getValue().setClosest() = findNext(root->getLeft());
 }
 
 template<class T>
@@ -317,22 +306,22 @@ void AVLTree<T>::rotateLeft (AVLNode<T>* B) {
     }
 
     template <class T>
-    void AVLTree<T>::printInOrder(AVLNode<T>* root, int *const output, int& i) {
+    void AVLTree<T>::printInOrderByID(AVLNode<T>* root, int *const output, int& i) {
         if( root ) {
-            printInOrder(root->getLeft(), output, i);  // Left
+            printInOrderByID(root->getLeft(), output, i);  // Left
             output[i]=root->getValue()->getID(); // Parent
             i++;
-            printInOrder(root->getRight(), output, i); // Right
+            printInOrderByID(root->getRight(), output, i); // Right
         }
     }
 
 template <class T>
-void AVLTree<T>::printInOrderT(AVLNode<T>* root, T* const output, int& i) {
+void AVLTree<T>::printInOrder(AVLNode<T>* root, T* const output, int& i) {
     if( root ) {
-        printInOrderT(root->getLeft(), output, i);  // Left
+        printInOrder(root->getLeft(), output, i);  // Left
         output[i] = root->getValue(); // Parent
         i++;
-        printInOrderT(root->getRight(), output, i); // Right
+        printInOrder(root->getRight(), output, i); // Right
     }
 }
 
@@ -453,59 +442,8 @@ void AVLTree<T>::printInOrderT(AVLNode<T>* root, T* const output, int& i) {
                 nextJunction = nextJunction->getLeft();
                 //hasLeftSon = true;
             }
-
-            T temp = willDeleted->getValue();
-            //nextJunction->setValue(temp);
+            //change between the nodes
             willDeleted->setValue(nextJunction->getValue());
-            /*
-            // this node could have one son from right or none
-            AVLNode<T>* rightSonOfNextJunction = nextJunction->getRight();
-
-            // checking if willDeleted is the root
-            if (parent){
-                // in case willDeleted is left son
-                if (willDeleted == parent->getLeft()) {
-                    // update the left son
-                    parent->setLeft(nextJunction);
-                    nextJunction->setParent(parent);
-                } else {
-                    // update the right son
-                    parent->setRight(nextJunction);
-                    nextJunction->setParent(parent);
-                }
-            }
-
-            if(hasLeftSon){
-                nextJunction->getParent()->setLeft(willDeleted);
-                nextJunction->setRight(willDeleted->getRight());
-                willDeleted->setParent(nextJunction->getParent());
-                nextJunction->getRight()->setParent(nextJunction);
-                willDeleted->getParent()->setLeft(willDeleted);
-
-            }
-            else{
-                nextJunction->setRight(willDeleted);
-                willDeleted->setParent(nextJunction);
-            }
-
-            nextJunction->setLeft(willDeleted->getLeft());
-            nextJunction->getLeft()->setParent(nextJunction);
-            nextJunction->setParent(parent);
-
-
-            willDeleted->setRight(rightSonOfNextJunction);
-            willDeleted->setLeft(nullptr);
-
-            if(!parent){
-                this->m_root=nextJunction;
-                // if it was the root update the pointer of the root in the tree
-            }
-
-            int tempHeight = willDeleted->getHeight();
-            willDeleted->setHeight(nextJunction->getHeight());
-            nextJunction->setHeight(tempHeight);
-            */
-            // now we can delete it by steps 1 or 2
             remove(nextJunction, value);
         }
     }
@@ -514,11 +452,11 @@ void AVLTree<T>::printInOrderT(AVLNode<T>* root, T* const output, int& i) {
 template <class T>
 AVLNode<T>* AVLTree<T>::sortedArrayToAVL(T* arr, int start, int end)
 {
-    /* Base Case */
+    //Base Case
     if (start > end)
         return NULL;
 
-    /* Get the middle element and make it root */
+    //Get the middle element and make it root
     int mid = (start + end)/2;
     AVLNode<T> *root;
     try {
@@ -530,15 +468,13 @@ AVLNode<T>* AVLTree<T>::sortedArrayToAVL(T* arr, int start, int end)
 
 
     int height=0;
-    /* Recursively construct the left subtree and make it
-       left child of root */
+    //Recursively build the left subtree and make it left child of root
     root->setLeft(sortedArrayToAVL(arr, start, mid - 1));
     if(root->getLeft()) {
         root->getLeft()->setParent(root);
         height = root->getLeft()->getHeight()+1;
     }
-    /* Recursively construct the right subtree and make it
-       right child of root */
+    //Recursively build the right subtree and make it right child of root
     root->setRight(sortedArrayToAVL(arr, mid + 1, end));
     if(root->getRight()) {
         root->getRight()->setParent(root);

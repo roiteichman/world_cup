@@ -166,7 +166,7 @@ Player* Team::getTopScorer() const {
 void Team::get_all_players(int *const output) {
 
     int i = 0;
-    m_teamPlayersByStats.printInOrder(m_teamPlayersByStats.getRoot(), output, i);
+    m_teamPlayersByStats.printInOrderByID(m_teamPlayersByStats.getRoot(), output, i);
 }
 
 void Team::setTeamPlayersByStats(const AVLTree<shared_ptr<Player>>& TeamPlayersByStats) {
@@ -181,7 +181,7 @@ void Team::setMNumOfPlayers(int mNumOfPlayers) {
     m_numOfPlayers = mNumOfPlayers;
 }
 
-void Team::setMNumOfGoalKeepers(int mNumOfGoalKeepers) {
+void Team::setNumOfGoalKeepers(int mNumOfGoalKeepers) {
     m_numOfGoalKeepers += mNumOfGoalKeepers;
 }
 
