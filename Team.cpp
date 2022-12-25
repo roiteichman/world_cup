@@ -72,10 +72,12 @@ void Team::removePlayer(shared_ptr<Player> player) {
         if (playerNode->getParent()){
             m_topScorer = &*(playerNode->getParent()->getValue());
         }
-        else if (playerNode->getLeft()){
+        /// TODO: change
+        if (playerNode->getLeft()){
             m_topScorer=&*(playerNode->getLeft()->getValue());///TODO ?
         }
-        else{
+        /// TODO: change
+        if (!(playerNode->getParent()) && !(playerNode->getLeft())){
             m_topScorer = nullptr;
         }
     }

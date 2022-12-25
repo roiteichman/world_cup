@@ -175,9 +175,11 @@ void world_cup_t::update_previous_next_remove_player(shared_ptr<Player> player_p
     }
     if (player_ptr->getClosestLeft()) {
         player_ptr->getClosestLeft()->setClosestRight(player_ptr->getClosestRight());
+    }
+    /// TODO: change
         player_ptr->setClosestLeft(nullptr);
         player_ptr->setClosestRight(nullptr);
-    }
+
 }
 
 
@@ -191,12 +193,15 @@ void world_cup_t::update_previous_next_remove_team(shared_ptr<Team> team_ptr) {
 
     if (team_ptr->getClosestRight()) {
         team_ptr->getClosestRight()->setClosestLeft(team_ptr->getClosestLeft());
-        //team_ptr->setClosestRight(nullptr);
+        /// TODO: change (remove row)
     }
     if (team_ptr->getClosestLeft()) {
         team_ptr->getClosestLeft()->setClosestRight(team_ptr->getClosestRight());
         team_ptr->setClosestLeft(nullptr);
     }
+    /// TODO: change
+    team_ptr->setClosestRight(nullptr);
+
 }
 
 
@@ -274,8 +279,8 @@ StatusType world_cup_t::remove_player(int playerId)
 
     // searching the playerPtr in the not empty teamPtr tree and remove the playerPtr from it
     teamPtr->removePlayer(playerPtr);
-
-    if (!teamPtr->isValid() && teamPtr->getNumOfPlayers()==VALID_TEAM-1) {
+    /// TODO: change
+    if ((teamPtr->getNumOfPlayers()==VALID_TEAM-1 && teamPtr->getNumOfGoalKeepers()>0) || (playerPtr->isGoalkeeper() && teamPtr->getNumOfGoalKeepers()==0 && teamPtr->getNumOfPlayers()>=VALID_TEAM-1)) {
         m_validTeams.remove(m_validTeams.getRoot(), teamPtr);
         update_previous_next_remove_team(teamPtr);
         m_numOfValidTeams--;
@@ -546,8 +551,11 @@ StatusType world_cup_t::unite_teams(int teamId1, int teamId2, int newTeamId)
     newTeam->setMNumOfPlayers(sumOfPlayersTotal);
     newTeam->setCards(team1->getCards()+team2->getCards());
     newTeam->setGoals(team1->getGoals()+team2->getGoals());
-    newTeam->increaseGamesPlayed(team1->getGamesPlayed()+team2->getGamesPlayed());
+    /// TODO: change (remove one row)
+    //newTeam->increaseGamesPlayed(team1->getGamesPlayed()+team2->getGamesPlayed());
     newTeam->setNumOfGoalKeepers(team1->getNumOfGoalKeepers() + team2->getNumOfGoalKeepers());
+    ///TODO: change
+    newTeam->update_top_scorer(sumOfPlayersTotal>0 ? arrUniteTeamByStats[sumOfPlayersTotal - 1] : nullptr);
 
     m_teams.insert(newTeam);
 
