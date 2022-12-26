@@ -268,11 +268,14 @@ void AVLTree<T>::rotateLeft (AVLNode<T>* B) {
     template<class T>
     void AVLTree<T>::findNext(AVLNode<T> *leaf) {
         AVLNode<T> *next = leaf;
-        /// TODO: change
-        if (next->getRight() && next->getLeft()){
+        /// TODO: change 6
+        if (leaf->getRight() && leaf->getLeft()){
+            leaf->getValue()->setClosestLeft(leaf->getLeft()->getValue().get());
+            leaf->getLeft()->getValue()->setClosestRight(leaf->getValue().get());
             leaf->getValue()->setClosestRight(leaf->getRight()->getValue().get());
             leaf->getRight()->getValue()->setClosestLeft(leaf->getValue().get());
-            return;}
+            return;
+        }
         if (!(next->getParent())){
             return;
         }
@@ -294,12 +297,8 @@ void AVLTree<T>::rotateLeft (AVLNode<T>* B) {
     template<class T>
     void AVLTree<T>::findPrevious(AVLNode<T> *leaf) {
         AVLNode<T> *next = leaf;
-        /// TODO: change
-        if (next->getRight() && next->getLeft()){
-            leaf->getValue()->setClosestLeft(leaf->getLeft()->getValue().get());
-            leaf->getLeft()->getValue()->setClosestRight(leaf->getValue().get());
-            return;}
-        if (!(next->getParent())){
+        ///TODO: change 1
+        if (!(next->getParent()) || (leaf->getRight() && leaf->getLeft())){
             return;
         }
         while (next->getParent()->getLeft() == next) {
@@ -453,10 +452,10 @@ void AVLTree<T>::printInOrder(AVLNode<T>* root, T* const output, int& i) {
                 //hasLeftSon = true;
             }
             //change between the nodes
-            /// TODO: change
+            /// TODO: change 1
             T tempValue = willDeleted->getValue();
             willDeleted->setValue(nextJunction->getValue());
-            /// TODO: change
+            /// TODO: change 1
             nextJunction->setValue(tempValue);
             remove(nextJunction, value);
         }
