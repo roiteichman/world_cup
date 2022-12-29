@@ -70,8 +70,8 @@ void Team::removePlayer(shared_ptr<Player> player) {
     if (player.get()==m_topScorer){
         // if the top scorer has a parent he is the new top scorer
         if (playerNode->getParent()){
-            /// TODO: change 1
-            (playerNode->getLeft() ? m_topScorer=&*(playerNode->getLeft()->getValue()) : m_topScorer = &*(playerNode->getParent()->getValue()));
+            m_topScorer = &*(playerNode->getParent()->getValue());
+            playerNode->getLeft()? m_topScorer=&*(playerNode->getLeft()->getValue()): 3;
         }
         else if (playerNode->getLeft()){
             m_topScorer=&*(playerNode->getLeft()->getValue());///TODO ?

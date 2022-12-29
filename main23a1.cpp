@@ -42,12 +42,18 @@ int main()
             print(op, obj->remove_team(d1));
         } else if (!op.compare("add_player")) {
             cin >> d1 >> d2 >> d3 >> d4 >> d5 >> b1;
+            if (d1 == 25945 || d1 == 32487){
+                std::cout<<"hi";
+            }
             print(op, obj->add_player(d1, d2, d3, d4, d5, b1));
         } else if (!op.compare("remove_player")) {
             cin >> d1;
             print(op, obj->remove_player(d1));
         } else if (!op.compare("update_player_stats")) {
             cin >> d1 >> d2 >> d3 >> d4;
+            if (d1 == 25945 || d1 == 32487){
+                std::cout<<"hi";
+            }
             print(op, obj->update_player_stats(d1, d2, d3, d4));
         } else if (!op.compare("play_match")) {
             cin >> d1 >> d2;
@@ -72,6 +78,9 @@ int main()
             query_get_all_players(op, obj, d1);
         } else if (!op.compare("get_closest_player")) {
             cin >> d1 >> d2;
+            if (obj->get_closest_player(d1, d2).ans() == 8809){
+                std::cout<<"hi";
+            }
             print(op, obj->get_closest_player(d1, d2));
         } else if (!op.compare("knockout_winner")) {
             cin >> d1 >> d2;

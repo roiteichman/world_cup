@@ -39,9 +39,9 @@ struct FakeTeam{
 
 class world_cup_t {
 private:
-	int m_numOfPlayers;
+    int m_numOfPlayers;
     int m_numOfValidTeams;
-	Player* m_topScorer;
+    Player* m_topScorer;
     AVLTree<shared_ptr<Team>> m_teams;
     AVLTree<shared_ptr<Team>> m_notEmptyTeams;
     AVLTree<shared_ptr<Team>> m_validTeams;
@@ -51,25 +51,25 @@ private:
 
 
 public:
-	// <DO-NOT-MODIFY> {
-	
-	world_cup_t();
-	virtual ~world_cup_t();
+    // <DO-NOT-MODIFY> {
+
+    world_cup_t();
+    virtual ~world_cup_t();
 
 
-	StatusType add_team(int teamId, int points);
-	
-	StatusType remove_team(int teamId);
-	
-	StatusType add_player(int playerId, int teamId, int gamesPlayed,
-	                      int goals, int cards, bool goalKeeper);
+    StatusType add_team(int teamId, int points);
+
+    StatusType remove_team(int teamId);
+
+    StatusType add_player(int playerId, int teamId, int gamesPlayed,
+                          int goals, int cards, bool goalKeeper);
 
     StatusType add_player(shared_ptr<Player> player_ptr, shared_ptr<Team> team_ptr);
-	
-	StatusType remove_player(int playerId);
-	
-	StatusType update_player_stats(int playerId, int gamesPlayed,
-	                                int scoredGoals, int cardsReceived);
+
+    StatusType remove_player(int playerId);
+
+    StatusType update_player_stats(int playerId, int gamesPlayed,
+                                   int scoredGoals, int cardsReceived);
 
     void update_top_scorer(shared_ptr<Player> player);
 
@@ -85,27 +85,27 @@ public:
 
     static void updatePlayers(shared_ptr<Player>* arrTeamByStats, int uniteTeamID, int size, int teamsGame);
 
-	StatusType play_match(int teamId1, int teamId2);
-	
-	output_t<int> get_num_played_games(int playerId);
-	
-	output_t<int> get_team_points(int teamId);
-	
-	StatusType unite_teams(int teamId1, int teamId2, int newTeamId);
-	
-	output_t<int> get_top_scorer(int teamId);
-	
-	output_t<int> get_all_players_count(int teamId);
-	
-	StatusType get_all_players(int teamId, int *const output);
-	
-	output_t<int> get_closest_player(int playerId, int teamId);
+    StatusType play_match(int teamId1, int teamId2);
+
+    output_t<int> get_num_played_games(int playerId);
+
+    output_t<int> get_team_points(int teamId);
+
+    StatusType unite_teams(int teamId1, int teamId2, int newTeamId);
+
+    output_t<int> get_top_scorer(int teamId);
+
+    output_t<int> get_all_players_count(int teamId);
+
+    StatusType get_all_players(int teamId, int *const output);
+
+    output_t<int> get_closest_player(int playerId, int teamId);
 
     int playSimulation(FakeTeam* teams, int size);
-	
-	output_t<int> knockout_winner(int minTeamId, int maxTeamId);
-	
-	// } </DO-NOT-MODIFY>
+
+    output_t<int> knockout_winner(int minTeamId, int maxTeamId);
+
+    // } </DO-NOT-MODIFY>
 
 };
 

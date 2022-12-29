@@ -22,30 +22,30 @@ world_cup_t::~world_cup_t()
 StatusType world_cup_t::add_team(int teamId, int points)
 {
     if(teamId<=0 || points<0){
-		return StatusType::INVALID_INPUT;
-	}
+        return StatusType::INVALID_INPUT;
+    }
 
-	shared_ptr<Team> team_ptr(new Team(teamId, points));
+    shared_ptr<Team> team_ptr(new Team(teamId, points));
 
-	// if this team already exist
+    // if this team already exist
     if (m_teams.getRoot() != nullptr){
-		if (m_teams.findInt(m_teams.getRoot(), teamId) != nullptr) {
-			return StatusType::FAILURE;
-		}
-	}
+        if (m_teams.findInt(m_teams.getRoot(), teamId) != nullptr) {
+            return StatusType::FAILURE;
+        }
+    }
 
-	try{
+    try{
         m_teams.insert(team_ptr);
-	} catch (const bad_alloc& e){
-		return StatusType::ALLOCATION_ERROR;
-	}
+    } catch (const bad_alloc& e){
+        return StatusType::ALLOCATION_ERROR;
+    }
 
-	return StatusType::SUCCESS;
+    return StatusType::SUCCESS;
 }
 
 StatusType world_cup_t::remove_team(int teamId)
 {
-	if(teamId<=0)
+    if(teamId<=0)
         return StatusType::INVALID_INPUT;
     // checking if the team exist and not empty
     if (!m_teams.findInt(m_teams.getRoot(), teamId))
@@ -57,7 +57,7 @@ StatusType world_cup_t::remove_team(int teamId)
     m_notEmptyTeams.remove(m_notEmptyTeams.getRoot(), team);
     m_notEmptyTeams.remove(m_notEmptyTeams.getRoot(), team);
 
-	return StatusType::SUCCESS;
+    return StatusType::SUCCESS;
 }
 
 
@@ -176,9 +176,8 @@ void world_cup_t::update_previous_next_remove_player(shared_ptr<Player> player_p
     if (player_ptr->getClosestLeft()) {
         player_ptr->getClosestLeft()->setClosestRight(player_ptr->getClosestRight());
     }
-    /// TODO: change 1
-        player_ptr->setClosestLeft(nullptr);
-        player_ptr->setClosestRight(nullptr);
+    player_ptr->setClosestLeft(nullptr);
+    player_ptr->setClosestRight(nullptr);
 
 }
 
@@ -199,7 +198,6 @@ void world_cup_t::update_previous_next_remove_team(shared_ptr<Team> team_ptr) {
         team_ptr->getClosestLeft()->setClosestRight(team_ptr->getClosestRight());
         team_ptr->setClosestLeft(nullptr);
     }
-    /// TODO: change 1
     team_ptr->setClosestRight(nullptr);
 
 }
@@ -259,7 +257,7 @@ StatusType world_cup_t::add_player(shared_ptr<Player> player_ptr, shared_ptr<Tea
 
 StatusType world_cup_t::remove_player(int playerId)
 {
-	if(playerId<=0)
+    if(playerId<=0)
         return StatusType::INVALID_INPUT;
     // if playerPtr does not exist
     if (!m_playersByID.findInt(m_playersByID.getRoot(), playerId))
@@ -355,7 +353,7 @@ StatusType world_cup_t::play_match(int teamId1, int teamId2)
     team1->increaseGamesPlayed(1);
     team2->increaseGamesPlayed(1);
 
-	return StatusType::SUCCESS;
+    return StatusType::SUCCESS;
 }
 
 output_t<int> world_cup_t::get_num_played_games(int playerId)
@@ -551,11 +549,8 @@ StatusType world_cup_t::unite_teams(int teamId1, int teamId2, int newTeamId)
     newTeam->setMNumOfPlayers(sumOfPlayersTotal);
     newTeam->setCards(team1->getCards()+team2->getCards());
     newTeam->setGoals(team1->getGoals()+team2->getGoals());
-    /// TODO: change (remove one row) 1
-    //newTeam->increaseGamesPlayed(team1->getGamesPlayed()+team2->getGamesPlayed());
     newTeam->setNumOfGoalKeepers(team1->getNumOfGoalKeepers() + team2->getNumOfGoalKeepers());
-    ///TODO: change 1
-    newTeam->update_top_scorer(sumOfPlayersTotal>0 ? arrUniteTeamByStats[sumOfPlayersTotal - 1] : nullptr);
+    sumOfPlayersTotal? newTeam->update_top_scorer(arrUniteTeamByStats[sumOfPlayersTotal - 1]): 3;
 
     m_teams.insert(newTeam);
 
@@ -576,12 +571,12 @@ StatusType world_cup_t::unite_teams(int teamId1, int teamId2, int newTeamId)
     delete[] arrUniteTeamByStats;
     delete[] arrUniteTeamByIDs;
 
-   unitedTeamById->setMRoot(nullptr);
-   unitedTeamByStats->setMRoot(nullptr);
+    unitedTeamById->setMRoot(nullptr);
+    unitedTeamByStats->setMRoot(nullptr);
     delete unitedTeamByStats;
     delete unitedTeamById;
 
-	return StatusType::SUCCESS;
+    return StatusType::SUCCESS;
 }
 
 void world_cup_t::updatePlayers(shared_ptr<Player> *arrTeamByStats, int uniteTeamID, int size, int teamsGame) {
@@ -613,27 +608,27 @@ void world_cup_t::mergeArraysByStats(shared_ptr<Player> *arrTeam1ByStats, shared
     }
 }
 
-    void world_cup_t::mergeArraysByIds(shared_ptr<Player> *arrTeam1ByIDs, shared_ptr<Player> *arrTeam2ByIDs,
-                                       shared_ptr<Player> *arrUniteTeamByIDs, int team1, int team2, int total) {
-        int i=0, k=0;
-        for (int j = 0; j < total; ++j) {
-            if (i != team1 && k != team2) {
-                if (*arrTeam1ByIDs[i] > *arrTeam2ByIDs[k]) {
-                    arrUniteTeamByIDs[j] = arrTeam2ByIDs[k];
-                    k++;
-                } else {
-                    arrUniteTeamByIDs[j] = arrTeam1ByIDs[i];
-                    i++;
-                }
-            } else if (i == team1) {
+void world_cup_t::mergeArraysByIds(shared_ptr<Player> *arrTeam1ByIDs, shared_ptr<Player> *arrTeam2ByIDs,
+                                   shared_ptr<Player> *arrUniteTeamByIDs, int team1, int team2, int total) {
+    int i=0, k=0;
+    for (int j = 0; j < total; ++j) {
+        if (i != team1 && k != team2) {
+            if (*arrTeam1ByIDs[i] > *arrTeam2ByIDs[k]) {
                 arrUniteTeamByIDs[j] = arrTeam2ByIDs[k];
                 k++;
             } else {
                 arrUniteTeamByIDs[j] = arrTeam1ByIDs[i];
                 i++;
             }
+        } else if (i == team1) {
+            arrUniteTeamByIDs[j] = arrTeam2ByIDs[k];
+            k++;
+        } else {
+            arrUniteTeamByIDs[j] = arrTeam1ByIDs[i];
+            i++;
         }
     }
+}
 
 
 output_t<int> world_cup_t::get_top_scorer(int teamId)
