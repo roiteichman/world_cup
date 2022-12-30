@@ -53,7 +53,7 @@ public:
     void addPlayer (const shared_ptr<Player>& player);
 
     int getNumOfGoalKeepers() const;
-    int getNumOfPlayers() const;
+    int size() const;
     Team* getClosestLeft() const;
     Team* getClosestRight() const;
     void get_all_players(int *const output);
